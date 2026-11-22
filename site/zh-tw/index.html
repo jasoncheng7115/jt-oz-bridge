@@ -4,9 +4,10 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>jt-oz-bridge</title>
-  <meta name="description" content="jt-oz-bridge 讓 AI Agent 與通訊軟體溝通：在 Zulip 中操作你的 OpenCode session，全部地端自有建置。">
+  <meta name="description" content="在手機或電腦的 Zulip 上使用你的 OpenCode session。自架部署，GPL-3.0。">
   <meta name="color-scheme" content="light dark">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <script src="../assets/lang.js"></script>
   <link rel="stylesheet" href="../assets/site.css">
   <link rel="alternate" hreflang="en" href="../">
   <link rel="alternate" hreflang="zh-Hant-TW" href="./">
@@ -16,13 +17,14 @@
   <!-- Repository base for every document link on this page: https://github.com/jasoncheng7115/jt-oz-bridge -->
   <header class="topbar">
     <div class="wrap">
-      <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="26" height="26">jt-oz-bridge</a>
+      <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="24" height="24">jt-oz-bridge</a>
       <nav class="nav" aria-label="章節">
-        <a href="#features">功能</a>
-        <a href="#architecture">架構</a>
+        <a href="#use">怎麼用</a>
+        <a href="#fit">適合誰</a>
+        <a href="#how">運作方式</a>
         <a href="#install">安裝</a>
         <a href="#security">資安</a>
-        <a href="#status">狀態</a>
+        <a href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub</a>
       </nav>
       <div class="lang" aria-label="語言">
         <a href="../" hreflang="en" lang="en">English</a>
@@ -32,50 +34,116 @@
     </div>
   </header>
 
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <p class="version"><b>v0.1.1</b> 開發預覽版</p>
+        <h1>離開電腦，也能繼續用 OpenCode 工作</h1>
+        <p class="lead">jt-oz-bridge 把 Zulip 的一個話題接到你伺服器上既有的 OpenCode session。在手機上交代任務、看它正在做什麼、核准它要執行的指令、讀它的回覆；回到電腦前，同一個 session 就在 OpenCode 裡，剛才的內容都在。</p>
+        <div class="actions">
+          <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub</a>
+          <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_zh-tw.md">安裝指南</a>
+          <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/CHANGELOG_zh-tw.md">變更紀錄</a>
+        </div>
+        <ul class="stack" aria-label="使用的技術">
+          <li>OpenCode</li>
+          <li>Zulip</li>
+          <li>Python 3.13</li>
+          <li>systemd</li>
+          <li>GPL-3.0</li>
+        </ul>
+      </div>
+      <div>
+        <div class="chat" role="img" aria-label="話題範例：交代任務、用 !ok 回覆權限要求、收到回覆">
+          <div class="chat-head"><b>project-a</b> › 修正登入</div>
+          <div class="msg me">
+            <div class="avatar">JC</div>
+            <div>
+              <div class="who">你 <small>10:02</small></div>
+              <p>登入頁從早上開始回 500，幫我找原因、修好，再跑一次 auth 的測試。</p>
+            </div>
+          </div>
+          <div class="msg bot">
+            <div class="avatar">oz</div>
+            <div>
+              <div class="who">jt-oz-bridge<span class="tag">BOT</span> <small>10:03</small></div>
+              <p class="tools">🔧 read, grep</p>
+              <p>OpenCode 要求權限：執行 <code>pytest tests/auth</code></p>
+              <p>允許這一次：<code>!ok 4821</code>　拒絕：<code>!no 4821</code></p>
+              <div class="btns"><span>允許這一次</span><span>拒絕</span></div>
+            </div>
+          </div>
+          <div class="msg me">
+            <div class="avatar">JC</div>
+            <div>
+              <div class="who">你 <small>10:04</small></div>
+              <p><code>!ok 4821</code></p>
+            </div>
+          </div>
+          <div class="msg bot">
+            <div class="avatar">oz</div>
+            <div>
+              <div class="who">jt-oz-bridge<span class="tag">BOT</span> <small>10:06</small></div>
+              <p>昨天改設定之後，session 逾時值被讀成文字，拿去和數字比較就出錯。我在 <code>load_settings()</code> 裡轉成數字，也補了測試。<code>pytest tests/auth</code>：18 個通過。</p>
+            </div>
+          </div>
+        </div>
+        <p class="chat-note">內容是虛構的範例，用語照 Bridge 實際送出的訊息；按鈕只在電腦版 Zulip 出現。</p>
+      </div>
+    </div>
+  </div>
+
   <main>
     <div class="wrap">
-      <section class="hero">
-        <img class="banner" src="../assets/jt-oz-bridge-header.svg" alt="jt-oz-bridge — 讓 AI Agent 與通訊軟體溝通，全部地端自有建置" width="1200" height="300">
-        <h1>在聊天軟體裡和你的 AI 程式開發 Agent 對話。</h1>
-        <p class="lead">jt-oz-bridge 讓 AI Agent 與通訊軟體溝通，目前從 <strong>OpenCode × Zulip</strong> 開始。在 Zulip 話題輸入任務、看著 Agent 執行、用手機回覆權限確認並取得完整結果，全程都在你平常在電腦上使用的同一個 OpenCode session 中進行。一切都在自己的基礎設施上運作。</p>
-        <div class="badges">
-          <img src="../assets/status-preview.svg" alt="開發預覽：0.1.1" width="182" height="24">
-          <img src="../assets/runtime-python.svg" alt="Python 3.13" width="111" height="24">
-          <img src="../assets/license-gpl3.svg" alt="GPL-3.0" width="124" height="24">
-          <img src="../assets/deployment-self-hosted.svg" alt="自架部署" width="115" height="24">
+      <div class="status" role="note">
+        <p><strong>開發預覽版。</strong>路由、資料保存與資安檢查有大量自動化測試，Bridge 也每天實際接著一台 OpenCode 伺服器和一個 Zulip 組織在用。其他人從頭到尾的實際使用、官方 iOS 與 Android app 都還沒驗證。請先拿可以丟掉的專案試。</p>
+      </div>
+
+      <section id="use" aria-labelledby="use-title">
+        <h2 id="use-title">在話題裡可以做什麼</h2>
+        <p class="intro">一般文字會送給 session。指令都是 <code>!</code> 加一個英文字。</p>
+        <div class="uses">
+          <div><h3>交代工作</h3><p>直接打字。它還在忙的時候再補一句，會併進正在跑的這一輪，或等這一輪結束再送。</p></div>
+          <div><h3>看它在做什麼</h3><p>工具執行時，同一則進度訊息會原地更新。跑了幾分鐘還沒好，會另外告訴你是在等工具還是在等模型。</p></div>
+          <div><h3>回覆權限要求</h3><p><code>!ok 4821</code> 允許這一次，<code>!no 4821</code> 拒絕。電腦版 Zulip 也有一樣選項的按鈕。</p></div>
+          <div><h3>拿檔案</h3><p><code>!files</code> 在專案裡找檔案，<code>!file 路徑</code> 把原檔傳過來。HTML 只提供下載，不會直接顯示。</p></div>
+          <div><h3>換模型或 Agent</h3><p><code>!model</code> 和 <code>!agent</code> 列出 OpenCode 本身提供的選項，沿用你現有的 provider 與 MCP 設定。</p></div>
+          <div><h3>停下、繼續、重新開始</h3><p><code>!stop</code> 停下這個話題的工作，<code>!go</code> 繼續，<code>!new</code> 在已納管的專案開新對話。</p></div>
         </div>
-        <div class="cta">
-          <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub 原始碼</a>
-          <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_zh-tw.md">安裝指南</a>
+        <p class="muted" style="margin-top:24px"><code>!status</code> 看目前狀態，<code>!help</code> 看其他指令。<a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMMANDS_zh-tw.md">全部聊天指令</a></p>
+      </section>
+
+      <section id="fit" aria-labelledby="fit-title">
+        <h2 id="fit-title">適合與不適合</h2>
+        <div class="fit">
+          <div>
+            <h3>適合</h3>
+            <ul>
+              <li>OpenCode 已經以伺服器模式跑在你管得到的 Linux 主機上，Bridge 可以裝在同一台。</li>
+              <li>你有自己的 Zulip 伺服器，或願意架一台。</li>
+              <li>同一個私人頻道裡的人都可以看到其中的工作：只有你自己，或一個小團隊。</li>
+              <li>你想要在電腦前和手機上接著用同一個 session。</li>
+            </ul>
+          </div>
+          <div class="no">
+            <h3>不適合</h3>
+            <ul>
+              <li>你需要雲端代管服務，或要用 Slack、Teams、Telegram。目前只支援 Zulip。</li>
+              <li>你期待 Bridge 把 Agent 關起來。Agent 在主機上能做什麼，由 OpenCode 自己的權限決定；Bridge 管的是誰可以下指令。</li>
+              <li>彼此不能看到對方工作的人，會共用同一個頻道。</li>
+              <li>你需要有支援服務的正式版本。</li>
+            </ul>
+          </div>
         </div>
       </section>
 
-      <section id="status" aria-labelledby="status-title">
-        <h2 id="status-title">狀態</h2>
-        <div class="note">
-          <p><strong>開發預覽版 0.1.1，不是已完成的正式版本。</strong></p>
-          <p>核心路由、資料保存與資安邊界已有大量自動化測試，部分流程也已在真實的 OpenCode 伺服器與 Zulip 組織上實測。完整的真人端到端使用與官方 iOS／Android app 上的使用尚未驗證。請先在拋棄式專案上試用。</p>
-        </div>
-      </section>
-
-      <section id="features" aria-labelledby="features-title">
-        <h2 id="features-title">它能做什麼</h2>
-        <div class="grid">
-          <div class="card"><div class="icon">01</div><h3>AI Agent 進入日常對話</h3><p>任務、進度、提問與結果集中在聊天裡，手機和電腦都看得到。</p></div>
-          <div class="card"><div class="icon">02</div><h3>OpenCode × Zulip</h3><p>OpenCode 執行 Agent 與工具；Zulip 提供手機與電腦聊天、私人頻道與話題討論串。</p></div>
-          <div class="card"><div class="icon">03</div><h3>全部地端，自有建置</h3><p>通訊、橋接、Agent 與模型都在自己的硬體上運作，每一段資料流都由你掌控。</p></div>
-          <div class="card"><div class="icon">04</div><h3>同一個 session，不是複本</h3><p>每個話題綁定一個既有的 OpenCode session；不複製歷史、不 fork，也不另起後端假裝接續。</p></div>
-          <div class="card"><div class="icon">05</div><h3>用手機回覆權限</h3><p>權限要求與 AI 的提問會出現在話題中，用 <code>!ok 1234</code> 或按鈕回覆即可。</p></div>
-          <div class="card"><div class="icon">06</div><h3>使用自己的模型與工具</h3><p>從 OpenCode 自己的 catalog 選擇 provider、模型與 variant，沿用既有的 MCP 設定。</p></div>
-        </div>
-      </section>
-
-      <section id="architecture" aria-labelledby="architecture-title">
-        <h2 id="architecture-title">系統如何配合</h2>
+      <section id="how" aria-labelledby="how-title">
+        <h2 id="how-title">運作方式</h2>
+        <p class="intro">Bridge 透過 bot 帳號連 Zulip，透過本機 API 連 OpenCode。它從不開啟 OpenCode 的資料庫，也從不重啟 OpenCode。</p>
         <div class="diagram">
           <svg viewBox="0 0 960 320" role="img" aria-labelledby="diagram-title diagram-desc">
             <title id="diagram-title">系統架構</title>
-            <desc id="diagram-desc">Zulip 手機與電腦用戶端連到自架 Zulip 伺服器。jt-oz-bridge 使用 Zulip Bot API 與 OpenCode 伺服器的本機私有 API；OpenCode 伺服器同時服務電腦上的 TUI，並呼叫你的模型 provider。橋接有自己的加密資料庫。</desc>
+            <desc id="diagram-desc">Zulip 手機與電腦用戶端連到自架 Zulip 伺服器。jt-oz-bridge 使用 Zulip Bot API 與 OpenCode 伺服器的本機私有 API；OpenCode 伺服器同時服務電腦上的 TUI，並呼叫你的模型 provider。Bridge 有自己的加密資料庫。</desc>
             <defs>
               <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
             </defs>
@@ -90,42 +158,41 @@
             <text class="edge-label" x="226" y="208">HTTPS</text>
             <text class="edge-label" x="465" y="140" text-anchor="middle">Bot API</text>
             <text class="edge-label" x="705" y="140" text-anchor="middle">API</text>
-            <rect class="node entry" x="10" y="40" width="190" height="56" rx="10"/>
+            <rect class="node" x="10" y="40" width="190" height="56" rx="8"/>
             <text class="title" x="105" y="64" text-anchor="middle">Zulip 手機 App</text>
             <text class="sub" x="105" y="82" text-anchor="middle">iOS／Android</text>
-            <rect class="node entry" x="10" y="204" width="190" height="56" rx="10"/>
+            <rect class="node" x="10" y="204" width="190" height="56" rx="8"/>
             <text class="title" x="105" y="228" text-anchor="middle">Zulip 桌面版／網頁</text>
             <text class="sub" x="105" y="246" text-anchor="middle">選項有按鈕</text>
-            <rect class="node entry" x="250" y="122" width="190" height="56" rx="10"/>
-            <text class="title" x="345" y="146" text-anchor="middle">自架 Zulip</text>
+            <rect class="node" x="250" y="122" width="190" height="56" rx="8"/>
+            <text class="title" x="345" y="146" text-anchor="middle">你的 Zulip 伺服器</text>
             <text class="sub" x="345" y="164" text-anchor="middle">私人頻道、話題</text>
-            <rect class="node core bridge" x="490" y="122" width="190" height="56" rx="10"/>
+            <rect class="node core" x="490" y="122" width="190" height="56" rx="8"/>
             <text class="title" x="585" y="146" text-anchor="middle">jt-oz-bridge</text>
-            <text class="sub" x="585" y="164" text-anchor="middle">授權、路由、遞送</text>
-            <rect class="node" x="490" y="244" width="190" height="56" rx="10"/>
-            <text class="title" x="585" y="268" text-anchor="middle">橋接資料庫</text>
-            <text class="sub" x="585" y="286" text-anchor="middle">payload 加密</text>
-            <rect class="node core" x="730" y="122" width="220" height="56" rx="10"/>
+            <text class="sub" x="585" y="164" text-anchor="middle">檢查、轉送、回傳</text>
+            <rect class="node" x="490" y="244" width="190" height="56" rx="8"/>
+            <text class="title" x="585" y="268" text-anchor="middle">Bridge 資料庫</text>
+            <text class="sub" x="585" y="286" text-anchor="middle">訊息內容加密</text>
+            <rect class="node" x="730" y="122" width="220" height="56" rx="8"/>
             <text class="title" x="840" y="146" text-anchor="middle">OpenCode 伺服器</text>
-            <text class="sub" x="840" y="164" text-anchor="middle">原本的 session，僅本機</text>
-            <rect class="node" x="730" y="20" width="220" height="56" rx="10"/>
+            <text class="sub" x="840" y="164" text-anchor="middle">你的 session，僅本機</text>
+            <rect class="node" x="730" y="20" width="220" height="56" rx="8"/>
             <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI／App</text>
             <text class="sub" x="840" y="62" text-anchor="middle">在你的電腦上</text>
-            <rect class="node" x="730" y="244" width="220" height="56" rx="10"/>
+            <rect class="node" x="730" y="244" width="220" height="56" rx="8"/>
             <text class="title" x="840" y="268" text-anchor="middle">模型 provider</text>
             <text class="sub" x="840" y="286" text-anchor="middle">自架或其他</text>
           </svg>
         </div>
-        <p class="scroll-hint muted">在窄螢幕上可以左右捲動圖表。</p>
+        <p class="scroll-hint muted">圖可以左右捲動。</p>
         <div class="two">
           <div>
-            <h3>元件</h3>
-            <ul class="check">
-              <li><code>jt-oz-bridge serve</code>：橋接服務。接收 Zulip 事件、檢查授權、呼叫 OpenCode API、送出結果，只在本機監聽。</li>
-              <li>自己的 SQLite 資料庫（PostgreSQL 開發中），payload 以應用層加密；永遠不開啟 OpenCode 的資料庫。</li>
-              <li>選用的唯讀本機 observer，供 <code>jt-oz-bridge sessions</code> 與 <code>doctor</code> 使用。</li>
-              <li>以 OpenCode 帳號執行的小型唯讀輔助服務，證明哪個行程、資料集與專案目錄才是真的。</li>
-              <li>選用單元：橋接停止時在 Zulip 發一則通知，恢復時再發一則。</li>
+            <h3>會裝哪些東西</h3>
+            <ul class="plain">
+              <li><code>jt-oz-bridge serve</code>，也就是服務本身，只在本機監聽。</li>
+              <li>它自己的 SQLite 資料庫，訊息內容由程式加密後才存。</li>
+              <li>以 OpenCode 帳號執行的小型唯讀輔助程式，用來確認哪個 OpenCode 行程和專案目錄才是真的。</li>
+              <li>選用：給 <code>jt-oz-bridge sessions</code> 與 <code>doctor</code> 用的唯讀 observer，以及 Bridge 停止和恢復時各在 Zulip 發一則通知的單元。</li>
             </ul>
           </div>
           <div>
@@ -133,103 +200,82 @@
             <pre class="tree"><code>私人頻道「project-a」
 ├── 修正登入   → OpenCode session A
 └── API 測試   → OpenCode session B</code></pre>
-            <p>開一個話題，選擇你可以使用的既有 session（或在已納管的專案開新對話），然後直接輸入。頻道成員都能看到其中的話題，因此可見對象不同時，要分開使用私人頻道。</p>
+            <p style="margin-top:12px">開一個話題，選一個你有權使用的 session，然後直接打字。話題會一直綁著那個 session，直到你中斷連線；session 本身留在 OpenCode。</p>
           </div>
         </div>
-      </section>
-
-      <section id="commands" aria-labelledby="commands-title">
-        <h2 id="commands-title">常用指令</h2>
-        <p>在已連線的話題中，一般文字會送給 AI。指令一律是 <code>!</code> 加一個英文字。</p>
-        <div class="table">
-          <table>
-            <thead><tr><th>指令</th><th>用途</th></tr></thead>
-            <tbody>
-              <tr><td><code>!ok</code>／<code>!no</code></td><td>答應／拒絕 Bridge 問你的事；<code>!ok 1234</code> 回覆權限要求</td></tr>
-              <tr><td><code>!stop</code>／<code>!go</code></td><td>停下這裡的全部工作／繼續暫停的工作</td></tr>
-              <tr><td><code>!status</code></td><td>目前狀態與排隊中的訊息</td></tr>
-              <tr><td><code>!new</code>／<code>!disconnect</code></td><td>開新對話／中斷話題連線（session 仍留在 OpenCode）</td></tr>
-              <tr><td><code>!model</code>／<code>!agent</code></td><td>切換模型／Agent</td></tr>
-              <tr><td><code>!files</code>／<code>!file 路徑</code></td><td>尋找檔案／下載檔案</td></tr>
-              <tr><td><code>!help</code></td><td>其他所有指令</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <p class="muted" style="margin-top:10px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMMANDS_zh-tw.md">全部聊天指令</a></p>
       </section>
 
       <section id="install" aria-labelledby="install-title">
         <h2 id="install-title">安裝、升級與移除</h2>
-        <p>橋接在 Linux（systemd）上、與既有的 OpenCode 伺服器並行，以專用的非 root 帳號執行。每個版本都放在以 wheel SHA-256 命名的獨立目錄中，相依套件以雜湊鎖定，並附 CycloneDX SBOM。</p>
-        <div class="grid">
-          <div class="card">
+        <p class="intro">跑在有 systemd 的 Linux 上，和 OpenCode 同一台，用自己的非 root 帳號。每個版本放在以 wheel SHA-256 命名的目錄，相依套件以雜湊鎖定，並附 CycloneDX SBOM；要退回，只要切回前一個目錄。</p>
+        <div class="steps">
+          <div>
             <h3>安裝</h3>
             <ol>
-              <li>建置 wheel、含雜湊的 <code>requirements.txt</code> 與 SBOM，或帶著含相依 wheel 的離線套件包。</li>
-              <li>驗證 <code>SHA256SUMS</code>，以 <code>--require-hashes</code> 安裝到新的 venv，檢查 SBOM。</li>
-              <li>設定、產生金鑰、<code>migrate</code>、安裝 systemd 單元、檢查 <code>/readyz</code>。</li>
-              <li>連接 Zulip bot 與私人頻道，納管一個 OpenCode 專案。</li>
+              <li>取得 wheel、含雜湊的 <code>requirements.txt</code> 與 SBOM，或離線套件包。</li>
+              <li>核對 <code>SHA256SUMS</code>，用 <code>--require-hashes</code> 裝到新的 venv。</li>
+              <li>寫設定、產生金鑰、執行 <code>migrate</code>、啟動服務，確認 <code>/readyz</code>。</li>
+              <li>新增 Zulip bot 與私人頻道，再納管一個 OpenCode 專案。</li>
             </ol>
-            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_zh-tw.md">安裝指南 →</a>
+            <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_zh-tw.md">安裝指南</a>
           </div>
-          <div class="card">
+          <div>
             <h3>升級</h3>
             <ol>
-              <li>把新版本安裝在執行中版本的旁邊。</li>
-              <li>停止橋接、備份、<code>migrate</code>。</li>
-              <li>切換 drop-in，等待 <code>/readyz</code>，做冒煙檢查。</li>
-              <li>回滾時指回前一版；schema 變更後則往前修正或還原備份。</li>
+              <li>把新版本裝在正在跑的版本旁邊。</li>
+              <li>停止 Bridge、備份、執行 <code>migrate</code>。</li>
+              <li>把服務指到新版本，等 <code>/readyz</code>，跑冒煙檢查。</li>
+              <li>要退回就指回前一版；如果改過 schema，改用備份還原。</li>
             </ol>
-            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UPGRADE_zh-tw.md">升級指南 →</a>
+            <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UPGRADE_zh-tw.md">升級指南</a>
           </div>
-          <div class="card">
+          <div>
             <h3>移除</h3>
             <ol>
-              <li>視需要做最後一次備份，金鑰另外保存。</li>
-              <li>停止並移除單元、版本、狀態、設定與服務帳號。</li>
-              <li>Zulip 與 OpenCode 保留各自的資料；bot 請自行停用。</li>
+              <li>需要的話先做最後一次備份，金鑰另外保存。</li>
+              <li>移除服務單元、各版本、狀態、設定與服務帳號。</li>
+              <li>Zulip 和 OpenCode 的資料不受影響。bot 請到 Zulip 停用。</li>
             </ol>
-            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UNINSTALL_zh-tw.md">移除指南 →</a>
+            <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UNINSTALL_zh-tw.md">移除指南</a>
           </div>
         </div>
-        <h3 style="margin-top:22px">離線安裝重點</h3>
-        <pre><code># connected machine
+        <h3>離線安裝重點</h3>
+        <pre><code># 在可以連網的機器上
 uv build --wheel --out-dir "$OUT"
 uv export --frozen --no-dev --no-emit-project --no-header --format requirements-txt -o "$OUT/requirements.txt"
 pip download --require-hashes --only-binary=:all: --python-version 3.13 --platform manylinux_2_28_x86_64 \
-  -r "$OUT/requirements.txt" -d "$OUT/wheels"      # plus SBOM and SHA256SUMS
+  -r "$OUT/requirements.txt" -d "$OUT/wheels"      # 另附 SBOM 與 SHA256SUMS
 
-# air-gapped target
+# 在隔離網路的主機上
 sha256sum -c SHA256SUMS
 uv venv --offline --python "$PY" "$R/venv"
 uv pip install --offline --no-index --find-links ./wheels --require-hashes -r requirements.txt --python "$R/venv/bin/python"
 uv pip install --offline --no-index --no-deps jt_oz_bridge-*.whl --python "$R/venv/bin/python"</code></pre>
-        <p class="muted" style="margin-top:10px">完整指令（包含確切的平台標籤、一併帶入 Python 與 <code>uv</code>，以及 SBOM 檢查）請見安裝指南。</p>
+        <p class="muted" style="margin-top:10px">完整指令請看安裝指南，包括平台標籤、一起帶過去的 Python 與 <code>uv</code>，以及 SBOM 的核對方式。</p>
       </section>
 
       <section id="security" aria-labelledby="security-title">
-        <h2 id="security-title">資安模型</h2>
-        <ul class="check">
-          <li><strong>預設拒絕。</strong>只有設定過的 Zulip 使用者、私人頻道與專案授權能接觸 session。Bot 訊息一律忽略，模型輸出不能授予權限。</li>
-          <li><strong>每次動作前重新檢查。</strong>重新確認來源訊息、成員、授權、綁定與確切的 session；結果不明的操作會保留待確認，絕不盲目重送。</li>
-          <li><strong>以 OpenCode 為準，且保持私有。</strong>只用本機 API，從不讀它的資料庫，也從不重啟它。Agent 能做什麼仍由 OpenCode 的工具、MCP 與作業系統權限決定；橋接的確認不是 sandbox。</li>
-          <li><strong>密鑰以參照方式提供</strong>，指向僅限擁有者讀取的檔案；加密金鑰與備份分開保存。</li>
-          <li><strong>檔案就是檔案。</strong>只回傳原始 bytes；HTML 只提供下載，沒有互動式預覽。</li>
-          <li><strong>強化的服務與供應鏈。</strong>專用帳號、無 capability、嚴格的檔案系統保護、雜湊鎖定的相依套件，每個版本都附 SBOM。</li>
+        <h2 id="security-title">資安</h2>
+        <ul class="plain">
+          <li><strong>沒設定的一律不允許。</strong>只有列出的 Zulip 使用者、私人頻道與專案授權能接觸 session。bot 發的訊息一律忽略，模型寫出來的內容也不能授予權限。</li>
+          <li><strong>每個動作前都重新檢查。</strong>每次都重新確認發訊者、頻道成員、授權、綁定與確切的 session。動作結果不明時，會留給你決定，不會自動重送。</li>
+          <li><strong>Agent 能做什麼由 OpenCode 決定。</strong>OpenCode 自己的工具、MCP 與系統權限照常生效。在聊天裡核准一個要求，不代表有任何 sandbox。</li>
+          <li><strong>機密只放在擁有者才能讀的檔案。</strong>設定檔只寫路徑；加密金鑰和備份分開保存。</li>
+          <li><strong>服務本身加固。</strong>專用帳號、不給 capability、嚴格的檔案系統保護、鎖定版本的相依套件，每個版本都附 SBOM。</li>
         </ul>
-        <p style="margin-top:12px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/SECURITY_zh-tw.md">資安政策與漏洞回報</a></p>
+        <p style="margin-top:12px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/SECURITY_zh-tw.md">資安政策與漏洞回報方式</a></p>
       </section>
 
       <section id="more" aria-labelledby="more-title">
         <h2 id="more-title">文件與相關專案</h2>
-        <div class="two">
-          <ul class="check">
+        <div class="two" style="margin-top:16px">
+          <ul class="plain">
             <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/README_zh-tw.md">README</a></li>
             <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/OPERATIONS_SOP_zh-tw.md">維運</a></li>
             <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMPATIBILITY_zh-tw.md">相容性</a></li>
             <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/TESTING_zh-tw.md">測試</a></li>
           </ul>
-          <ul class="check">
+          <ul class="plain">
             <li><a href="https://github.com/jasoncheng7115/jt-doc-tools">jt-doc-tools</a>：自架 PDF 與 Office 文件處理</li>
             <li><a href="https://github.com/jasoncheng7115/jt-ipam">jt-ipam</a>：IP 位址管理，整合基礎設施與監控</li>
             <li><a href="https://github.com/jasoncheng7115/jt-live-whisper">jt-live-whisper</a>：本機語音轉寫、翻譯與會議工具</li>
@@ -242,7 +288,7 @@ uv pip install --offline --no-index --no-deps jt_oz_bridge-*.whl --python "$R/ve
   <footer>
     <div class="wrap">
       <span>Copyright © 2026 Jason Tools。採用 <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/LICENSE">GPL-3.0-only</a> 授權。</span>
-      <span>開發預覽版 0.1.1</span>
+      <span>jt-oz-bridge 0.1.1 開發預覽版</span>
     </div>
   </footer>
 </body>

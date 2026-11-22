@@ -287,3 +287,23 @@ def test_advanced_menu_commands_preserve_opaque_token_edges_in_literal_code(loca
         commands = [c.content for c in children if c.type == "code_inline"]
         assert len(commands) == 1 and opaque in commands[0]
         assert commands[0].startswith(("!oz ", "!ok "))
+
+
+def test_project_documents_leave_no_emphasis_marker_unrendered():
+    # CommonMark does not close `**` between full-width punctuation and a letter
+    # (`**離線（隔離網路）**安裝`), so GitHub shows the asterisks.
+    root = Path(__file__).parents[2]
+    skipped = {"specifications", "test-runs"}
+    files = set(root.glob("*.md")) | {
+        path for path in (root / "docs").rglob("*.md") if not skipped & set(path.parts)
+    }
+    renderer = MarkdownIt("commonmark").enable(["table", "strikethrough"])
+    unrendered = []
+    for path in sorted(files):
+        html = renderer.render(path.read_text(encoding="utf-8"))
+        html = re.sub(r"<code>.*?</code>|<pre>.*?</pre>", "", html, flags=re.S)
+        unrendered += [
+            f"{path.relative_to(root)}: {m}" for m in re.findall(r".{0,20}\*\*.{0,20}", html)
+        ]
+    assert len(files) > 10
+    assert unrendered == []

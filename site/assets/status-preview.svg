@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="182" height="24" viewBox="0 0 182 24" role="img" aria-labelledby="title">
-  <title id="title">Development preview: 0.1.0.dev0</title>
-  <rect width="182" height="24" rx="6" fill="#26364d"/>
-  <path d="M83 0h93a6 6 0 0 1 6 6v12a6 6 0 0 1-6 6H83Z" fill="#956326"/>
-  <g fill="#fff" text-anchor="middle" font-family="system-ui, sans-serif" font-size="11" font-weight="600">
-    <text x="41.5" y="16">PREVIEW</text>
-    <text x="132.5" y="16">0.1.0.dev0</text>
-  </g>
-</svg>

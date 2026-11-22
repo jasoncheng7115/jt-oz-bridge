@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org/). Before 1.0.0 a minor
 ## 0.1.1
 
 - The public CI gate reads the one published commit author from the repository variable `JTOZ_PUBLIC_IDENTITY` (or `--identity`). Without it the gate refused that author's address, so 0.1.0 was tagged but never released.
+- The Traditional Chinese and Japanese README tables show the offline install in bold instead of literal asterisks; a test now renders every project document and refuses emphasis markers left as text.
 
 ## 0.1.0
 

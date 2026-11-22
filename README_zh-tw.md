@@ -120,7 +120,7 @@ OpenCode 維持私有。啟動、停止或升級橋接，都不會啟動、重�
 
 | 文件 | 內容 |
 |---|---|
-| [安裝](docs/INSTALL_zh-tw.md) | 需求、線上與**離線（隔離網路）**安裝、checksum 與 SBOM、設定、服務帳號、資料庫、systemd 單元、冒煙檢查、Zulip bot／頻道與 OpenCode 連線 |
+| [安裝](docs/INSTALL_zh-tw.md) | 需求、線上與**離線**（隔離網路）安裝、checksum 與 SBOM、設定、服務帳號、資料庫、systemd 單元、冒煙檢查、Zulip bot／頻道與 OpenCode 連線 |
 | [升級](docs/UPGRADE_zh-tw.md) | 並列安裝新版、遷移前備份、切換、就緒檢查與回滾，線上與離線 |
 | [移除](docs/UNINSTALL_zh-tw.md) | 停止並移除單元、版本、狀態與密鑰，以及 Zulip 與 OpenCode 中保留的內容 |
 | [維運](docs/OPERATIONS_SOP_zh-tw.md) | 專案納管、開啟功能、重啟與恢復、疑難排解 |
