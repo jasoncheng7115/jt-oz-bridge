@@ -45,4 +45,29 @@ jobs:
         run: uv run --no-sync mypy --cache-dir "$RUNNER_TEMP/mypy-cache" src
 
       - name: Tests
-        run: uv run --no-sync pytest -q -p no:cacheprovider tests
+        run: uv run --no-sync pytest -q -p no:cacheprovider --junitxml="$RUNNER_TEMP/junit.xml" tests
+
+      - name: Name the failed tests
+        # Annotations are public, while the job log needs admin rights: list each failure there.
+        if: failure()
+        run: |
+          python3 - "$RUNNER_TEMP/junit.xml" <<'EOF'
+          import sys
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          report = Path(sys.argv[1])
+          if not report.is_file():
+              sys.exit(0)
+          shown = 0
+          for case in ET.parse(report).iter("testcase"):
+              for problem in [*case.iter("failure"), *case.iter("error")]:
+                  name = f"{case.get('classname')}.{case.get('name')}"
+                  text = (problem.get("message") or problem.text or "")[:600]
+                  text = text.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+                  name = name.replace("%", "%25").replace(":", "%3A").replace(",", "%2C")
+                  print(f"::error title={name}::{text}")
+                  shown += 1
+              if shown >= 50:
+                  break
+          EOF
