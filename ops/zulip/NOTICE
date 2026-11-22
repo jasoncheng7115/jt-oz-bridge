@@ -1,0 +1,7 @@
+The readonly_sender_access function in upload_association.py is adapted from
+Zulip's zerver/lib/attachments.py (Zulip contributors), distributed under the
+Apache License, Version 2.0. See LICENSE.zulip.
+
+Modification: compute a missing realm-public cache value with a read query
+instead of updating the database, preserving the upstream access branches.
+The surrounding jt-oz-bridge project is licensed GPL-3.0-only.

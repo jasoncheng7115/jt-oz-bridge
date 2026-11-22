@@ -1,0 +1,8 @@
+{
+  "method": "GET",
+  "path": "/api/v1/events",
+  "expired_response": {
+    "result": "error",
+    "code": "BAD_EVENT_QUEUE_ID"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "tag": "v2.0.30",
+  "reviewed_date": "2026-10-17",
+  "scope": "Static official tagged source for event mapping and busy-period semantics; not an installed capture or owner/compatibility certification. Original MIT license preserved.",
+  "files": [
+    {
+      "path": "packages_schema_src_session-event.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/schema/src/session-event.ts",
+      "sha256": "5d5adb64afd74130d2376beb69004a51a068b253c42983cabdd214ca56ebd68e",
+      "bytes": 19390,
+      "verification": "source_tag_static_not_installed"
+    },
+    {
+      "path": "packages_core_src_session_execution.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/core/src/session/execution.ts",
+      "sha256": "f86c35f46c9bae634f955328979c3eade27d5df06e115d677eece7f4e4f1ce3a",
+      "bytes": 9007,
+      "verification": "source_tag_static_not_installed"
+    },
+    {
+      "path": "packages_core_src_session_run-coordinator.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/core/src/session/run-coordinator.ts",
+      "sha256": "20dc6417c597e6d5bc6f349e31ed5d3e88db4be31b548be1f35262e87fcc3c4b",
+      "bytes": 9065,
+      "verification": "source_tag_static_not_installed"
+    },
+    {
+      "path": "packages_core_src_session_inbox.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/core/src/session/inbox.ts",
+      "sha256": "e849cf92dd802282cba7739f50c7702d4c4e9c31b8299ee9c10353d05d81024a",
+      "bytes": 18736,
+      "verification": "source_tag_static_not_installed"
+    },
+    {
+      "path": "packages_protocol_src_groups_event.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/protocol/src/groups/event.ts",
+      "sha256": "41619314a6fbe0be35f898cd80fa14be8cf43d21bad97e735ff4364f2e637bb9",
+      "bytes": 2831,
+      "verification": "source_tag_static_not_installed"
+    },
+    {
+      "path": "LICENSE",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/LICENSE",
+      "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bytes": 1065,
+      "verification": "source_tag_static_not_installed"
+    }
+  ]
+}

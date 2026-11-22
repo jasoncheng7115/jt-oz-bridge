@@ -1,0 +1,32 @@
+[Unit]
+Description=OpenCode v2 private development backend
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=opencode
+Group=opencode
+WorkingDirectory=/home/opencode
+Environment=HOME=/home/opencode
+Environment=PATH=/opt/node/bin:/home/opencode/.opencode/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/opt/opencode/2.0.32/opencode serve --service --hostname 127.0.0.1 --port 4096
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=45
+UMask=0077
+NoNewPrivileges=no
+CapabilityBoundingSet=~
+AmbientCapabilities=
+ProtectSystem=no
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=no
+LockPersonality=yes
+MemoryMax=6G
+TasksMax=512
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,59 @@
+name: Release
+
+# A pushed tag vX.Y.Z publishes that version: the wheel, its CycloneDX SBOM and checksums,
+# with the CHANGELOG section as notes. Nothing else is uploaded.
+on:
+  push:
+    tags: ["v[0-9]+.[0-9]+.[0-9]+"]
+
+permissions:
+  contents: write
+
+env:
+  PYTHONDONTWRITEBYTECODE: "1"
+  UV_PROJECT_ENVIRONMENT: ${{ github.workspace }}/../venv
+  UV_PYTHON: "3.13"
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6
+
+      - name: The tag is the package version and has CHANGELOG notes
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          grep -qx "version = \"$version\"" pyproject.toml
+          for file in CHANGELOG.md CHANGELOG_zh-tw.md CHANGELOG_ja.md; do
+            grep -q "^## $version\b" "$file"
+          done
+          awk -v v="$version" '$0 ~ "^## " v "([^0-9.]|$)" {on=1; next} /^## /{on=0} on' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          test -s "$RUNNER_TEMP/notes.md"
+
+      - name: Install the locked environment
+        run: uv sync --locked --python 3.13
+
+      - name: Public content gate
+        run: uv run --no-sync python -m scripts.public_gate .
+
+      - name: Tests
+        run: uv run --no-sync pytest -q -p no:cacheprovider tests
+
+      - name: Build the wheel and its SBOM
+        run: |
+          uv build --wheel --out-dir "$RUNNER_TEMP/dist"
+          wheel=$(ls "$RUNNER_TEMP"/dist/*.whl)
+          uv run --no-sync python -m scripts.make_sbom --uv uv --wheel "$wheel" \
+            --output "$RUNNER_TEMP/dist/jt-oz-bridge-${GITHUB_REF_NAME#v}.sbom.cdx.json"
+          cd "$RUNNER_TEMP/dist" && sha256sum * > SHA256SUMS
+
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$RUNNER_TEMP"/dist/* \
+            --title "jt-oz-bridge ${GITHUB_REF_NAME#v}" --notes-file "$RUNNER_TEMP/notes.md" \
+            --verify-tag --prerelease

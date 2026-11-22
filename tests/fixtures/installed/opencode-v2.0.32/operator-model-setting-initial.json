@@ -1,0 +1,29 @@
+{
+  "phase": "failed_no_automatic_retry",
+  "passed": false,
+  "attempts": [
+    {
+      "operation": "session.switchModel",
+      "target": {
+        "provider_id": "example-provider-2",
+        "model_id": "example-model-2",
+        "variant": null
+      },
+      "body_sha256": "c7f0abe445836d4d058757996b48fcf18952632bf70a3648a2074c3807ba94cc",
+      "phase": "acknowledged"
+    }
+  ],
+  "wheel_sha256": "d1b13e4c38ba032cb51041bf70c471e33d7648b2c035027872c757134aa17c05",
+  "scope": "Explicit operator setting qualification on the same disposable original Native session. Not Zulip Human dispatch, model inference, production write attestation, or phone acceptance.",
+  "service_write_certificate": false,
+  "semantics_sha256": "dae05312d3a8858357d8bda21aec69887d0957bd714fe8457809f5febdb123f0",
+  "reference": {
+    "backend_id": "server-opencode",
+    "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+    "upstream_session_id": "ses_000000000001FixtureRootA01",
+    "project_id": "example-project",
+    "canonical_directory": "/home/opencode/workspaces/example-project"
+  },
+  "original_terminal_id": "msg_0cfda812d001jVtw8c2MyBgskk",
+  "error_type": "AssertionError"
+}

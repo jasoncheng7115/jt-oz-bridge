@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jt-oz-bridge</title>
+  <meta name="description" content="jt-oz-bridge は AI エージェントとメッセージングをつなぎます。Zulip から OpenCode のセッションを操作でき、すべてセルフホストで動作します。">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="alternate" hreflang="en" href="../">
+  <link rel="alternate" hreflang="zh-Hant-TW" href="../zh-tw/">
+  <link rel="alternate" hreflang="ja" href="./">
+</head>
+<body>
+  <!-- Repository base for every document link on this page: https://github.com/jasoncheng7115/jt-oz-bridge -->
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="26" height="26">jt-oz-bridge</a>
+      <nav class="nav" aria-label="セクション">
+        <a href="#features">特長</a>
+        <a href="#architecture">構成</a>
+        <a href="#install">インストール</a>
+        <a href="#security">セキュリティ</a>
+        <a href="#status">ステータス</a>
+      </nav>
+      <div class="lang" aria-label="言語">
+        <a href="../" hreflang="en" lang="en">English</a>
+        <a href="../zh-tw/" hreflang="zh-Hant-TW" lang="zh-Hant-TW">繁體中文</a>
+        <span aria-current="page">日本語</span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <img class="banner" src="../assets/jt-oz-bridge-header.svg" alt="jt-oz-bridge — AI エージェントとメッセージングを、自前のインフラでつなぐ" width="1200" height="300">
+        <h1>チャットから AI コーディングエージェントと対話する。</h1>
+        <p class="lead">jt-oz-bridge は AI エージェントとメッセージングソフトをつなぐブリッジで、最初の対応は <strong>OpenCode × Zulip</strong> です。Zulip のトピックにタスクを書き込み、エージェントの作業を見守り、スマートフォンから権限リクエストに答え、完全な結果を受け取る。そのすべてを、デスクで使っているのと同じ OpenCode セッションの中で行えます。すべて自前のインフラで動作します。</p>
+        <div class="badges">
+          <img src="../assets/status-preview.svg" alt="開発プレビュー：0.1.0" width="182" height="24">
+          <img src="../assets/runtime-python.svg" alt="Python 3.13" width="111" height="24">
+          <img src="../assets/license-gpl3.svg" alt="GPL-3.0" width="124" height="24">
+          <img src="../assets/deployment-self-hosted.svg" alt="セルフホスト" width="115" height="24">
+        </div>
+        <div class="cta">
+          <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub のソース</a>
+          <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_ja.md">インストールガイド</a>
+        </div>
+      </section>
+
+      <section id="status" aria-labelledby="status-title">
+        <h2 id="status-title">ステータス</h2>
+        <div class="note">
+          <p><strong>開発プレビュー 0.1.0。本番向けの完成版リリースではありません。</strong></p>
+          <p>コアのルーティング、永続化、セキュリティ境界には大規模な自動テストがあり、フローの一部は実際の OpenCode サーバーと Zulip 組織で確認済みです。実際の利用者によるエンドツーエンドの利用と、公式 iOS／Android アプリでの利用はまだ検証されていません。まずは使い捨てのプロジェクトでお試しください。</p>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <h2 id="features-title">できること</h2>
+        <div class="grid">
+          <div class="card"><div class="icon">01</div><h3>日常のチャットに AI エージェントを</h3><p>タスク、進捗、質問、結果がチャットにまとまり、スマートフォンからもパソコンからも確認できます。</p></div>
+          <div class="card"><div class="icon">02</div><h3>OpenCode × Zulip</h3><p>OpenCode がエージェントとツールを実行し、Zulip がモバイル／デスクトップのチャット、プライベートチャンネル、トピックを提供します。</p></div>
+          <div class="card"><div class="icon">03</div><h3>完全セルフホスト</h3><p>メッセージング、ブリッジ、エージェント、モデルのすべてが自前のハードウェアで動き、データの流れを自分で管理できます。</p></div>
+          <div class="card"><div class="icon">04</div><h3>コピーではなく同じセッション</h3><p>各トピックは既存の OpenCode セッションに結び付きます。履歴のコピーも fork も、継続を装う別のバックエンドもありません。</p></div>
+          <div class="card"><div class="icon">05</div><h3>スマートフォンから承認</h3><p>権限リクエストやエージェントからの質問がトピックに届き、<code>!ok 1234</code> かボタンで答えられます。</p></div>
+          <div class="card"><div class="icon">06</div><h3>自分のモデルとツール</h3><p>OpenCode 自身のカタログからプロバイダー、モデル、バリアントを選べ、既存の MCP 設定もそのまま使えます。</p></div>
+        </div>
+      </section>
+
+      <section id="architecture" aria-labelledby="architecture-title">
+        <h2 id="architecture-title">全体の構成</h2>
+        <div class="diagram">
+          <svg viewBox="0 0 960 320" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">アーキテクチャ</title>
+            <desc id="diagram-desc">Zulip のモバイルとデスクトップのクライアントはセルフホストの Zulip サーバーに接続します。jt-oz-bridge は Zulip の Bot API と、OpenCode サーバーのループバックの非公開 API を使います。OpenCode サーバーはデスクの TUI にも応答し、モデルプロバイダーを呼び出します。ブリッジは専用の暗号化データベースを持ちます。</desc>
+            <defs>
+              <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
+            </defs>
+            <path class="edge" d="M200 68L250 136" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M200 232L250 164" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M440 150H490" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M680 150H730" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M585 178V244"/>
+            <path class="edge" d="M840 76V122" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M840 178V244" marker-end="url(#h)"/>
+            <text class="edge-label" x="230" y="100">HTTPS</text>
+            <text class="edge-label" x="226" y="208">HTTPS</text>
+            <text class="edge-label" x="465" y="140" text-anchor="middle">Bot API</text>
+            <text class="edge-label" x="705" y="140" text-anchor="middle">API</text>
+            <rect class="node entry" x="10" y="40" width="190" height="56" rx="10"/>
+            <text class="title" x="105" y="64" text-anchor="middle">Zulip モバイルアプリ</text>
+            <text class="sub" x="105" y="82" text-anchor="middle">iOS／Android</text>
+            <rect class="node entry" x="10" y="204" width="190" height="56" rx="10"/>
+            <text class="title" x="105" y="228" text-anchor="middle">Zulip デスクトップ／Web</text>
+            <text class="sub" x="105" y="246" text-anchor="middle">選択肢はボタンで</text>
+            <rect class="node entry" x="250" y="122" width="190" height="56" rx="10"/>
+            <text class="title" x="345" y="146" text-anchor="middle">セルフホスト Zulip</text>
+            <text class="sub" x="345" y="164" text-anchor="middle">プライベートチャンネル</text>
+            <rect class="node core bridge" x="490" y="122" width="190" height="56" rx="10"/>
+            <text class="title" x="585" y="146" text-anchor="middle">jt-oz-bridge</text>
+            <text class="sub" x="585" y="164" text-anchor="middle">認可・ルーティング・配信</text>
+            <rect class="node" x="490" y="244" width="190" height="56" rx="10"/>
+            <text class="title" x="585" y="268" text-anchor="middle">ブリッジの DB</text>
+            <text class="sub" x="585" y="286" text-anchor="middle">ペイロード暗号化</text>
+            <rect class="node core" x="730" y="122" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="146" text-anchor="middle">OpenCode サーバー</text>
+            <text class="sub" x="840" y="164" text-anchor="middle">元のセッション、ループバック</text>
+            <rect class="node" x="730" y="20" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI／アプリ</text>
+            <text class="sub" x="840" y="62" text-anchor="middle">デスクで</text>
+            <rect class="node" x="730" y="244" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="268" text-anchor="middle">モデルプロバイダー</text>
+            <text class="sub" x="840" y="286" text-anchor="middle">セルフホストほか</text>
+          </svg>
+        </div>
+        <p class="scroll-hint muted">画面が狭い場合は、図を横にスクロールしてください。</p>
+        <div class="two">
+          <div>
+            <h3>コンポーネント</h3>
+            <ul class="check">
+              <li><code>jt-oz-bridge serve</code>：ブリッジ本体。Zulip のイベントを受け取り、認可を確認し、OpenCode API を呼び出して結果を届けます。待ち受けはループバックのみです。</li>
+              <li>専用の SQLite データベース（PostgreSQL は開発中）。ペイロードはアプリケーション層で暗号化します。OpenCode のデータベースは一切開きません。</li>
+              <li><code>jt-oz-bridge sessions</code> と <code>doctor</code> のための、任意の読み取り専用ローカルオブザーバー。</li>
+              <li>OpenCode のアカウントで動く小さな読み取り専用の補助サービス。どのプロセス、データセット、プロジェクトディレクトリが本物かを証明します。</li>
+              <li>ブリッジの停止時と復帰時に Zulip へ 1 回ずつ通知する任意のユニット。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>1 トピック = 1 セッション</h3>
+            <pre class="tree"><code>プライベートチャンネル「project-a」
+├── ログイン修正 → OpenCode セッション A
+└── API テスト   → OpenCode セッション B</code></pre>
+            <p>トピックを作成し、使用を許可された既存のセッションを選ぶ（または登録済みプロジェクトで新しい会話を始める）だけで、あとは入力するだけです。チャンネルのメンバーは全員トピックを読めるため、閲覧者が異なる場合はプライベートチャンネルを分けてください。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="commands" aria-labelledby="commands-title">
+        <h2 id="commands-title">主なコマンド</h2>
+        <p>接続済みのトピックでは、通常のテキストは AI に送られます。コマンドはすべて <code>!</code> と英単語 1 つです。</p>
+        <div class="table">
+          <table>
+            <thead><tr><th>コマンド</th><th>用途</th></tr></thead>
+            <tbody>
+              <tr><td><code>!ok</code>／<code>!no</code></td><td>ブリッジの質問への はい／いいえ。<code>!ok 1234</code> は権限リクエストへの回答</td></tr>
+              <tr><td><code>!stop</code>／<code>!go</code></td><td>ここでの作業をすべて停止／一時停止中の作業を続行</td></tr>
+              <tr><td><code>!status</code></td><td>現在の状態とキュー内のメッセージ</td></tr>
+              <tr><td><code>!new</code>／<code>!disconnect</code></td><td>新しい会話／トピックの接続を解除（セッションは OpenCode に残ります）</td></tr>
+              <tr><td><code>!model</code>／<code>!agent</code></td><td>モデル／エージェントの切り替え</td></tr>
+              <tr><td><code>!files</code>／<code>!file パス</code></td><td>ファイルの検索／ダウンロード</td></tr>
+              <tr><td><code>!help</code></td><td>そのほかのすべて</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMMANDS.md">すべてのチャットコマンド（英語）</a></p>
+      </section>
+
+      <section id="install" aria-labelledby="install-title">
+        <h2 id="install-title">インストール、アップグレード、アンインストール</h2>
+        <p>ブリッジは Linux（systemd）上で、既存の OpenCode サーバーと並べて、専用の非 root ユーザーとして動作します。各リリースは wheel の SHA-256 を名前にした専用ディレクトリに置かれ、依存パッケージはハッシュで固定され、CycloneDX SBOM が付きます。</p>
+        <div class="grid">
+          <div class="card">
+            <h3>インストール</h3>
+            <ol>
+              <li>wheel、ハッシュ付きの <code>requirements.txt</code>、SBOM を作成するか、依存 wheel を含むオフラインバンドルを持ち込みます。</li>
+              <li><code>SHA256SUMS</code> を検証し、<code>--require-hashes</code> で新しい venv にインストールし、SBOM を確認します。</li>
+              <li>設定、鍵の生成、<code>migrate</code>、systemd ユニットのインストール、<code>/readyz</code> の確認。</li>
+              <li>Zulip の Bot とプライベートチャンネルを接続し、OpenCode のプロジェクトを 1 つ登録します。</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_ja.md">インストールガイド →</a>
+          </div>
+          <div class="card">
+            <h3>アップグレード</h3>
+            <ol>
+              <li>新しいリリースを稼働中のものの隣にインストールします。</li>
+              <li>ブリッジを停止し、バックアップを取り、<code>migrate</code> します。</li>
+              <li>drop-in を切り替え、<code>/readyz</code> を待ち、スモークチェックを行います。</li>
+              <li>ロールバックは前のリリースに向け直すだけ。スキーマ変更後は前に進めて修正するか、バックアップを復元します。</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UPGRADE_ja.md">アップグレードガイド →</a>
+          </div>
+          <div class="card">
+            <h3>アンインストール</h3>
+            <ol>
+              <li>必要なら最後のバックアップを取り、鍵は別に保管します。</li>
+              <li>ユニット、リリース、状態、設定、サービスユーザーを停止して削除します。</li>
+              <li>Zulip と OpenCode のデータは残ります。Bot は自分で無効化してください。</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UNINSTALL_ja.md">アンインストールガイド →</a>
+          </div>
+        </div>
+        <h3 style="margin-top:22px">オフラインインストールの要点</h3>
+        <pre><code># connected machine
+uv build --wheel --out-dir "$OUT"
+uv export --frozen --no-dev --no-emit-project --no-header --format requirements-txt -o "$OUT/requirements.txt"
+pip download --require-hashes --only-binary=:all: --python-version 3.13 --platform manylinux_2_28_x86_64 \
+  -r "$OUT/requirements.txt" -d "$OUT/wheels"      # plus SBOM and SHA256SUMS
+
+# air-gapped target
+sha256sum -c SHA256SUMS
+uv venv --offline --python "$PY" "$R/venv"
+uv pip install --offline --no-index --find-links ./wheels --require-hashes -r requirements.txt --python "$R/venv/bin/python"
+uv pip install --offline --no-index --no-deps jt_oz_bridge-*.whl --python "$R/venv/bin/python"</code></pre>
+        <p class="muted" style="margin-top:10px">正確なプラットフォームタグ、Python と <code>uv</code> の持ち込み、SBOM の確認を含む完全なコマンドはガイドにあります。</p>
+      </section>
+
+      <section id="security" aria-labelledby="security-title">
+        <h2 id="security-title">セキュリティモデル</h2>
+        <ul class="check">
+          <li><strong>既定は拒否。</strong>セッションに触れられるのは、設定済みの Zulip ユーザー、プライベートチャンネル、プロジェクト単位の付与だけです。Bot のメッセージは無視され、モデルの出力が権限を与えることはできません。</li>
+          <li><strong>実行の直前に再確認。</strong>送信元メッセージ、メンバー、付与、バインド、対象のセッションを改めて確認し、結果が不明な操作は保留して、むやみに再送しません。</li>
+          <li><strong>OpenCode が正であり、非公開のまま。</strong>使うのはループバックの API だけで、データベースは読まず、再起動もしません。エージェントに何ができるかは OpenCode 自身のツール、MCP、OS の権限で決まり、ブリッジの確認はサンドボックスではありません。</li>
+          <li><strong>シークレットは参照で</strong>、所有者だけが読めるファイルを指します。暗号鍵はバックアップと分けて保管します。</li>
+          <li><strong>ファイルはファイルとして。</strong>元のバイト列だけを返し、HTML はダウンロードとしてのみ提供します。インタラクティブなプレビューはありません。</li>
+          <li><strong>堅牢化されたサービスとサプライチェーン。</strong>専用ユーザー、capability なし、厳格なファイルシステム保護、ハッシュ固定の依存パッケージ、リリースごとの SBOM。</li>
+        </ul>
+        <p style="margin-top:12px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/SECURITY.md">セキュリティポリシーと脆弱性の報告（英語）</a></p>
+      </section>
+
+      <section id="more" aria-labelledby="more-title">
+        <h2 id="more-title">ドキュメントと関連プロジェクト</h2>
+        <div class="two">
+          <ul class="check">
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/README_ja.md">README</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/OPERATIONS_SOP.md">Operations（英語）</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMPATIBILITY.md">Compatibility（英語）</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/TESTING.md">Testing（英語）</a></li>
+          </ul>
+          <ul class="check">
+            <li><a href="https://github.com/jasoncheng7115/jt-doc-tools">jt-doc-tools</a>：セルフホストの PDF／Office ドキュメント処理</li>
+            <li><a href="https://github.com/jasoncheng7115/jt-ipam">jt-ipam</a>：インフラと監視に連携する IP アドレス管理</li>
+            <li><a href="https://github.com/jasoncheng7115/jt-live-whisper">jt-live-whisper</a>：ローカルの音声文字起こし、翻訳、会議ツール</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Copyright © 2026 Jason Tools. <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/LICENSE">GPL-3.0-only</a> でライセンスされています。</span>
+      <span>開発プレビュー 0.1.0</span>
+    </div>
+  </footer>
+</body>
+</html>

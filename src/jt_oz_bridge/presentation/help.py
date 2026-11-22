@@ -1,0 +1,80 @@
+"""Stable command usages, including required operations still under development."""
+
+from jt_oz_bridge.presentation.commands import KNOWN
+
+USAGE = {
+    "go": "go [keyword]",
+    "help": "help [command]",
+    "menu": "menu",
+    "backends": "backends [page-token]",
+    "projects": "projects [page-token]",
+    "sessions": "sessions [recent | project-token | page-token] [-- literal-search]",
+    "next": "next (unbound discovery menus)",
+    "choose": "choose <menu> <item> (unbound discovery: !1 or choose <item>)",
+    "bind": "bind <selection-token>",
+    "info": "info",
+    "unbind": "unbind",
+    "history": "history [page-token | menu-token item]",
+    "new": "new [<project-token> [title] | page <page-token> | status | pause | resume | cancel]",
+    "rename": "rename <title>",
+    "fork": "fork [pick] (then !1 if you chose pick, and !confirm)",
+    "archive": "archive",
+    "unarchive": "unarchive",
+    "export": "export",
+    "delete": "delete",
+    "send": "send -- <literal-text>",
+    "status": "status",
+    "stop": "stop",
+    "steer": "steer -- <text>",
+    "queue": "queue [resume]",
+    "cancel": "cancel <action-id>",
+    "compact": "compact (then !confirm)",
+    "revert": "revert [files] (then !1 and !confirm) | revert clear | revert commit",
+    "confirm": "confirm <confirmation-token> (session or reconnect preview: !confirm)",
+    "models": "models [menu-token]",
+    "model": "model <selection-token>",
+    "variants": "variants [menu-token]",
+    "variant": "variant <selection-token>",
+    "agents": "agents [page-token]",
+    "agent": "agent (then !1 and !confirm)",
+    "usage": "usage",
+    "pending": "pending",
+    "approve": "approve <request-token> once",
+    "deny": "deny <request-token> [reason]",
+    "answer": "answer <step-token> <answer | /skip | /page N | edit N | submit>",
+    "skip": "skip <request-token>",
+    "files": "files [query]",
+    "file": "file <file-token>",
+    "diff": "diff [turns | turn-token | file-token]",
+    "checks": "checks",
+    "check": "check <check-token>",
+    "git": (
+        "git context | git branches [search] | git worktrees [search] | "
+        "git review [working | branch <safeBase> | committed <safeBase>] | "
+        "git status | git commit -m <message> [paths] | git push [remote] [branch]"
+    ),
+    "recovery": "recovery [preview <message-ids> | confirm <review-token>]",
+    "reconnect": "reconnect (original Native restart: !reconnect, then !confirm)",
+    "worktrees": "worktrees",
+    "worktree": (
+        "worktree create <token> | confirm <token> | status <receipt> | "
+        "cancel <token-or-receipt> | switch [token]"
+    ),
+    "commands": "commands [page-token]",
+    "run": "run <command-token> -- <arguments>",
+    "skills": "skills [page-token]",
+    "skill": "skill <selection-token>",
+    "mcp": "mcp [page-token]",
+    "output": "output <tool-or-message-token>",
+    "schedule": "schedule [stop]",
+    "once": "once (!send)",
+    "decline": "decline (!no)",
+    "outputs": "outputs [status | retry <action-id> | skip <action-id> | confirm <token>]",
+    "settings": "settings",
+    "lang": "lang auto | en | zh-TW",
+    "topic-lang": "topic-lang en | zh-TW",
+    "notify": "notify",
+    "sync": "sync",
+}
+if USAGE.keys() != KNOWN:
+    raise ValueError("command_help_catalog_mismatch")

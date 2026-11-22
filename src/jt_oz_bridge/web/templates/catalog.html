@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="{{ locale }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ t('console.' + page.section) }} · jt-oz-bridge</title><link rel="stylesheet" href="/static/app.css"><script src="/static/theme.js" defer></script><script src="/static/management.js" defer></script><script src="/static/runtime-settings.js" defer></script></head>
+<body><a class="skip" href="#content">{{ t('console.skip') }}</a>
+<header><a href="/">jt-oz-bridge</a><label>{{ t('console.theme') }} <select id="theme"><option value="system">{{ t('console.system') }}</option><option value="light">{{ t('console.light') }}</option><option value="dark">{{ t('console.dark') }}</option></select></label></header>
+<div class="console-layout"><nav aria-label="{{ t('console.navigation') }}"><a href="/">{{ t('console.overview') }}</a><a href="/admin/runtime-modes">{{ t('console.runtime_modes') }}</a>{% for section in sections %}<a href="/admin/{{ section }}" {% if section == page.section %}aria-current="page"{% endif %}>{{ t('console.' + section) }}</a>{% endfor %}</nav>
+<main id="content" tabindex="-1"><h1>{{ t('console.' + page.section) }}</h1><p>{{ t('console.binding_controls') if page.section == 'bindings' else t('console.setting_controls') if page.section == 'settings' else t('console.read_only') }}</p><p>{{ t('console.source_' + page.source) }}</p>
+{% if page.section in ['backends', 'compatibility', 'zulip'] %}<p class="notice">{{ t('console.not_probed') }}</p>{% endif %}
+{% if page.section in ['backends', 'projects', 'zulip', 'retention'] %}<p>{{ t('console.restart') }}</p>{% endif %}
+{% if page.section == 'settings' %}<p>{{ t('console.settings_note') }}</p>{% endif %}
+{% if page.section == 'settings' and page.controls %}
+{% for prefix, control, title_key, scope_key in [('runtime', page.controls, 'site_locale', 'site_locale_scope'), ('runtime-render', page.controls.rendering_interval, 'draft_interval', 'draft_interval_scope')] %}
+<section id="{{ prefix }}-editor" data-runtime-editor data-prefix="{{ prefix }}" data-key="{{ control.key }}" data-revision="{{ control.configuration_revision }}" data-baseline="{{ control.baseline_hash }}">
+<h2>{{ t('console.' + title_key) }}</h2><p>{{ t('console.' + scope_key) }}</p>
+<p>{{ t('console.effective') }}: <strong id="{{ prefix }}-current">{{ control.value }}</strong> · {{ t('console.origin_' + control.origin) }}</p>
+<p>{{ t('console.stored_override') }}: <span id="{{ prefix }}-stored">{{ control.stored_override or '—' }}</span> · {{ t('console.configuration_revision') }}: <span id="{{ prefix }}-revision">{{ control.configuration_revision }}</span></p>
+{% if control.key == 'i18n.default_locale' %}<label>{{ t('console.new_site_locale') }}<select id="{{ prefix }}-value"><option value="en" {% if control.value == 'en' %}selected{% endif %}>English</option><option value="zh-TW" {% if control.value == 'zh-TW' %}selected{% endif %}>繁體中文（台灣）</option></select></label>{% else %}<label>{{ t('console.interval_milliseconds') }}<input id="{{ prefix }}-value" type="number" min="1" max="60000" step="1" value="{{ control.value }}" required></label>{% endif %}
+<button type="button" id="{{ prefix }}-preview" {% if not control.runtime_allowed %}disabled{% endif %}>{{ t('console.preview_setting') }}</button><button type="button" id="{{ prefix }}-clear" {% if not control.runtime_allowed %}disabled{% endif %}>{{ t('console.preview_clear') }}</button>
+<p id="{{ prefix }}-status" role="status" aria-live="polite" data-error="{{ t('console.control_error') }}" data-auth="{{ t('console.control_auth') }}"></p>
+</section>
+<dialog id="{{ prefix }}-dialog" aria-labelledby="{{ prefix }}-title" data-login="{{ t('console.return_login') }}" data-close="{{ t('console.close_refresh') }}" data-confirmed="{{ t('console.setting_saved') }}" data-cancelled="{{ t('console.control_cancelled') }}" data-empty="{{ t('console.no_override') }}"
+{% for origin in ['default','toml','environment','not_recorded','modified_after_load','administrator_runtime'] %}data-origin-{{ origin|replace('_','-') }}="{{ t('console.origin_' + origin) }}" {% endfor %}>
+<div class="dialog-scroll"><h2 id="{{ prefix }}-title" tabindex="-1" autofocus>{{ t('console.review_setting') }}</h2><p>{{ t('console.' + scope_key) }}</p>
+<dl class="scope-details"><dt>{{ t('console.setting_key') }}</dt><dd>{{ control.key }}</dd><dt>{{ t('console.effective') }}</dt><dd id="{{ prefix }}-before"></dd><dt>{{ t('console.col_origin') }}</dt><dd id="{{ prefix }}-origin"></dd><dt>{{ t('console.stored_override') }}</dt><dd id="{{ prefix }}-previous"></dd><dt>{{ t('console.requested_override') }}</dt><dd id="{{ prefix }}-requested"></dd><dt>{{ t('console.configuration_revision') }}</dt><dd id="{{ prefix }}-before-revision"></dd></dl>
+<p id="{{ prefix }}-shadow" class="notice" hidden>{{ t('console.environment_priority') }}</p><p>{{ t('console.confirm_expiry') }}</p></div>
+<div class="management-actions"><p id="{{ prefix }}-result" role="status" aria-live="polite"></p><button type="button" id="{{ prefix }}-confirm">{{ t('console.confirm_operation') }}</button><button type="button" id="{{ prefix }}-cancel">{{ t('console.cancel_operation') }}</button><button type="button" id="{{ prefix }}-close" hidden>{{ t('console.close_refresh') }}</button></div>
+</dialog>
+{% endfor %}
+{% endif %}
+{% if page.section in ['backends', 'compatibility', 'bindings', 'actions', 'interactions', 'grants'] %}<p class="notice">{{ t('console.refused_' + page.section) }}</p>{% endif %}
+{% if api_path %}<p>{{ t('console.api_path') }}: <code>{{ api_path }}</code></p>{% endif %}
+<form method="get"><label>{{ t('console.page_size') }} <input name="limit" type="number" min="1" max="100" value="{{ limit }}"></label>{% for name, kind, raw in filter_inputs %}<label>{{ t('console.event_filter') if name == 'event' else t('console.filter_' + name) if kind == 'time' else t('console.col_' + name) }} {% if kind == 'bool' %}<select name="{{ name }}"><option value="" {% if raw == '' %}selected{% endif %}>{{ t('console.filter_any') }}</option><option value="true" {% if raw == 'true' %}selected{% endif %}>{{ t('console.yes') }}</option><option value="false" {% if raw == 'false' %}selected{% endif %}>{{ t('console.no') }}</option></select>{% else %}<input name="{{ name }}" maxlength="{{ 64 if kind == 'event' else 32 if kind in ['state', 'time'] else 20 if kind == 'int' else 255 }}" {% if kind == 'int' %}inputmode="numeric"{% elif kind == 'time' %}inputmode="decimal"{% endif %} value="{{ raw }}">{% endif %}</label>{% endfor %}<button type="submit">{{ t('console.apply') }}</button><a href="/admin/{{ page.section }}">{{ t('console.reset') }}</a></form>
+{% if page.items %}<div class="table-scroll" role="region" aria-label="{{ t('console.' + page.section) }}" tabindex="0"><table><caption>{{ t('console.metadata') }}</caption><thead><tr>{% for column in page.columns %}<th scope="col">{{ t('console.col_' + column) }}</th>{% endfor %}{% if page.section == 'bindings' %}<th scope="col">{{ t('console.controls') }}</th>{% endif %}</tr></thead><tbody>{% for row in page.items %}<tr>{% for column in page.columns %}<td>{% if column == 'guidance_key' %}{{ t(row[column]) }}{% elif column in ['origin', 'application'] %}{{ t('console.' + column + '_' + row[column]) }}{% elif row[column] is sameas true %}{{ t('console.yes') }}{% elif row[column] is sameas false %}{{ t('console.no') }}{% elif row[column] is none %}—{% else %}{{ row[column] }}{% endif %}</td>{% endfor %}{% if page.section == 'bindings' %}<td>{% if row.state == 'active' %}{% for operation in ['pause', 'unbind'] %}<button type="button" class="management" data-operation="{{ operation }}" data-binding="{{ row.id }}" data-revision="{{ row.revision }}" data-queue="{{ row.queue_revision }}">{{ t('console.preview_' + operation) }}</button>{% endfor %}{% else %}—{% endif %}</td>{% endif %}</tr>{% endfor %}</tbody></table></div>{% else %}<p role="status">{{ t('console.empty') }}</p>{% endif %}
+{% if next_url %}<a class="next" rel="next" href="{{ next_url }}">{{ t('console.next') }}</a>{% endif %}<p>{{ t('console.live_pages') }}</p></main></div>
+{% if page.section == 'bindings' %}
+<p id="management-status" role="status" aria-live="polite" data-error="{{ t('console.control_error') }}" data-auth="{{ t('console.control_auth') }}"></p>
+<dialog id="management-dialog" aria-labelledby="management-title" aria-describedby="management-warning"
+ data-pause="{{ t('console.pause_warning') }}" data-unbind="{{ t('console.unbind_warning') }}"
+ data-login="{{ t('console.return_login') }}" data-close="{{ t('console.close_refresh') }}" data-confirmed="{{ t('console.control_confirmed') }}" data-cancelled="{{ t('console.control_cancelled') }}">
+<div id="management-scroll"><h2 id="management-title" tabindex="-1" autofocus>{{ t('console.review_scope') }}</h2><p>{{ t('console.scroll_review') }}</p><p id="management-warning" class="notice"></p>
+<dl class="scope-details">
+<dt>{{ t('console.col_project_id') }}</dt><dd id="scope-project"></dd>
+<dt>{{ t('console.col_backend_id') }}</dt><dd id="scope-backend"></dd>
+<dt>{{ t('console.backend_identity') }}</dt><dd id="scope-installation"></dd>
+<dt>{{ t('console.col_realm_id') }}</dt><dd id="scope-realm"></dd>
+<dt>{{ t('console.col_channel_id') }}</dt><dd id="scope-channel"></dd>
+<dt>{{ t('console.topic') }}</dt><dd id="scope-topic"></dd>
+<dt>{{ t('console.col_session_id') }}</dt><dd id="scope-session"></dd>
+<dt>{{ t('console.col_workspace_root') }}</dt><dd id="scope-directory"></dd>
+<dt>{{ t('console.col_owner_id') }}</dt><dd id="scope-owner"></dd>
+<dt>{{ t('console.recorded_audience') }}</dt><dd id="scope-audience"></dd>
+<dt>{{ t('console.col_revision') }}</dt><dd id="scope-revision"></dd>
+<dt>{{ t('console.col_queue_revision') }}</dt><dd id="scope-queue"></dd>
+</dl>
+<h3>{{ t('console.affected_work') }}</h3><ul id="scope-effects"
+ data-actions="{{ t('console.actions') }}" data-interactions="{{ t('console.interactions') }}"
+ data-capture="{{ t('console.capture') }}" data-deliveries="{{ t('console.deliveries') }}"
+ data-transfers="{{ t('console.transfers') }}" data-empty="{{ t('console.empty') }}"></ul>
+<p>{{ t('console.confirm_expiry') }}</p></div>
+<div class="management-actions"><p id="management-result" role="status" aria-live="polite"></p><button type="button" id="management-confirm">{{ t('console.confirm_operation') }}</button>
+<button type="button" id="management-cancel">{{ t('console.cancel_operation') }}</button>
+<button type="button" id="management-close" hidden>{{ t('console.close_refresh') }}</button></div>
+</dialog>
+{% endif %}
+</body></html>

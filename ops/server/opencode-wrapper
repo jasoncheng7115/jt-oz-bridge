@@ -1,0 +1,11 @@
+#!/bin/sh
+# Root logins use the dedicated account and its single managed backend.
+set -eu
+export PATH=/opt/node/bin:/usr/local/bin:/usr/bin:/bin
+if [ "$(id -u)" -eq 0 ]; then
+    if ! /usr/sbin/runuser -u opencode -- test -x "$PWD"; then
+        cd /home/opencode
+    fi
+    exec /usr/sbin/runuser -u opencode -- env HOME=/home/opencode PATH="$PATH" /opt/opencode/2.0.32/opencode "$@"
+fi
+exec /opt/opencode/2.0.32/opencode "$@"

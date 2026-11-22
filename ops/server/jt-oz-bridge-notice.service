@@ -1,0 +1,14 @@
+[Unit]
+Description=Tell the Zulip channel that jt-oz-bridge stopped
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -I /opt/jt-oz-bridge/bridge-notice.py
+# The notice first waits up to four minutes for a retry to bring Bridge back.
+TimeoutStartSec=300
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/jt-oz-bridge-notice
+StateDirectory=jt-oz-bridge-notice

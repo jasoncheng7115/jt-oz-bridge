@@ -1,0 +1,15 @@
+[Unit]
+Description=Answer each topic once while jt-oz-bridge is stopped
+After=network-online.target
+StartLimitIntervalSec=3600
+StartLimitBurst=5
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -I /opt/jt-oz-bridge/bridge-standby.py
+Restart=on-failure
+RestartSec=60
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict

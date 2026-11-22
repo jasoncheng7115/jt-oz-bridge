@@ -1,0 +1,407 @@
+{
+  "phase": "complete",
+  "session_id": "ses_000000000001FixtureRootA01",
+  "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+  "attempts": [
+    {
+      "operation": "session.prompt",
+      "body_sha256": "f210047b383c0c30397523fd8a91967efe95ab61db64abea2d4904d6d1ee867d",
+      "query": null,
+      "state": "acknowledged"
+    },
+    {
+      "operation": "session.background",
+      "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "query": null,
+      "state": "acknowledged"
+    },
+    {
+      "operation": "session.interrupt",
+      "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "query": {
+        "resume": "false"
+      },
+      "state": "acknowledged"
+    }
+  ],
+  "events": [
+    {
+      "id": "evt_0cf874b58001Ji4SxZgLXlq889",
+      "created": 1790188145496,
+      "type": "session.inbox.enqueued",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "inboxID": "msg_0cf874b56001YKPyNQ5r8ap49X",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "item": {
+          "type": "user",
+          "payload": {
+            "text": "Synthetic operator prompt 03. iota alpha sigma only epsilon alpha upsilon kappa example words tau omicron content delta delta upsilon sigma tau synthetic alpha fixture content content lambda upsilon gamma epsilon placeholder beta.",
+            "metadata": {
+              "jt_oz_test": "background-stop-20261017",
+              "nonce": "9a7c417a-6e6c-4efe-96bd-b31881cf2130"
+            }
+          },
+          "delivery": "queue"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 44,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf874b93001UwZIOWjMPN9eAh",
+      "created": 1790188145555,
+      "type": "session.execution.started",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 45,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf874ba50013Xo8MirWcve3UB",
+      "created": 1790188145573,
+      "type": "session.inbox.delivered",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "inboxID": "msg_0cf874b56001YKPyNQ5r8ap49X"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 46,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf87500c001R7BB7PGD9lQtl5",
+      "created": 1790188146700,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790188145594
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 47,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf875012001YOIeOcdycSqFJK",
+      "created": 1790188146706,
+      "type": "session.tool.input.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "id": "call_65ff94ba83e837d9acb884d4",
+        "name": "question"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 48,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf8754f7001yhtMkqEPg68A8T",
+      "created": 1790188147959,
+      "type": "session.tool.input.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "id": "call_65ff94ba83e837d9acb884d4",
+        "text": "{\"questions\":[{\"header\": \"Stop test\", \"options\": [{\"description\": \"Wait for the integration test\", \"label\": \"WAIT\"}, {\"description\": \"Cancel the integration test\", \"label\": \"CANCEL\"}], \"question\": \"Wait for this integration test?\", \"multiple\": false}]}"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 49,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf8754fb00105u6DvPmVa0bCY",
+      "created": 1790188147963,
+      "type": "session.tool.called",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "id": "call_65ff94ba83e837d9acb884d4",
+        "input": {
+          "questions": [
+            {
+              "header": "Stop test",
+              "options": [
+                {
+                  "description": "Wait for the integration test",
+                  "label": "WAIT"
+                },
+                {
+                  "description": "Cancel the integration test",
+                  "label": "CANCEL"
+                }
+              ],
+              "question": "Wait for this integration test?",
+              "multiple": false
+            }
+          ]
+        },
+        "executed": false
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 50,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf8754fe001EP15wdX9IVEi9W",
+      "created": 1790188147967,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 51,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf875505002uJXL5AGAaSzmI0",
+      "created": 1790188147973,
+      "type": "form.created",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "form": {
+          "id": "frm_0cf875505001UVNokhMUgzSPUH",
+          "sessionID": "ses_000000000001FixtureRootA01",
+          "title": "Questions",
+          "metadata": {
+            "kind": "question",
+            "tool": {
+              "messageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+              "id": "call_65ff94ba83e837d9acb884d4"
+            }
+          },
+          "fields": [
+            {
+              "key": "q0",
+              "title": "Stop test",
+              "description": "Wait for this integration test?",
+              "type": "string",
+              "options": [
+                {
+                  "value": "WAIT",
+                  "label": "WAIT",
+                  "description": "Wait for the integration test"
+                },
+                {
+                  "value": "CANCEL",
+                  "label": "CANCEL",
+                  "description": "Cancel the integration test"
+                }
+              ],
+              "custom": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "evt_0cf875815001NycoGO0x5PMONB",
+      "created": 1790188148757,
+      "type": "form.cancelled",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "id": "frm_0cf875505001UVNokhMUgzSPUH",
+        "sessionID": "ses_000000000001FixtureRootA01"
+      }
+    },
+    {
+      "id": "evt_0cf8758160015z7ANjAxn4FvXt",
+      "created": 1790188148758,
+      "type": "session.tool.failed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "id": "call_65ff94ba83e837d9acb884d4",
+        "error": {
+          "type": "aborted",
+          "message": "Tool execution interrupted"
+        },
+        "executed": false
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 52,
+        "version": 2
+      }
+    },
+    {
+      "id": "evt_0cf875826001gKiD9LHWBuuDWA",
+      "created": 1790188148774,
+      "type": "session.step.failed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf874baf001Jdfmt156aOdLe0",
+        "error": {
+          "type": "aborted",
+          "message": "Step interrupted"
+        },
+        "rawFinish": "tool_calls",
+        "cost": 0,
+        "tokens": {
+          "input": 63,
+          "output": 83,
+          "reasoning": 0,
+          "cache": {
+            "read": 1996,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 53,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf87582b001fjo1TMmg26xiU6",
+      "created": 1790188148779,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 2817,
+          "output": 209,
+          "reasoning": 0,
+          "cache": {
+            "read": 6601,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0cf87582c001k7X4CylVO6eH3L",
+      "created": 1790188148780,
+      "type": "session.execution.interrupted",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "reason": "user"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 54,
+        "version": 1
+      }
+    }
+  ],
+  "before": {
+    "selected_active": false,
+    "retained_outcome": "succeeded",
+    "retained_idle_time": 1790187456996,
+    "pending_form_ids": [],
+    "pending_inbox_ids": []
+  },
+  "inbox_id": "msg_0cf874b56001YKPyNQ5r8ap49X",
+  "while_waiting": {
+    "selected_active": true,
+    "retained_outcome": "succeeded",
+    "retained_idle_time": 1790187456996,
+    "pending_form_ids": [
+      "frm_0cf875505001UVNokhMUgzSPUH"
+    ],
+    "pending_inbox_ids": []
+  },
+  "after_background": {
+    "selected_active": true,
+    "retained_outcome": "succeeded",
+    "retained_idle_time": 1790187456996,
+    "pending_form_ids": [
+      "frm_0cf875505001UVNokhMUgzSPUH"
+    ],
+    "pending_inbox_ids": []
+  },
+  "interrupt_ack": {
+    "interrupted": true
+  },
+  "after": {
+    "selected_active": false,
+    "retained_outcome": "interrupted",
+    "retained_idle_time": 1790188148780,
+    "pending_form_ids": [],
+    "pending_inbox_ids": []
+  },
+  "form_state_after_interrupt": {
+    "status": "cancelled"
+  },
+  "native_user_interrupted_event_id": "evt_0cf87582c001k7X4CylVO6eH3L",
+  "event_types": [
+    "session.inbox.enqueued",
+    "session.execution.started",
+    "session.inbox.delivered",
+    "session.step.started",
+    "session.tool.input.started",
+    "session.tool.input.ended",
+    "session.tool.called",
+    "session.step.streamed",
+    "form.created",
+    "form.cancelled",
+    "session.tool.failed",
+    "session.step.failed",
+    "session.usage.updated",
+    "session.execution.interrupted"
+  ],
+  "passed": true,
+  "scope": "Actual original-session background/wait/interrupt qualification. Retained prior outcome is not current state. No bridge actor or phone acceptance."
+}

@@ -1,0 +1,28 @@
+[Unit]
+Description=Read-only physical directory identity for enrolled OpenCode projects
+Requires=jt-opencode-directory.socket
+After=opencode.service
+
+[Service]
+User=opencode
+Group=opencode
+WorkingDirectory=/home/opencode
+ExecStart=/usr/bin/python3 /opt/jt-oz-bridge/directory-probe.py --config /etc/opencode-directory-probe.json
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX
+LockPersonality=yes
+MemoryMax=96M
+TasksMax=16
+LimitNOFILE=16384

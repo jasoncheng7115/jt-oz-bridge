@@ -1,0 +1,14 @@
+[Unit]
+Description=Restricted local OpenCode owner-evidence socket
+
+[Socket]
+ListenStream=/run/jt-opencode-owner/status.sock
+SocketUser=root
+SocketGroup=jtoz
+SocketMode=0660
+DirectoryMode=0755
+RemoveOnStop=yes
+Backlog=8
+
+[Install]
+WantedBy=sockets.target

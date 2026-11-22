@@ -1,0 +1,42 @@
+{
+  "phase": "complete",
+  "reference": {
+    "backend_id": "server-opencode",
+    "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+    "upstream_session_id": "ses_000000000001FixtureRootA01",
+    "project_id": "example-project",
+    "canonical_directory": "/home/opencode/workspaces/example-project"
+  },
+  "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+  "attempts": [
+    {
+      "operation": "session.prompt",
+      "body_sha256": "e4831247814fd7316c795286e7cbcb71eb0966b79f23d4559ad2c8198b05c02a",
+      "phase": "acknowledged",
+      "source": "Explicit operator fixture recovery, not bridge queue retry"
+    }
+  ],
+  "prior_unresolved_state_correctly_rejected": true,
+  "inbox_id": "msg_0cfa990c1001g5d1wDgWFFocBM",
+  "passed": true,
+  "final_snapshot": {
+    "reference": {
+      "backend_id": "server-opencode",
+      "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+      "upstream_session_id": "ses_000000000001FixtureRootA01",
+      "project_id": "example-project",
+      "canonical_directory": "/home/opencode/workspaces/example-project"
+    },
+    "title": "JT OZ disposable example-provider model smoke",
+    "state": "idle",
+    "cursor": "resource-sha256:625fe6b77581111090452b19cb14ed513a9c32319cdb901366ec8f8071e2c501",
+    "reconciled": true,
+    "descendants": []
+  },
+  "last_outcome": "succeeded",
+  "resource_fence": "bbaece2851f91c3301c44f892e91dd3f5283947146868bf72d329a6bcf72f37b",
+  "exact_new_assistant_marker": true,
+  "observed_native_position": 83,
+  "automatic_retry": false,
+  "scope": "Actual original-owner leaf resource proof rejects unresolved cancel state, then reconciles an explicit operator new fixture prompt in the same original session. Not automatic queue recovery, Zulip human or phone acceptance."
+}

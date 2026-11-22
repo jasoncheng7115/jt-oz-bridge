@@ -1,0 +1,68 @@
+{
+  "synthetic_rendering_samples": true,
+  "message_posts": 0,
+  "server_version": "12.3",
+  "feature_level": 500,
+  "cases": [
+    {
+      "name": "model-label",
+      "source": "The build finished. However, its sample output is only a placeholder.\n\n模型：example-provider/example-model-1.2-mini-q4_k [none]",
+      "wire": "The build finished&#46; However&#44; its sample output is only a placeholder&#46;\n\n模型：example&#45;provider&#47;example&#45;model&#45;1&#46;2&#45;mini&#45;q4&#95;k &#91;none&#93;",
+      "rendered_html": "<p>The build finished&#46; However&#44; its sample output is only a placeholder&#46;</p>\n<p>模型：example&#45;provider&#47;example&#45;model&#45;1&#46;2&#45;mini&#45;q4&#95;k &#91;none&#93;</p>"
+    },
+    {
+      "name": "mentions",
+      "source": "@**all** @*operators* @**Example Person|42** #**private>topic**",
+      "wire": "&#64;&#42;&#42;all&#42;&#42; &#64;&#42;operators&#42; &#64;&#42;&#42;Example Person&#124;42&#42;&#42; &#35;&#42;&#42;private&gt;topic&#42;&#42;",
+      "rendered_html": "<p>&#64;&#42;&#42;all&#42;&#42; &#64;&#42;operators&#42; &#64;&#42;&#42;Example Person&#124;42&#42;&#42; &#35;&#42;&#42;private&gt;topic&#42;&#42;</p>"
+    },
+    {
+      "name": "emoji-math",
+      "source": ":smile: $$x+y$$ ~spoiler~ ~~deleted~~",
+      "wire": "&#58;smile&#58; &#36;&#36;x&#43;y&#36;&#36; &#126;spoiler&#126; &#126;&#126;deleted&#126;&#126;",
+      "rendered_html": "<p>&#58;smile&#58; &#36;&#36;x&#43;y&#36;&#36; &#126;spoiler&#126; &#126;&#126;deleted&#126;&#126;</p>"
+    },
+    {
+      "name": "html",
+      "source": "<script>alert(1)</script> <img src=x onerror=alert(2)> & \"quoted\"",
+      "wire": "&lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt; &lt;img src&#61;x onerror&#61;alert&#40;2&#41;&gt; &amp; &#34;quoted&#34;",
+      "rendered_html": "<p>&lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt; &lt;img src&#61;x onerror&#61;alert&#40;2&#41;&gt; &amp; &#34;quoted&#34;</p>"
+    },
+    {
+      "name": "links",
+      "source": "[x](https://example.com) https://example.com/a?q=1&b=2 http://localhost/ a@example.com",
+      "wire": "&#91;x&#93;&#40;https&#58;&#47;&#47;example&#46;com&#41; https&#58;&#47;&#47;example&#46;com&#47;a&#63;q&#61;1&amp;b&#61;2 http&#58;&#47;&#47;localhost&#47; a&#64;example&#46;com",
+      "rendered_html": "<p>&#91;x&#93;&#40;https&#58;&#47;&#47;example&#46;com&#41; https&#58;&#47;&#47;example&#46;com&#47;a&#63;q&#61;1&amp;b&#61;2 http&#58;&#47;&#47;localhost&#47; a&#64;example&#46;com</p>"
+    },
+    {
+      "name": "backslashes",
+      "source": "C:\\path\\file.py literal \\. and \\-",
+      "wire": "C&#58;&#92;path&#92;file&#46;py literal &#92;&#46; and &#92;&#45;",
+      "rendered_html": "<p>C&#58;&#92;path&#92;file&#46;py literal &#92;&#46; and &#92;&#45;</p>"
+    },
+    {
+      "name": "code",
+      "source": "`x` ``ticks`` ```python",
+      "wire": "&#96;x&#96; &#96;&#96;ticks&#96;&#96; &#96;&#96;&#96;python",
+      "rendered_html": "<p>&#96;x&#96; &#96;&#96;ticks&#96;&#96; &#96;&#96;&#96;python</p>"
+    },
+    {
+      "name": "blocks",
+      "source": "# Heading\n- item\n1. item\n> quote\n---\n|a|b|",
+      "wire": "&#35; Heading\n&#45; item\n1&#46; item\n&gt; quote\n&#45;&#45;&#45;\n&#124;a&#124;b&#124;",
+      "rendered_html": "<p>&#35; Heading<br>\n&#45; item<br>\n1&#46; item<br>\n&gt; quote<br>\n&#45;&#45;&#45;<br>\n&#124;a&#124;b&#124;</p>"
+    },
+    {
+      "name": "entities",
+      "source": "&#42; &lt; &amp; &#x40;",
+      "wire": "&amp;&#35;42&#59; &amp;lt&#59; &amp;amp&#59; &amp;&#35;x40&#59;",
+      "rendered_html": "<p>&amp;&#35;42&#59; &amp;lt&#59; &amp;amp&#59; &amp;&#35;x40&#59;</p>"
+    },
+    {
+      "name": "punctuation",
+      "source": "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+      "wire": "&#33;&#34;&#35;&#36;&#37;&amp;&#39;&#40;&#41;&#42;&#43;&#44;&#45;&#46;&#47;&#58;&#59;&lt;&#61;&gt;&#63;&#64;&#91;&#92;&#93;&#94;&#95;&#96;&#123;&#124;&#125;&#126;",
+      "rendered_html": "<p>&#33;&#34;&#35;&#36;&#37;&amp;&#39;&#40;&#41;&#42;&#43;&#44;&#45;&#46;&#47;&#58;&#59;&lt;&#61;&gt;&#63;&#64;&#91;&#92;&#93;&#94;&#95;&#96;&#123;&#124;&#125;&#126;</p>"
+    }
+  ]
+}

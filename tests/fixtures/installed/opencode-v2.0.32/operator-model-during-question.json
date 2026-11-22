@@ -1,0 +1,689 @@
+{
+  "phase": "complete",
+  "passed": true,
+  "attempts": [
+    {
+      "operation": "session.prompt",
+      "phase": "acknowledged",
+      "body_sha256": "5f19cfbef59a60bd3441cb6a311c79a792f84b7835ac6ce8258d1ff0716b5a79",
+      "state_before": "idle"
+    },
+    {
+      "operation": "session.switchModel",
+      "phase": "acknowledged",
+      "body_sha256": "2e21ae7bd3a219fa8e2067f8c9d9542d83f22e2b2946619ceb6277701dd30acc",
+      "state_before": "waiting_input"
+    },
+    {
+      "operation": "session.switchModel",
+      "phase": "acknowledged",
+      "body_sha256": "dc9259bdb55d9e363d17c6b118b360c302fe219901ff8b068825a80f7abeab87",
+      "state_before": "waiting_input"
+    },
+    {
+      "operation": "session.form.reply",
+      "phase": "acknowledged",
+      "body_sha256": "5c27ab886e08ea5cfbd2205b4e4a3e2dbb75b7b8fff49a67a71cdeba122138d4",
+      "state_before": "waiting_input"
+    }
+  ],
+  "scope": "Operator fixture on the same original disposable Native root. One question input, two model changes while pending, one explicit PASS answer. No Zulip Human, SMTP, production consumer, automatic POST retry or phone certificate.",
+  "reference": {
+    "backend_id": "server-opencode",
+    "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+    "upstream_session_id": "ses_000000000001FixtureRootA01",
+    "project_id": "example-project",
+    "canonical_directory": "/home/opencode/workspaces/example-project"
+  },
+  "upstream_id": "msg_0d017beb10015PxTai4649Ukw4",
+  "form_id": "frm_0d017c92d001ydA8hVY7JZaZ23",
+  "field_ids": [
+    "q0"
+  ],
+  "pending_preserved_after_setting": [
+    {
+      "variant": "high",
+      "state": "waiting_input",
+      "form_unchanged": true
+    },
+    {
+      "variant": "none",
+      "state": "waiting_input",
+      "form_unchanged": true
+    }
+  ],
+  "last_read_error": "leaf_resource_or_feed_boundary_changed",
+  "original_owner_unchanged": true,
+  "native_pid": 33171,
+  "restored_selection": {
+    "provider_id": "example-provider",
+    "model_id": "example-model-1",
+    "variant": "none"
+  },
+  "native_prompt_attempt_count": 1,
+  "exact_final_text": "JT_OZ_MODEL_PENDING_OK_20261017",
+  "scoped_public_events": [
+    {
+      "id": "evt_0d017beb2001WLSFDSqhQP2ovN",
+      "created": 1790197612210,
+      "type": "session.inbox.enqueued",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "inboxID": "msg_0d017beb10015PxTai4649Ukw4",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "item": {
+          "type": "user",
+          "payload": {
+            "text": "Synthetic operator prompt 01. Reply with exactly JT_OZ_MODEL_PENDING_OK_20261017 and nothing else. placeholder fixture upsilon delta lambda sample sigma epsilon gamma omicron content tau eta omicron only zeta iota synthetic beta fixture tau iota alpha gamma kappa kappa upsilon placeholder iota fixture upsilon sigma delta fixture content gamma sample upsilon.",
+            "metadata": {
+              "jt_oz_bridge": {
+                "action_id": "operator_model_during_question_20261017",
+                "operation_digest": "41f4e8711abf9076d0492c7bf5564b80b8490fbcd37c0639b5adc9a3dbc188a8"
+              }
+            }
+          },
+          "delivery": "queue"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 97,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017bec9001WAxA1IPK0dK5Lt",
+      "created": 1790197612233,
+      "type": "session.execution.started",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 98,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017bed9001jIbk4gZInbdGbT",
+      "created": 1790197612249,
+      "type": "session.inbox.delivered",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "inboxID": "msg_0d017beb10015PxTai4649Ukw4"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 99,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c348001K9IUX0W00eibec",
+      "created": 1790197613384,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790197612284
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 100,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c353001AIeEEdzQ7NbkpS",
+      "created": 1790197613395,
+      "type": "session.tool.input.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "id": "call_9afa98d83a530a28c9db77c6",
+        "name": "question"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 101,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c91a001m1xXrhLO7YJjk7",
+      "created": 1790197614874,
+      "type": "session.tool.input.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "id": "call_9afa98d83a530a28c9db77c6",
+        "text": "{\"questions\":[{\"header\": \"ModelProbe\", \"options\": [{\"description\": \"Continue the model-setting test\", \"label\": \"PASS\"}, {\"description\": \"Do not continue the model-setting test\", \"label\": \"FAIL\"}], \"question\": \"Continue this model-setting test?\", \"multiple\": false}]}"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 102,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c91f001Vu0czTxw1XGH1G",
+      "created": 1790197614879,
+      "type": "session.tool.called",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "id": "call_9afa98d83a530a28c9db77c6",
+        "input": {
+          "questions": [
+            {
+              "header": "ModelProbe",
+              "options": [
+                {
+                  "description": "Continue the model-setting test",
+                  "label": "PASS"
+                },
+                {
+                  "description": "Do not continue the model-setting test",
+                  "label": "FAIL"
+                }
+              ],
+              "question": "Continue this model-setting test?",
+              "multiple": false
+            }
+          ]
+        },
+        "executed": false
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 103,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c9260016xEzSNcO2ognY8",
+      "created": 1790197614886,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 104,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017c92d002JH3owmuS7IB02V",
+      "created": 1790197614893,
+      "type": "form.created",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "form": {
+          "id": "frm_0d017c92d001ydA8hVY7JZaZ23",
+          "sessionID": "ses_000000000001FixtureRootA01",
+          "title": "Questions",
+          "metadata": {
+            "kind": "question",
+            "tool": {
+              "messageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+              "id": "call_9afa98d83a530a28c9db77c6"
+            }
+          },
+          "fields": [
+            {
+              "key": "q0",
+              "title": "ModelProbe",
+              "description": "Continue this model-setting test?",
+              "type": "string",
+              "options": [
+                {
+                  "value": "PASS",
+                  "label": "PASS",
+                  "description": "Continue the model-setting test"
+                },
+                {
+                  "value": "FAIL",
+                  "label": "FAIL",
+                  "description": "Do not continue the model-setting test"
+                }
+              ],
+              "custom": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "evt_0d017cd7f001AZSpNlEaT2H2fr",
+      "created": 1790197615999,
+      "type": "session.model.selected",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "high"
+        },
+        "previous": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 105,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d0ec001Yy7zdBFkcQZqTQ",
+      "created": 1790197616876,
+      "type": "session.model.selected",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "previous": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "high"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 106,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d4a5001E54LRl3BIVF51L",
+      "created": 1790197617829,
+      "type": "form.replied",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "id": "frm_0d017c92d001ydA8hVY7JZaZ23",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "answer": {
+          "q0": "PASS"
+        }
+      }
+    },
+    {
+      "id": "evt_0d017d4ad001BiaEFspZDhFbGV",
+      "created": 1790197617837,
+      "type": "session.tool.success",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "id": "call_9afa98d83a530a28c9db77c6",
+        "content": [
+          {
+            "type": "text",
+            "text": "User has answered your questions: \"Continue this model-setting test?\"=\"PASS\". You can now continue with the user's answers in mind."
+          }
+        ],
+        "metadata": {
+          "answers": [
+            [
+              "PASS"
+            ]
+          ],
+          "truncated": false
+        },
+        "executed": false
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 107,
+        "version": 2
+      }
+    },
+    {
+      "id": "evt_0d017d4c20018L4xeD6Me7wnmI",
+      "created": 1790197617858,
+      "type": "session.step.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017beec0011ta3CY9zVHGT5G",
+        "finish": "tool-calls",
+        "rawFinish": "tool_calls",
+        "cost": 0,
+        "tokens": {
+          "input": 96,
+          "output": 86,
+          "reasoning": 0,
+          "cache": {
+            "read": 2519,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 108,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d4c60010uUH6tvFRdE1Pg",
+      "created": 1790197617862,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 7521,
+          "output": 412,
+          "reasoning": 0,
+          "cache": {
+            "read": 13950,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0d017d76b001J0KlGTmo2Wkq3W",
+      "created": 1790197618539,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790197617878
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 109,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d770001Cx4RQph1X7vln0",
+      "created": 1790197618544,
+      "type": "session.text.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "ordinal": 0
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 110,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d7d7001bfRbY5hBs4uTmf",
+      "created": 1790197618647,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "ordinal": 0,
+        "delta": "JT_OZ_MODEL_PENDING"
+      }
+    },
+    {
+      "id": "evt_0d017d87f001qJs19eQMkMgzQE",
+      "created": 1790197618815,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "ordinal": 0,
+        "delta": "_OK_202610"
+      }
+    },
+    {
+      "id": "evt_0d017d8b2001AycaRvhLSC5hAI",
+      "created": 1790197618866,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "ordinal": 0,
+        "delta": "17"
+      }
+    },
+    {
+      "id": "evt_0d017d8b20028ZFZBByj95yPpW",
+      "created": 1790197618866,
+      "type": "session.text.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "ordinal": 0,
+        "text": "JT_OZ_MODEL_PENDING_OK_20261017"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 111,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d8b6001fOzT3a2i5jB0Zo",
+      "created": 1790197618870,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 112,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d8bc001uvbKCV6T5y0Czl",
+      "created": 1790197618876,
+      "type": "session.step.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "finish": "stop",
+        "rawFinish": "stop",
+        "cost": 0,
+        "tokens": {
+          "input": 46,
+          "output": 16,
+          "reasoning": 0,
+          "cache": {
+            "read": 2700,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 113,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0d017d8c0001Dr6ZMdFHoptdYl",
+      "created": 1790197618880,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 7567,
+          "output": 428,
+          "reasoning": 0,
+          "cache": {
+            "read": 16650,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0d017d8c10014Qmac4n2PwgSnD",
+      "created": 1790197618881,
+      "type": "session.execution.succeeded",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 114,
+        "version": 1
+      }
+    }
+  ],
+  "scoped_public_event_count": 25,
+  "evidence": {
+    "format": "v2-native-resource-turn-v1",
+    "correlation": {
+      "reference": {
+        "backend_id": "server-opencode",
+        "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+        "upstream_session_id": "ses_000000000001FixtureRootA01",
+        "project_id": "example-project",
+        "canonical_directory": "/home/opencode/workspaces/example-project"
+      },
+      "action_id": "operator_model_during_question_20261017",
+      "operation_digest": "41f4e8711abf9076d0492c7bf5564b80b8490fbcd37c0639b5adc9a3dbc188a8",
+      "upstream_id": "msg_0d017beb10015PxTai4649Ukw4",
+      "text": "Synthetic operator prompt 01. Reply with exactly JT_OZ_MODEL_PENDING_OK_20261017 and nothing else. placeholder fixture upsilon delta lambda sample sigma epsilon gamma omicron content tau eta omicron only zeta iota synthetic beta fixture tau iota alpha gamma kappa kappa upsilon placeholder iota fixture upsilon sigma delta fixture content gamma sample upsilon."
+    },
+    "contract_sha256": "1c42291edfab54761b7f6cf0f490a262be277d45d1daa926ab3b8de15e658bce",
+    "semantics_sha256": "e77be5d779535a93d9c09f594413794026effd75488d679b98ae014bae8a5c36",
+    "installed_evidence_sha256": "1df5386ea9b12f3ea582e43288f1fb744cff62418a90e85993c4128cc5343dc8",
+    "connection_epoch": "a194d12c9f245a6b84c7c949014a7eaf42316265301f5259c2436ee075efa742",
+    "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+    "ownership_evidence_sha256": "c944b8bbbc7548cbec886e39074a6bc77f5ec43f4e731c7dca1d261b80ae06d8",
+    "session_info_sha256": "6da05746767bfe8e290571e9a3b7170dd8188505597f96a490844c5aecc03afa",
+    "resource_fence": "026728bf80d7346764e7e783b7b3ac04e7152d1a3eca317295fb58d95743adc0",
+    "observed_at": 1790197619.5010056,
+    "expires_at": 1790197624.5010056,
+    "turn": {
+      "user_id": "msg_0d017beb10015PxTai4649Ukw4",
+      "user_projection_sha256": "4be3588faf4be590a0bc8c086d29e2cd98d2a27b8faff8941134f197a226d0e4",
+      "terminal_id": "msg_0d017d8c10014Qmac4n2PwgSnD",
+      "terminal_projection_sha256": "93454c64fdea88a530293a261587caf2b5b26129c615f58c31495bd9d29f6199",
+      "terminal_created": 1790197618881.0,
+      "outcome": "succeeded",
+      "terminal_error_sha256": null,
+      "text": [
+        {
+          "assistant_id": "msg_0d017d4ce001zmfoCh4DeUYzkT",
+          "content_index": 0,
+          "text": "JT_OZ_MODEL_PENDING_OK_20261017"
+        }
+      ],
+      "tools": [
+        {
+          "assistant_id": "msg_0d017beec0011ta3CY9zVHGT5G",
+          "content_index": 0,
+          "tool_id": "call_9afa98d83a530a28c9db77c6",
+          "name": "question",
+          "status": "completed",
+          "exit_code": null,
+          "error_sha256": null
+        }
+      ],
+      "ordered_message_ids": [
+        "msg_0d017beb10015PxTai4649Ukw4",
+        "msg_0d017beec0011ta3CY9zVHGT5G",
+        "msg_0d017cd7f001AZSpNlEaT2H2fr",
+        "msg_0d017d0ec001Yy7zdBFkcQZqTQ",
+        "msg_0d017d4ce001zmfoCh4DeUYzkT",
+        "msg_0d017d8c10014Qmac4n2PwgSnD"
+      ],
+      "selected_projection_sha256": "aa10930fb78f0d59f861bf512a2c3569eacb02ade75c72bf4d4de0e352a8ad00",
+      "setting_message_ids": [
+        "msg_0d017cd7f001AZSpNlEaT2H2fr",
+        "msg_0d017d0ec001Yy7zdBFkcQZqTQ"
+      ]
+    },
+    "model_settings_semantics_sha256": "f49e4c0dd0e91d2b0e52423c80112cbcf77bb9bb081020bfe9717472a09ab5fc",
+    "model_settings_evidence_sha256": "376d2aa95ff78f9cc198aa1958e83bce7ee2c927f0c2492c172f7b77be94146f"
+  }
+}

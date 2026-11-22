@@ -1,0 +1,232 @@
+{
+  "events": [
+    {
+      "id": "evt_0cf9d2ae40010iVyMyrqyW26WS",
+      "created": 1790189578980,
+      "type": "session.inbox.enqueued",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "inboxID": "msg_0cf9d2ad3001RG0rt7jry2rDS9",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "item": {
+          "type": "user",
+          "payload": {
+            "text": "Synthetic operator prompt 06. Reply with exactly JT_OZ_LIVE_READER_OK and nothing else.",
+            "metadata": {
+              "jt_oz_test": "public-feed-smoke-20261017"
+            }
+          },
+          "delivery": "queue"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 55,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d2aec00124dzaTqA0i2amJ",
+      "created": 1790189578988,
+      "type": "session.execution.started",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 56,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d2b0b001NXDy828097CHSq",
+      "created": 1790189579019,
+      "type": "session.inbox.delivered",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "inboxID": "msg_0cf9d2ad3001RG0rt7jry2rDS9"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 57,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3bd8001Hm7a6UpSKild0e",
+      "created": 1790189583320,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790189579052
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 58,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3be1001QoWw3rh9jiVucg",
+      "created": 1790189583329,
+      "type": "session.text.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "ordinal": 0
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 59,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3c53001BJ8H2CX6kLMYka",
+      "created": 1790189583443,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "ordinal": 0,
+        "delta": "JT_OZ_LIVE"
+      }
+    },
+    {
+      "id": "evt_0cf9d3c6f001YwJU8tgDzh4q5u",
+      "created": 1790189583471,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "ordinal": 0,
+        "delta": "_READER_OK"
+      }
+    },
+    {
+      "id": "evt_0cf9d3c6f002GHseh6ULfe16me",
+      "created": 1790189583471,
+      "type": "session.text.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "ordinal": 0,
+        "text": "JT_OZ_LIVE_READER_OK"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 60,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3c75001bGioila5LQ0Fwd",
+      "created": 1790189583477,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 61,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3c880018dyPRKN7Xt8nVf",
+      "created": 1790189583496,
+      "type": "session.step.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf9d2b1f0018TMmqevFRldZM9",
+        "finish": "stop",
+        "rawFinish": "stop",
+        "cost": 0,
+        "tokens": {
+          "input": 2201,
+          "output": 9,
+          "reasoning": 0,
+          "cache": {
+            "read": 0,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 62,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf9d3c91001v2g8vqEfCrZA5D",
+      "created": 1790189583505,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 5018,
+          "output": 218,
+          "reasoning": 0,
+          "cache": {
+            "read": 6601,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0cf9d3c92001QjHSoZYGK6K1qU",
+      "created": 1790189583506,
+      "type": "session.execution.succeeded",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 63,
+        "version": 1
+      }
+    }
+  ],
+  "scope": "Actual wheel read-only public-feed lifecycle plus one operator fixture prompt on the same original session; no Zulip human or phone certificate.",
+  "original_session_id": "ses_000000000001FixtureRootA01"
+}

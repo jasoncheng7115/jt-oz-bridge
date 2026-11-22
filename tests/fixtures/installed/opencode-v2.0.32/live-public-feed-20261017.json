@@ -1,0 +1,17 @@
+{
+  "phase": "complete",
+  "session_id": "ses_000000000001FixtureRootA01",
+  "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+  "first_connection_epoch": "e59c9f674076d9cb19b2be6784ca9d1fa10265011f04b0d2c1194fff0a14cfb0",
+  "native_inbox_id": "msg_0cf9d2ad3001RG0rt7jry2rDS9",
+  "exact_assistant_marker": true,
+  "observed_native_position": 63,
+  "feed_live_before_explicit_close": true,
+  "old_generation_closed": true,
+  "new_connection_epoch": "c661e0c87ad6deff48d65cffe30c12de675476316c9cbb602d663e64bdbb044c",
+  "passed": true,
+  "native_identities_preserved": true,
+  "automatic_reconnect": false,
+  "replayed_or_snapshot_certified": false,
+  "scope": "Actual wheel read-only public-feed lifecycle plus one operator fixture prompt on the same original session; no Zulip human or phone certificate."
+}

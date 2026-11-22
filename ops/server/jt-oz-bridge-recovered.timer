@@ -1,0 +1,9 @@
+[Unit]
+Description=Check every two minutes whether a stopped jt-oz-bridge is back
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+
+[Install]
+WantedBy=timers.target

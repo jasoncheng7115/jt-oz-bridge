@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>jt-oz-bridge</title>
+  <meta name="description" content="jt-oz-bridge connects AI agents with messaging: talk to your OpenCode sessions from Zulip, fully self-hosted.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/site.css">
+  <link rel="alternate" hreflang="en" href="./">
+  <link rel="alternate" hreflang="zh-Hant-TW" href="zh-tw/">
+  <link rel="alternate" hreflang="ja" href="ja/">
+</head>
+<body>
+  <!-- Repository base for every document link on this page: https://github.com/jasoncheng7115/jt-oz-bridge -->
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="26" height="26">jt-oz-bridge</a>
+      <nav class="nav" aria-label="Sections">
+        <a href="#features">Features</a>
+        <a href="#architecture">Architecture</a>
+        <a href="#install">Install</a>
+        <a href="#security">Security</a>
+        <a href="#status">Status</a>
+      </nav>
+      <div class="lang" aria-label="Language">
+        <span aria-current="page">English</span>
+        <a href="zh-tw/" hreflang="zh-Hant-TW" lang="zh-Hant-TW">繁體中文</a>
+        <a href="ja/" hreflang="ja" lang="ja">日本語</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <img class="banner" src="assets/jt-oz-bridge-header.svg" alt="jt-oz-bridge — AI agents meet messaging, on your own infrastructure" width="1200" height="300">
+        <h1>Talk to your AI coding agent from chat.</h1>
+        <p class="lead">jt-oz-bridge connects AI agents with messaging software, starting with <strong>OpenCode × Zulip</strong>. Type a task in a Zulip topic, watch the agent work, answer its permission requests from your phone and get the complete result, in the same OpenCode session you use at your desk. Everything runs on infrastructure you own.</p>
+        <div class="badges">
+          <img src="assets/status-preview.svg" alt="Development preview: 0.1.0" width="182" height="24">
+          <img src="assets/runtime-python.svg" alt="Python 3.13" width="111" height="24">
+          <img src="assets/license-gpl3.svg" alt="GPL-3.0" width="124" height="24">
+          <img src="assets/deployment-self-hosted.svg" alt="Self-hosted" width="115" height="24">
+        </div>
+        <div class="cta">
+          <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">Source on GitHub</a>
+          <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL.md">Install guide</a>
+        </div>
+      </section>
+
+      <section id="status" aria-labelledby="status-title">
+        <h2 id="status-title">Status</h2>
+        <div class="note">
+          <p><strong>Development preview 0.1.0 — not a finished production release.</strong></p>
+          <p>Core routing, persistence and security boundaries have a large automated test suite, and parts of the flow have been observed against a real OpenCode server and Zulip organization. Complete end-to-end use by real people and use on the official iOS/Android apps are not yet verified. Try it on a disposable project first.</p>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <h2 id="features-title">What it does</h2>
+        <div class="grid">
+          <div class="card"><div class="icon">01</div><h3>AI agents in everyday chat</h3><p>Tasks, progress, questions and results stay together in your chat, on your phone and your computer.</p></div>
+          <div class="card"><div class="icon">02</div><h3>OpenCode × Zulip</h3><p>OpenCode runs the agent and its tools; Zulip provides mobile and desktop chat, private channels and topic threads.</p></div>
+          <div class="card"><div class="icon">03</div><h3>Fully self-hosted</h3><p>Messaging, the bridge, the agent and your models all run on your hardware. You control every data flow.</p></div>
+          <div class="card"><div class="icon">04</div><h3>The same session, not a copy</h3><p>Each topic is bound to an existing OpenCode session. No copied history, no forks, no second backend pretending to continue.</p></div>
+          <div class="card"><div class="icon">05</div><h3>Approvals from your phone</h3><p>Permission requests and the agent's questions arrive in the topic. Answer with <code>!ok 1234</code> or a button.</p></div>
+          <div class="card"><div class="icon">06</div><h3>Your models and tools</h3><p>Pick providers, models and variants from OpenCode's own catalog, with your existing MCP configuration.</p></div>
+        </div>
+      </section>
+
+      <section id="architecture" aria-labelledby="architecture-title">
+        <h2 id="architecture-title">How it fits together</h2>
+        <div class="diagram">
+          <svg viewBox="0 0 960 320" role="img" aria-labelledby="diagram-title diagram-desc">
+            <title id="diagram-title">Architecture</title>
+            <desc id="diagram-desc">Zulip mobile and desktop clients talk to a self-hosted Zulip server. jt-oz-bridge uses the Zulip Bot API and the private loopback API of the OpenCode server, which also serves the TUI at your desk and calls your model providers. The bridge keeps its own encrypted database.</desc>
+            <defs>
+              <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
+            </defs>
+            <path class="edge" d="M200 68L250 136" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M200 232L250 164" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M440 150H490" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M680 150H730" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M585 178V244"/>
+            <path class="edge" d="M840 76V122" marker-start="url(#h)" marker-end="url(#h)"/>
+            <path class="edge" d="M840 178V244" marker-end="url(#h)"/>
+            <text class="edge-label" x="230" y="100">HTTPS</text>
+            <text class="edge-label" x="226" y="208">HTTPS</text>
+            <text class="edge-label" x="465" y="140" text-anchor="middle">Bot API</text>
+            <text class="edge-label" x="705" y="140" text-anchor="middle">API</text>
+            <rect class="node entry" x="10" y="40" width="190" height="56" rx="10"/>
+            <text class="title" x="105" y="64" text-anchor="middle">Zulip mobile app</text>
+            <text class="sub" x="105" y="82" text-anchor="middle">iOS / Android</text>
+            <rect class="node entry" x="10" y="204" width="190" height="56" rx="10"/>
+            <text class="title" x="105" y="228" text-anchor="middle">Zulip desktop / web</text>
+            <text class="sub" x="105" y="246" text-anchor="middle">buttons for choices</text>
+            <rect class="node entry" x="250" y="122" width="190" height="56" rx="10"/>
+            <text class="title" x="345" y="146" text-anchor="middle">Self-hosted Zulip</text>
+            <text class="sub" x="345" y="164" text-anchor="middle">private channels, topics</text>
+            <rect class="node core bridge" x="490" y="122" width="190" height="56" rx="10"/>
+            <text class="title" x="585" y="146" text-anchor="middle">jt-oz-bridge</text>
+            <text class="sub" x="585" y="164" text-anchor="middle">authorize, route, deliver</text>
+            <rect class="node" x="490" y="244" width="190" height="56" rx="10"/>
+            <text class="title" x="585" y="268" text-anchor="middle">Bridge database</text>
+            <text class="sub" x="585" y="286" text-anchor="middle">encrypted payloads</text>
+            <rect class="node core" x="730" y="122" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="146" text-anchor="middle">OpenCode server</text>
+            <text class="sub" x="840" y="164" text-anchor="middle">original sessions, loopback</text>
+            <rect class="node" x="730" y="20" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI / app</text>
+            <text class="sub" x="840" y="62" text-anchor="middle">at your desk</text>
+            <rect class="node" x="730" y="244" width="220" height="56" rx="10"/>
+            <text class="title" x="840" y="268" text-anchor="middle">Model providers</text>
+            <text class="sub" x="840" y="286" text-anchor="middle">self-hosted or others</text>
+          </svg>
+        </div>
+        <p class="scroll-hint muted">On a narrow screen, scroll the diagram sideways.</p>
+        <div class="two">
+          <div>
+            <h3>Components</h3>
+            <ul class="check">
+              <li><code>jt-oz-bridge serve</code> — the bridge service: Zulip events in, authorization, OpenCode API calls, results out. Listens on loopback only.</li>
+              <li>Its own SQLite database (PostgreSQL in development) with application-level payload encryption. OpenCode's database is never opened.</li>
+              <li>An optional read-only local observer for <code>jt-oz-bridge sessions</code> and <code>doctor</code>.</li>
+              <li>Small read-only helpers, run as the OpenCode account, that prove which process, dataset and project directory are the real ones.</li>
+              <li>Optional units that post one notice to Zulip when the bridge stops and one when it is back.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>One topic, one session</h3>
+            <pre class="tree"><code>private channel "project-a"
+├── login fix   → OpenCode session A
+└── API tests   → OpenCode session B</code></pre>
+            <p>Open a topic, pick an existing session you may use (or start a new one in an enrolled project) and type. Everyone in a channel reads its topics, so separate audiences need separate private channels.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="commands" aria-labelledby="commands-title">
+        <h2 id="commands-title">A few commands</h2>
+        <p>In a connected topic, plain text goes to the AI. Every command is <code>!</code> and one word.</p>
+        <div class="table">
+          <table>
+            <thead><tr><th>Command</th><th>Purpose</th></tr></thead>
+            <tbody>
+              <tr><td><code>!ok</code> / <code>!no</code></td><td>Yes / no to what the bridge asked; <code>!ok 1234</code> answers a permission request</td></tr>
+              <tr><td><code>!stop</code> / <code>!go</code></td><td>Stop everything here / continue what is paused</td></tr>
+              <tr><td><code>!status</code></td><td>Current state and queued messages</td></tr>
+              <tr><td><code>!new</code> / <code>!disconnect</code></td><td>New conversation / disconnect the topic (the session stays in OpenCode)</td></tr>
+              <tr><td><code>!model</code> / <code>!agent</code></td><td>Change model / agent</td></tr>
+              <tr><td><code>!files</code> / <code>!file path</code></td><td>Find files / download one</td></tr>
+              <tr><td><code>!help</code></td><td>Everything else</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMMANDS.md">All chat commands</a></p>
+      </section>
+
+      <section id="install" aria-labelledby="install-title">
+        <h2 id="install-title">Install, upgrade, uninstall</h2>
+        <p>The bridge runs on Linux with systemd, next to an existing OpenCode server, as a dedicated non-root user. Each release lives in its own directory named after the wheel's SHA-256, with hash-locked dependencies and a CycloneDX SBOM.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>Install</h3>
+            <ol>
+              <li>Build the wheel, hashed <code>requirements.txt</code> and SBOM, or carry an offline bundle with the dependency wheels.</li>
+              <li>Verify <code>SHA256SUMS</code>, install into a fresh venv with <code>--require-hashes</code>, check the SBOM.</li>
+              <li>Configure, generate the key, <code>migrate</code>, install the systemd unit, check <code>/readyz</code>.</li>
+              <li>Connect a Zulip bot and private channel, onboard one OpenCode project.</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL.md">Install guide →</a>
+          </div>
+          <div class="card">
+            <h3>Upgrade</h3>
+            <ol>
+              <li>Install the new release beside the running one.</li>
+              <li>Stop the bridge, take a backup, <code>migrate</code>.</li>
+              <li>Switch the drop-in, wait for <code>/readyz</code>, run smoke checks.</li>
+              <li>Roll back by pointing at the previous release; after a schema change, fix forward or restore the backup.</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UPGRADE.md">Upgrade guide →</a>
+          </div>
+          <div class="card">
+            <h3>Uninstall</h3>
+            <ol>
+              <li>Optionally take a final backup; keep the key separately.</li>
+              <li>Stop and remove units, releases, state, configuration and the service user.</li>
+              <li>Zulip and OpenCode keep their data; deactivate the bot yourself.</li>
+            </ol>
+            <a class="more" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/UNINSTALL.md">Uninstall guide →</a>
+          </div>
+        </div>
+        <h3 style="margin-top:22px">Offline install in short</h3>
+        <pre><code># connected machine
+uv build --wheel --out-dir "$OUT"
+uv export --frozen --no-dev --no-emit-project --no-header --format requirements-txt -o "$OUT/requirements.txt"
+pip download --require-hashes --only-binary=:all: --python-version 3.13 --platform manylinux_2_28_x86_64 \
+  -r "$OUT/requirements.txt" -d "$OUT/wheels"      # plus SBOM and SHA256SUMS
+
+# air-gapped target
+sha256sum -c SHA256SUMS
+uv venv --offline --python "$PY" "$R/venv"
+uv pip install --offline --no-index --find-links ./wheels --require-hashes -r requirements.txt --python "$R/venv/bin/python"
+uv pip install --offline --no-index --no-deps jt_oz_bridge-*.whl --python "$R/venv/bin/python"</code></pre>
+        <p class="muted" style="margin-top:10px">The guide has the complete commands, including the exact platform tags, carrying Python and <code>uv</code>, and the SBOM check.</p>
+      </section>
+
+      <section id="security" aria-labelledby="security-title">
+        <h2 id="security-title">Security model</h2>
+        <ul class="check">
+          <li><strong>Deny by default.</strong> Only configured Zulip users, private channels and per-project grants reach a session. Bot messages are ignored; model output cannot grant permissions.</li>
+          <li><strong>Recheck before every effect.</strong> Source message, audience, grants, binding and the exact session are checked again; an operation with an unknown outcome is held, never resent blindly.</li>
+          <li><strong>OpenCode stays authoritative and private.</strong> Loopback API only, never its database, never a restart. Its own tool, MCP and OS permissions still decide what the agent can do; bridge confirmations are not a sandbox.</li>
+          <li><strong>Secrets by reference</strong> to owner-only files; the encryption key is kept apart from backups.</li>
+          <li><strong>Files as files.</strong> Original bytes only; HTML is a download, never an interactive preview.</li>
+          <li><strong>Hardened units and supply chain.</strong> Dedicated users, no capabilities, strict filesystem protection, hash-pinned dependencies and an SBOM for every release.</li>
+        </ul>
+        <p style="margin-top:12px"><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/SECURITY.md">Security policy and vulnerability reporting</a></p>
+      </section>
+
+      <section id="more" aria-labelledby="more-title">
+        <h2 id="more-title">Documentation and related projects</h2>
+        <div class="two">
+          <ul class="check">
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/README.md">README</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/OPERATIONS_SOP.md">Operations</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/COMPATIBILITY.md">Compatibility</a></li>
+            <li><a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/TESTING.md">Testing</a></li>
+          </ul>
+          <ul class="check">
+            <li><a href="https://github.com/jasoncheng7115/jt-doc-tools">jt-doc-tools</a> — self-hosted PDF and Office document processing</li>
+            <li><a href="https://github.com/jasoncheng7115/jt-ipam">jt-ipam</a> — IP address management with infrastructure and monitoring integrations</li>
+            <li><a href="https://github.com/jasoncheng7115/jt-live-whisper">jt-live-whisper</a> — local speech transcription, translation and meeting tools</li>
+          </ul>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>Copyright © 2026 Jason Tools. Licensed under <a href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/LICENSE">GPL-3.0-only</a>.</span>
+      <span>Development preview 0.1.0</span>
+    </div>
+  </footer>
+</body>
+</html>

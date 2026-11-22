@@ -1,0 +1,262 @@
+{
+  "session_id": "ses_000000000001FixtureRootA01",
+  "phase": "captured",
+  "events": [
+    {
+      "id": "evt_0cf5c5e7b0010nLKs6MzpvD3ml",
+      "created": 1790185332347,
+      "type": "session.inbox.enqueued",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "inboxID": "msg_0cf5c5e79001ZmEwa6WU1b4VdZ",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "item": {
+          "type": "user",
+          "payload": {
+            "text": "Synthetic operator prompt 04. Reply with exactly JT_OZ_SAME_SESSION_OK and nothing else. sample placeholder.",
+            "metadata": {
+              "jt_oz_test": "same-session-feed-20261017",
+              "nonce": "b69dc347-9f57-4450-b3d2-a0586c87b489"
+            }
+          },
+          "delivery": "steer"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 11,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c5e8a001gHifDH8JD6YqNg",
+      "created": 1790185332362,
+      "type": "session.execution.started",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 12,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c5e93001sUJl9Yd7UKMP5t",
+      "created": 1790185332371,
+      "type": "session.inbox.delivered",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "inboxID": "msg_0cf5c5e79001ZmEwa6WU1b4VdZ"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 13,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c6154001gRclnwfT8v0qtf",
+      "created": 1790185333076,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790185332388
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 14,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c6158001S5Im8MYG58Q0cG",
+      "created": 1790185333080,
+      "type": "session.text.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "ordinal": 0
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 15,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c61bf001vdQerXsUocVHRY",
+      "created": 1790185333183,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "ordinal": 0,
+        "delta": "JT_OZ_S"
+      }
+    },
+    {
+      "id": "evt_0cf5c6241001QR2RpNtBEU5MT6",
+      "created": 1790185333313,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "ordinal": 0,
+        "delta": "AME_SESSION_OK"
+      }
+    },
+    {
+      "id": "evt_0cf5c62420017MFiJqT7kcSxGT",
+      "created": 1790185333314,
+      "type": "session.text.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "ordinal": 0,
+        "text": "JT_OZ_SAME_SESSION_OK"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 16,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c62450011pefzd15jzMpXb",
+      "created": 1790185333317,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 17,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c624c001WHLFN4to4uEL7L",
+      "created": 1790185333324,
+      "type": "session.step.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cf5c5e99001dGdFFgmJND1H24",
+        "finish": "stop",
+        "rawFinish": "stop",
+        "cost": 0,
+        "tokens": {
+          "input": 38,
+          "output": 8,
+          "reasoning": 0,
+          "cache": {
+            "read": 843,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 18,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cf5c6250001xJpPRvZrQiQWaZ",
+      "created": 1790185333328,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 873,
+          "output": 15,
+          "reasoning": 0,
+          "cache": {
+            "read": 843,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0cf5c6251001y3SOnKKH8KQ9Mw",
+      "created": 1790185333329,
+      "type": "session.execution.succeeded",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 19,
+        "version": 1
+      }
+    }
+  ],
+  "server_pid": 39075,
+  "inbox_id": "msg_0cf5c5e79001ZmEwa6WU1b4VdZ",
+  "same_server_pid": true,
+  "exact_latest_assistant": true,
+  "event_types": [
+    "session.inbox.enqueued",
+    "session.execution.started",
+    "session.inbox.delivered",
+    "session.step.started",
+    "session.text.started",
+    "session.text.delta",
+    "session.text.delta",
+    "session.text.ended",
+    "session.step.streamed",
+    "session.step.ended",
+    "session.usage.updated",
+    "session.execution.succeeded"
+  ],
+  "durable_sequences": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+  ]
+}

@@ -1,0 +1,245 @@
+{
+  "events": [
+    {
+      "id": "evt_0cfa990c3001nySwbJhLW7lCla",
+      "created": 1790190391491,
+      "type": "session.inbox.enqueued",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "inboxID": "msg_0cfa990c1001g5d1wDgWFFocBM",
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "item": {
+          "type": "user",
+          "payload": {
+            "text": "Synthetic operator prompt 09. Reply with exactly JT_OZ_AFTER_CANCEL_RECOVERY_OK and nothing else. only content eta words lambda placeholder zeta zeta placeholder content example synthetic synthetic content content.",
+            "metadata": {
+              "jt_oz_test": "explicit-operator-after-cancel-recovery-20261017"
+            }
+          },
+          "delivery": "queue"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 75,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa990d0001x7bJoxsR8Vi9Zr",
+      "created": 1790190391504,
+      "type": "session.execution.started",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 76,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa990ea001oZ1NTQnNCfFkPD",
+      "created": 1790190391530,
+      "type": "session.inbox.delivered",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "inboxID": "msg_0cfa990c1001g5d1wDgWFFocBM"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 77,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa994c7001Mp6p3nXLLqhsxl",
+      "created": 1790190392519,
+      "type": "session.step.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "agent": "build",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "started": 1790190391578
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 78,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa994d3001ZAh83cL1x66mFf",
+      "created": 1790190392531,
+      "type": "session.text.started",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "ordinal": 0
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 79,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa9953a001lKCpsNgm6WYcjP",
+      "created": 1790190392635,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "ordinal": 0,
+        "delta": "JT_OZ_AFTER"
+      }
+    },
+    {
+      "id": "evt_0cfa995ae001AGPAo3Hl34CCNW",
+      "created": 1790190392750,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "ordinal": 0,
+        "delta": "_CANCEL_RECOVERY"
+      }
+    },
+    {
+      "id": "evt_0cfa995d4001dTMVOO3ur5WX9U",
+      "created": 1790190392788,
+      "type": "session.text.delta",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "ordinal": 0,
+        "delta": "_OK"
+      }
+    },
+    {
+      "id": "evt_0cfa995d50014zRioCAkONcNuG",
+      "created": 1790190392789,
+      "type": "session.text.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "ordinal": 0,
+        "text": "JT_OZ_AFTER_CANCEL_RECOVERY_OK"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 80,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa995d9001y9Gg3DH1SrwcL4",
+      "created": 1790190392793,
+      "type": "session.step.streamed",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 81,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa995e5001fO69LOG8oUijPx",
+      "created": 1790190392805,
+      "type": "session.step.ended",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "assistantMessageID": "msg_0cfa9910f001RUSpcttgnnQp9q",
+        "finish": "stop",
+        "rawFinish": "stop",
+        "cost": 0,
+        "tokens": {
+          "input": 82,
+          "output": 9,
+          "reasoning": 0,
+          "cache": {
+            "read": 2370,
+            "write": 0
+          }
+        },
+        "snapshot": "ef1a3cf0326f9b66b3848aa0d6d714ac6a0ad9ef",
+        "files": []
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 82,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cfa995eb001Wdxi4m4hYe3H8G",
+      "created": 1790190392811,
+      "type": "session.usage.updated",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "cost": 0,
+        "tokens": {
+          "input": 7383,
+          "output": 310,
+          "reasoning": 0,
+          "cache": {
+            "read": 8971,
+            "write": 0
+          }
+        }
+      }
+    },
+    {
+      "id": "evt_0cfa995ec001AtLPue8eqLIKCL",
+      "created": 1790190392812,
+      "type": "session.execution.succeeded",
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01"
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 83,
+        "version": 1
+      }
+    }
+  ],
+  "scope": "Actual original-owner leaf resource proof rejects unresolved cancel state, then reconciles an explicit operator new fixture prompt in the same original session. Not automatic queue recovery, Zulip human or phone acceptance."
+}

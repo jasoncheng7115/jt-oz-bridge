@@ -1,0 +1,90 @@
+{
+  "fixtures": [
+    {
+      "path": "opencode-v1-health.json",
+      "source": "https://opencode.ai/docs/server/",
+      "reviewed_date": "2026-10-17",
+      "sha256": "9698e08221c37b4d44fb2d64d09ac4358a80cc06fb16eba6b25de1d2cbc92973",
+      "verification": "documentation_derived_not_live",
+      "scope": "Curated documented example, not a complete OpenAPI schema or captured backend response."
+    },
+    {
+      "path": "zulip-event-queue.json",
+      "source": "https://zulip.com/api/get-events",
+      "reviewed_date": "2026-10-17",
+      "sha256": "5f1b590ccfb6de0763e85203932306749190a1fb354219238d6ac17c8fe42ff1",
+      "verification": "documentation_derived_not_live",
+      "scope": "Curated documented example, not a complete OpenAPI schema or captured backend response."
+    },
+    {
+      "path": "opencode-v2-openapi.json",
+      "source": "https://opencode.ai/v2/openapi.json",
+      "reviewed_date": "2026-10-17",
+      "sha256": "bf6fb75871828688be298a43cba464628c0b6ebc0b4fb49f11a77f2651e68900",
+      "verification": "documentation_derived_not_live",
+      "scope": "Full public OpenAPI snapshot retrieved from official documentation; NOT the installed v2.0.30 contract and NOT a runtime certification."
+    },
+    {
+      "path": "opencode-v2.0.30-openapi.json",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.30/packages/protocol/openapi.json",
+      "reviewed_date": "2026-10-17",
+      "sha256": "3fcd666b597b746bad26f56a92fe782cc86338a0b4498f43b435a2f97e4fa05a",
+      "verification": "documentation_derived_not_live",
+      "scope": "Official source tag v2.0.30 contract snapshot; not a captured installed server or runtime certification."
+    }
+  ],
+  "wire_reference": {
+    "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/client/src/promise/generated/client.ts",
+    "source_commit": "0a03b4bc9c401330888513d612252350944df33c",
+    "source_sha256": "b68d3c14af44101712b58e3eefcf6998cba64eb0829db5d43daa14fdea7755c4",
+    "query_object_example": {
+      "input": {
+        "location": {
+          "directory": "/workspace/project"
+        }
+      },
+      "wire_key": "location[directory]",
+      "wire_value": "/workspace/project"
+    },
+    "verification": "official_public_client_source_not_installed_server"
+  },
+  "log_reference": {
+    "source_commit": "0a03b4bc9c401330888513d612252350944df33c",
+    "verification": "official_public_source_not_installed_server",
+    "files": [
+      {
+        "path": "packages/server/src/event-feed.ts",
+        "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/server/src/event-feed.ts",
+        "sha256": "8867fb8ca3b1d7d667038ac1210a69a33b2cc264be0782d3e735e9bbf6eba568"
+      },
+      {
+        "path": "packages/schema/src/event-log.ts",
+        "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/schema/src/event-log.ts",
+        "sha256": "506db7cf7d0ed2eda89830f7049753cf641aa8a232d2febdca24a56d6210f9b1"
+      },
+      {
+        "path": "packages/core/src/session.ts",
+        "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/core/src/session.ts",
+        "sha256": "67979f2c8133b2d350c7779cd2bd7c62b790bc9089ef913e2ca6c41af0882552"
+      },
+      {
+        "path": "packages/core/test/session-log.test.ts",
+        "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/core/test/session-log.test.ts",
+        "sha256": "a5e2a0f6980bbd224df96f989ee3c5761cc50c399a6ec497e2aa837b75cdcd8a"
+      },
+      {
+        "path": "packages/protocol/src/groups/session.ts",
+        "source": "https://github.com/anomalyco/opencode/blob/0a03b4bc9c401330888513d612252350944df33c/packages/protocol/src/groups/session.ts",
+        "sha256": "1eb38a3bc9c463e2923d9f4fc12597aeebece8eadba6f6aa5ff5b917cd2df1e5"
+      }
+    ],
+    "semantics": [
+      "SSE data contains one JSON object",
+      "Global stream is volatile",
+      "Session log after is exclusive",
+      "Filtered events can leave sequence gaps",
+      "log.synced may exceed last public event",
+      "Migrated empty logs have no sequence"
+    ]
+  }
+}

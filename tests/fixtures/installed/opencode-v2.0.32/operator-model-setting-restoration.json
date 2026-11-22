@@ -1,0 +1,115 @@
+{
+  "phase": "complete",
+  "passed": true,
+  "attempts": [
+    {
+      "operation": "session.switchModel",
+      "target": {
+        "provider_id": "example-provider",
+        "model_id": "example-model-1",
+        "variant": "none"
+      },
+      "body_sha256": "dc9259bdb55d9e363d17c6b118b360c302fe219901ff8b068825a80f7abeab87",
+      "phase": "acknowledged",
+      "observed_setting_history": [
+        {
+          "id": "msg_0cff77797001XvSfCOVqLw7FiP",
+          "type": "model-switched",
+          "time": {
+            "created": 1790195496855
+          },
+          "model": {
+            "id": "example-model-1",
+            "providerID": "example-provider",
+            "variant": "none"
+          },
+          "previous": {
+            "id": "example-model-2",
+            "providerID": "example-provider-2",
+            "variant": "default"
+          }
+        },
+        {
+          "id": "msg_0cff5a9cd001UNOStj19D5oaTM",
+          "type": "model-switched",
+          "time": {
+            "created": 1790195378638
+          },
+          "model": {
+            "id": "example-model-2",
+            "providerID": "example-provider-2"
+          },
+          "previous": {
+            "id": "example-model-1",
+            "providerID": "example-provider",
+            "variant": "none"
+          }
+        },
+        {
+          "id": "msg_0cfda812d001jVtw8c2MyBgskk",
+          "type": "idle",
+          "time": {
+            "created": 1790193598765
+          },
+          "outcome": "succeeded"
+        }
+      ]
+    }
+  ],
+  "wheel_sha256": "d1b13e4c38ba032cb51041bf70c471e33d7648b2c035027872c757134aa17c05",
+  "scope": "One separately journaled operator restoration to original example-provider/none after the first qualification found Native omitted-variant normalization to default. No retry of the previous model change, no prompt or production write certificate.",
+  "service_write_certificate": false,
+  "semantics_sha256": "dae05312d3a8858357d8bda21aec69887d0957bd714fe8457809f5febdb123f0",
+  "reference": {
+    "backend_id": "server-opencode",
+    "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+    "upstream_session_id": "ses_000000000001FixtureRootA01",
+    "project_id": "example-project",
+    "canonical_directory": "/home/opencode/workspaces/example-project"
+  },
+  "original_terminal_id": "msg_0cfda812d001jVtw8c2MyBgskk",
+  "initial_selection": {
+    "provider_id": "example-provider-2",
+    "model_id": "example-model-2",
+    "variant": "default"
+  },
+  "restored_selection": {
+    "provider_id": "example-provider",
+    "model_id": "example-model-1",
+    "variant": "none"
+  },
+  "original_owner_unchanged": true,
+  "native_pid": 33171,
+  "original_idle_unchanged": true,
+  "restored_to_example_provider_none": true,
+  "native_prompt_sent": false,
+  "scoped_public_events": [
+    {
+      "id": "evt_0cff77797001XvSfCOVqLw7FiP",
+      "created": 1790195496855,
+      "type": "session.model.selected",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "previous": {
+          "id": "example-model-2",
+          "providerID": "example-provider-2",
+          "variant": "default"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 94,
+        "version": 1
+      }
+    }
+  ],
+  "scoped_public_event_count": 1
+}

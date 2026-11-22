@@ -1,0 +1,38 @@
+# Reviewed lines that keep a gate match on purpose (scripts/public_gate.py).
+# path<TAB>rule<TAB>line digest<TAB>reason; a changed line voids its review.
+src/jt_oz_bridge/services/upload_associations.py	private-key	323fa32e8591073e	refusal check for an OpenSSH private-key header
+tests/contract/test_generated_files.py	url-credentials	ba6fe398050c77f0	made-up user:password URL that redaction or refusal must catch
+tests/contract/test_host_owner.py	url-credentials	14515967716d95d8	made-up user:password URL that redaction or refusal must catch
+tests/contract/test_upload_paths.py	url-credentials	c84edaca0341ea5a	made-up user:password URL that redaction or refusal must catch
+tests/integration/test_file_returns.py	private-key	21561a64bc6ebd78	made-up PEM header that redaction or refusal must catch
+tests/integration/test_file_returns.py	api-key	2a4a4ce28bf34358	made-up sk- key of repeated letters that redaction must catch
+tests/integration/test_generated_file_returns.py	private-key	ef412db961f1f46f	made-up PEM header that redaction or refusal must catch
+tests/integration/test_git_evidence_results.py	url-credentials	f9f1364954e3c399	made-up user:password URL that redaction or refusal must catch
+tests/integration/test_git_patch_commands.py	private-key	397096e36f81e749	made-up PEM header that redaction or refusal must catch
+tests/integration/test_native_history.py	private-key	3185552c267e3a5d	made-up PEM header that redaction or refusal must catch
+tests/integration/test_native_publisher.py	private-key	a3d8d77f64c2ea16	made-up PEM header that redaction or refusal must catch
+tests/integration/test_permission_commands.py	private-key	c1587df8db4785a5	made-up PEM header that redaction or refusal must catch
+tests/integration/test_upload_associations.py	private-key	f6bee0ebd61a2098	made-up PEM header that redaction or refusal must catch
+tests/integration/test_upload_associations.py	private-key	d07092118ba4fdc9	made-up PEM header that redaction or refusal must catch
+tests/integration/test_upload_associations.py	private-key	645b6ad34244d766	made-up PEM header that redaction or refusal must catch
+tests/unit/test_config_security.py	url-credentials	aab63d4ca7b07438	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_config_security.py	url-credentials	78e457f9ff2948da	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_config_security.py	url-credentials	61ccf29334acec2d	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_enable_file_transfer.py	home-directory	603d1413a4c2bc4e	hidden root-home path the tool must refuse
+tests/unit/test_git_evidence.py	url-credentials	e4fa8beb599fed5c	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_git_inspect_helper.py	url-credentials	e5f42dcf58646471	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_git_inspect_helper.py	url-credentials	d0e662893994b7f9	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_git_inspect_helper.py	url-credentials	8fa579cc6a0232c4	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_markdown.py	url-credentials	273c3e8fd7d7dc68	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_redaction.py	url-credentials	6596ea786579da75	made-up user:password URL that redaction or refusal must catch
+tests/unit/test_redaction.py	private-key	69c3c1e4a433a476	made-up PEM header that redaction or refusal must catch
+tests/unit/test_redaction.py	private-key	d3a219cb6598ca54	made-up PEM header that redaction or refusal must catch
+tests/fixtures/contracts/opencode-v2-openapi.json	internal-host	0ebaddbe417c8122	an error code in OpenCode's own published OpenAPI schema, not a host name
+tests/fixtures/contracts/opencode-v2.0.30-openapi.json	internal-host	0ebaddbe417c8122	an error code in OpenCode's own published OpenAPI schema, not a host name
+tests/fixtures/contracts/opencode-v2.0.32-installed.json	internal-host	1c42291edfab5476	an error code in OpenCode's own published OpenAPI schema, not a host name
+tests/integration/test_diagnostic_export.py	password	10bf8e83ff6bce91	made-up password a redaction or refusal test must catch
+tests/integration/test_file_commands.py	password	00d79497c61e10a5	made-up password a redaction or refusal test must catch
+tests/integration/test_file_returns.py	password	31560f3fff6b98bc	made-up password a redaction or refusal test must catch
+tests/integration/test_file_returns.py	password	9fb6b24cae5742c1	made-up password a redaction or refusal test must catch
+tests/integration/test_git_patch_commands.py	password	154706bd2ad30fd0	made-up password a redaction or refusal test must catch
+tests/integration/test_runtime_configuration.py	password	046bb919d1afc41c	made-up password a redaction or refusal test must catch

@@ -1,0 +1,296 @@
+{
+  "phase": "complete",
+  "passed": true,
+  "attempts": [
+    {
+      "operation": "session.switchModel",
+      "target": {
+        "provider_id": "example-provider",
+        "model_id": "example-model-1",
+        "variant": "high"
+      },
+      "body_sha256": "2e21ae7bd3a219fa8e2067f8c9d9542d83f22e2b2946619ceb6277701dd30acc",
+      "phase": "acknowledged",
+      "positive_idle_tail": {
+        "controls": [
+          {
+            "id": "msg_0cffab92700149cBiJn7hPe1tu",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195710247
+            },
+            "model": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "high"
+            },
+            "previous": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            }
+          },
+          {
+            "id": "msg_0cff77797001XvSfCOVqLw7FiP",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195496855
+            },
+            "model": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            },
+            "previous": {
+              "providerID": "example-provider-2",
+              "id": "example-model-2",
+              "variant": "default"
+            }
+          },
+          {
+            "id": "msg_0cff5a9cd001UNOStj19D5oaTM",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195378638
+            },
+            "model": {
+              "providerID": "example-provider-2",
+              "id": "example-model-2"
+            },
+            "previous": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            }
+          }
+        ],
+        "idle": {
+          "id": "msg_0cfda812d001jVtw8c2MyBgskk",
+          "type": "idle",
+          "time": {
+            "created": 1790193598765
+          },
+          "outcome": "succeeded"
+        },
+        "pristine": false
+      }
+    },
+    {
+      "operation": "session.switchModel",
+      "target": {
+        "provider_id": "example-provider",
+        "model_id": "example-model-1",
+        "variant": "none"
+      },
+      "body_sha256": "dc9259bdb55d9e363d17c6b118b360c302fe219901ff8b068825a80f7abeab87",
+      "phase": "acknowledged",
+      "positive_idle_tail": {
+        "controls": [
+          {
+            "id": "msg_0cffaba30001ZRxOBjq0fO0I1P",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195710512
+            },
+            "model": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            },
+            "previous": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "high"
+            }
+          },
+          {
+            "id": "msg_0cffab92700149cBiJn7hPe1tu",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195710247
+            },
+            "model": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "high"
+            },
+            "previous": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            }
+          },
+          {
+            "id": "msg_0cff77797001XvSfCOVqLw7FiP",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195496855
+            },
+            "model": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            },
+            "previous": {
+              "providerID": "example-provider-2",
+              "id": "example-model-2",
+              "variant": "default"
+            }
+          },
+          {
+            "id": "msg_0cff5a9cd001UNOStj19D5oaTM",
+            "type": "model-switched",
+            "time": {
+              "created": 1790195378638
+            },
+            "model": {
+              "providerID": "example-provider-2",
+              "id": "example-model-2"
+            },
+            "previous": {
+              "providerID": "example-provider",
+              "id": "example-model-1",
+              "variant": "none"
+            }
+          }
+        ],
+        "idle": {
+          "id": "msg_0cfda812d001jVtw8c2MyBgskk",
+          "type": "idle",
+          "time": {
+            "created": 1790193598765
+          },
+          "outcome": "succeeded"
+        },
+        "pristine": false
+      }
+    }
+  ],
+  "wheel_sha256": "a93aaff2a0a09f902c6d3c8de1fac16d68c9ad5cb2331527b8e090c7702f44ea",
+  "scope": "Two separately journaled operator variant changes high then none on the same disposable original Native session. Historical omitted/default settings are reconciled from genuine projected records. Not a retry of an earlier POST, Zulip Human dispatch, model inference or production writer/mobile certification.",
+  "service_write_certificate": false,
+  "semantics_sha256": "f49e4c0dd0e91d2b0e52423c80112cbcf77bb9bb081020bfe9717472a09ab5fc",
+  "reference": {
+    "backend_id": "server-opencode",
+    "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+    "upstream_session_id": "ses_000000000001FixtureRootA01",
+    "project_id": "example-project",
+    "canonical_directory": "/home/opencode/workspaces/example-project"
+  },
+  "original_terminal_id": "msg_0cfda812d001jVtw8c2MyBgskk",
+  "initial_model_setting_tail": {
+    "controls": [
+      {
+        "id": "msg_0cff77797001XvSfCOVqLw7FiP",
+        "type": "model-switched",
+        "time": {
+          "created": 1790195496855
+        },
+        "model": {
+          "providerID": "example-provider",
+          "id": "example-model-1",
+          "variant": "none"
+        },
+        "previous": {
+          "providerID": "example-provider-2",
+          "id": "example-model-2",
+          "variant": "default"
+        }
+      },
+      {
+        "id": "msg_0cff5a9cd001UNOStj19D5oaTM",
+        "type": "model-switched",
+        "time": {
+          "created": 1790195378638
+        },
+        "model": {
+          "providerID": "example-provider-2",
+          "id": "example-model-2"
+        },
+        "previous": {
+          "providerID": "example-provider",
+          "id": "example-model-1",
+          "variant": "none"
+        }
+      }
+    ],
+    "idle": {
+      "id": "msg_0cfda812d001jVtw8c2MyBgskk",
+      "type": "idle",
+      "time": {
+        "created": 1790193598765
+      },
+      "outcome": "succeeded"
+    },
+    "pristine": false
+  },
+  "initial_selection": {
+    "provider_id": "example-provider",
+    "model_id": "example-model-1",
+    "variant": "none"
+  },
+  "restored_selection": {
+    "provider_id": "example-provider",
+    "model_id": "example-model-1",
+    "variant": "none"
+  },
+  "original_owner_unchanged": true,
+  "native_pid": 33171,
+  "original_idle_unchanged": true,
+  "native_prompt_sent": false,
+  "scoped_public_events": [
+    {
+      "id": "evt_0cffab92700149cBiJn7hPe1tu",
+      "created": 1790195710247,
+      "type": "session.model.selected",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "high"
+        },
+        "previous": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 95,
+        "version": 1
+      }
+    },
+    {
+      "id": "evt_0cffaba30001ZRxOBjq0fO0I1P",
+      "created": 1790195710512,
+      "type": "session.model.selected",
+      "location": {
+        "directory": "/home/opencode/workspaces/example-project"
+      },
+      "data": {
+        "sessionID": "ses_000000000001FixtureRootA01",
+        "model": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "none"
+        },
+        "previous": {
+          "id": "example-model-1",
+          "providerID": "example-provider",
+          "variant": "high"
+        }
+      },
+      "durable": {
+        "aggregateID": "ses_000000000001FixtureRootA01",
+        "seq": 96,
+        "version": 1
+      }
+    }
+  ],
+  "scoped_public_event_count": 2
+}

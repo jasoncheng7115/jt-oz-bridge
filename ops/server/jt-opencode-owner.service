@@ -1,0 +1,27 @@
+[Unit]
+Description=Read-only OpenCode process and original-dataset owner evidence
+Requires=jt-opencode-owner.socket
+After=opencode.service
+
+[Service]
+User=opencode
+Group=opencode
+WorkingDirectory=/home/opencode
+ExecStart=/usr/bin/python3 /opt/jt-oz-bridge/owner-probe.py --config /etc/opencode-owner-probe.json
+Restart=on-failure
+RestartSec=3
+UMask=0077
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+AmbientCapabilities=
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateTmp=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+LockPersonality=yes
+MemoryMax=96M
+TasksMax=16

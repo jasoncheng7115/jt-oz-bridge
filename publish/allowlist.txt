@@ -1,0 +1,76 @@
+# Files of this repository that the public export copies (scripts/public_export.py).
+# Globs, one per line; anything not named here stays private. A line starting with `!`
+# excludes what an include named, whatever the order.
+LICENSE
+pyproject.toml
+uv.lock
+config.example.toml
+README.md
+README_zh-tw.md
+README_ja.md
+SECURITY.md
+SECURITY_zh-tw.md
+CHANGELOG.md
+CHANGELOG_zh-tw.md
+CHANGELOG_ja.md
+publish/allowlist.txt
+publish/reviewed-findings.txt
+src/**
+tests/**
+# Recorded server fixtures go out only as their synthetic copies from publish/overlay/;
+# one without a copy stops the export.
+=tests/fixtures/installed/**
+# Needs maintainer-only checks.
+!tests/unit/test_full_test_gate.py
+scripts/make_sbom.py
+scripts/public_export.py
+scripts/public_gate.py
+scripts/public_hook.py
+scripts/smoke_wheel.py
+scripts/test_resources.py
+ops/server/*.py
+ops/server/jt-opencode-directory.service
+ops/server/jt-opencode-directory.socket
+ops/server/jt-opencode-owner.service
+ops/server/jt-opencode-owner.socket
+ops/server/jt-oz-bridge-notice.service
+ops/server/jt-oz-bridge-recovered.service
+ops/server/jt-oz-bridge-recovered.timer
+ops/server/jt-oz-bridge-retry.service
+ops/server/jt-oz-bridge-retry.timer
+ops/server/bridge_retry.sh
+ops/server/jt-oz-bridge.service
+ops/server/jt-oz-bridge-standby.service
+ops/server/jt-oz-observer.service
+ops/server/jt-oz-release-watch.service
+ops/server/jt-oz-release-watch.timer
+ops/server/opencode.service
+ops/server/opencode-wrapper
+ops/zulip/upload_association.py
+ops/zulip/LICENSE.zulip
+ops/zulip/NOTICE
+docs/assets/*.svg
+# The user-facing guides only, as the owner decided for the first public release;
+# the design and development notes stay private until rewritten.
+docs/INSTALL.md
+docs/INSTALL_zh-tw.md
+docs/INSTALL_ja.md
+docs/UPGRADE.md
+docs/UPGRADE_zh-tw.md
+docs/UPGRADE_ja.md
+docs/UNINSTALL.md
+docs/UNINSTALL_zh-tw.md
+docs/UNINSTALL_ja.md
+docs/COMMANDS.md
+docs/COMMANDS_zh-tw.md
+docs/OPERATIONS_SOP.md
+docs/OPERATIONS_SOP_zh-tw.md
+docs/COMPATIBILITY.md
+docs/COMPATIBILITY_zh-tw.md
+docs/TESTING.md
+docs/TESTING_zh-tw.md
+docs/PUBLIC_RELEASE.md
+docs/PUBLIC_RELEASE_zh-tw.md
+ops/perf/run_envelope.py
+ops/git-inspect225.py
+site/**

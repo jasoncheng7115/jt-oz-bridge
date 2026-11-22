@@ -1,0 +1,12 @@
+[Unit]
+Description=Tell the Zulip channel that jt-oz-bridge is back after a stop notice
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -I /opt/jt-oz-bridge/bridge-notice.py --recovered
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/jt-oz-bridge-notice
+StateDirectory=jt-oz-bridge-notice

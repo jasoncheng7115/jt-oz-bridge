@@ -1,0 +1,50 @@
+[Unit]
+Description=jt-oz-bridge local read-only session observer
+Wants=network-online.target jt-opencode-owner.service
+After=network-online.target jt-opencode-owner.service jt-oz-bridge.service
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=jtoz
+Group=jtoz
+WorkingDirectory=/var/lib/jt-oz-bridge
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+# It reads Bridge's state, so wait up to three minutes for Bridge to be ready (after a
+# reboot Bridge may need a second try) instead of using up the three starts above.
+ExecStartPre=/usr/bin/bash -c 'for _ in $$(seq 90); do /usr/bin/curl -fsS -m 3 http://127.0.0.1:8765/readyz 2>/dev/null | grep -q "ready.:true" && exit 0; sleep 2; done; echo bridge_not_ready; exit 1'
+TimeoutStartSec=240
+ExecStart=/opt/jt-oz-bridge/venv/bin/jt-oz-bridge --config /etc/jt-oz-bridge/config.toml observe-serve --policy /etc/jt-oz-bridge/local-observer.json
+RuntimeDirectory=jt-oz-observer
+RuntimeDirectoryMode=0750
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=15
+UMask=0077
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadOnlyPaths=/var/lib/jt-oz-bridge
+ReadWritePaths=/run/jt-oz-observer
+LimitCORE=0
+TasksMax=64
+MemoryMax=256M
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,271 @@
+{
+  "date": "2026-10-17",
+  "platform": "Linux amd64 container",
+  "version": "2.0.32",
+  "binary_sha256": "8976771bc115298abbec50aee35d6dd36fe31f4cd1f677c1b1ad49b2c74ef0fb",
+  "installed_openapi_sha256": "1c42291edfab54761b7f6cf0f490a262be277d45d1daa926ab3b8de15e658bce",
+  "scope": "Parsed public SSE objects filtered to one disposable original test session. Not a byte-for-byte wire capture, full owner certificate, durable replay proof or phone acceptance. Only benign test markers and scoped metadata are retained.",
+  "parsed_feed_sha256": "127bb3e8c9c5992f3fa5600e127f5f2b6e2cb519cbd122259c973b24610cd430",
+  "source_tag_comparison": [
+    {
+      "path": "packages_schema_src_session-event.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/schema/src/session-event.ts",
+      "sha256": "5d5adb64afd74130d2376beb69004a51a068b253c42983cabdd214ca56ebd68e",
+      "bytes": 19390,
+      "preserved_identical_file": "../../native-v2.0.30/packages_schema_src_session-event.ts"
+    },
+    {
+      "path": "packages_core_src_session_execution.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/execution.ts",
+      "sha256": "f86c35f46c9bae634f955328979c3eade27d5df06e115d677eece7f4e4f1ce3a",
+      "bytes": 9007,
+      "preserved_identical_file": "../../native-v2.0.30/packages_core_src_session_execution.ts"
+    },
+    {
+      "path": "packages_core_src_session_run-coordinator.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/run-coordinator.ts",
+      "sha256": "20dc6417c597e6d5bc6f349e31ed5d3e88db4be31b548be1f35262e87fcc3c4b",
+      "bytes": 9065,
+      "preserved_identical_file": "../../native-v2.0.30/packages_core_src_session_run-coordinator.ts"
+    },
+    {
+      "path": "packages_core_src_session_inbox.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/inbox.ts",
+      "sha256": "e849cf92dd802282cba7739f50c7702d4c4e9c31b8299ee9c10353d05d81024a",
+      "bytes": 18736,
+      "preserved_identical_file": "../../native-v2.0.30/packages_core_src_session_inbox.ts"
+    },
+    {
+      "path": "packages_protocol_src_groups_event.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/protocol/src/groups/event.ts",
+      "sha256": "41619314a6fbe0be35f898cd80fa14be8cf43d21bad97e735ff4364f2e637bb9",
+      "bytes": 2831,
+      "preserved_identical_file": "../../native-v2.0.30/packages_protocol_src_groups_event.ts"
+    },
+    {
+      "path": "LICENSE",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/LICENSE",
+      "sha256": "625f0f619133f89bbbb2abe37369613dfa1885eba1e50d02170deb62bb42cb6b",
+      "bytes": 1065,
+      "preserved_identical_file": "../../native-v2.0.30/LICENSE"
+    }
+  ],
+  "observed_live_native_types": [
+    "session.inbox.enqueued",
+    "session.execution.started",
+    "session.inbox.delivered",
+    "session.step.started",
+    "session.text.started",
+    "session.text.delta",
+    "session.text.delta",
+    "session.text.ended",
+    "session.step.streamed",
+    "session.step.ended",
+    "session.usage.updated",
+    "session.execution.succeeded"
+  ],
+  "durable_replay": "NOT_SUPPORTED_BY_DEFAULT_CLI",
+  "normal_original_followup_primitive": true,
+  "qualified_bridge_mutation_enabled": false,
+  "persistence_source_files": [
+    {
+      "path": "source/packages_core_src_bus.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/bus.ts",
+      "sha256": "1bf5e97b3c3618a79487d75adcfddc602d2068c7759d2018eb9ad7d08f4b57f9",
+      "bytes": 40144
+    },
+    {
+      "path": "source/packages_server_src_routes.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/server/src/routes.ts",
+      "sha256": "e486f6b670f7c2eb4b73a2c029b08a5c5a9442df2f646d22143f316324d88bdc",
+      "bytes": 7778
+    },
+    {
+      "path": "source/packages_cli_src_server-process.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/cli/src/server-process.ts",
+      "sha256": "5467b66bb6a45151754f920443e1f50d755d751da1c7fa7390651bd6641f5e92",
+      "bytes": 10204
+    }
+  ],
+  "persistence_source_license": "source/LICENSE",
+  "installed_openapi": {
+    "path": "../../contracts/opencode-v2.0.32-installed.json",
+    "source": "http://127.0.0.1:4096/openapi.json on the server; credentials omitted",
+    "verification": "installed_openapi_read_only_not_owner_or_mobile_certification"
+  },
+  "interactive_captures": [
+    {
+      "path": "parsed-interactive.json",
+      "sha256": "2c8e81a006ea87919ed1a3983330c98f77631cb2410b1572c7c239a1770efe5f",
+      "scope": "Same original disposable native session; operator qualification, not a Zulip actor or phone flow."
+    },
+    {
+      "path": "parsed-background-stop.json",
+      "sha256": "1c8189022355b56a7fe347eba02bfc11bca018c012c2a137d7d555ee25ad8327",
+      "scope": "Same original disposable native session; operator qualification, not a Zulip actor or phone flow."
+    }
+  ],
+  "interaction_source_files": [
+    {
+      "path": "source/packages_core_src_tool_plugin_question.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/tool/plugin/question.ts",
+      "sha256": "9ea22487ceee5e8cbf49b83e59ff9d24f3958b0d12e34d03780025e17cfd4722",
+      "bytes": 5349
+    },
+    {
+      "path": "source/packages_core_src_permission.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/permission.ts",
+      "sha256": "d69278896f9a541dac7cf46056c859834d840ecc16ac57a639cbabc1afdda9a5",
+      "bytes": 13338
+    },
+    {
+      "path": "source/packages_core_src_form.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/form.ts",
+      "sha256": "1a4b38c335f594071b9127cecfbd1dea435eea5a2e84c10b8eee8d2b1ff5d579",
+      "bytes": 14729
+    }
+  ],
+  "public_reader_capture": {
+    "path": "parsed-public-reader.json",
+    "sha256": "e315fd24d2844e25cccee49a27aaaa0fae7b437b751cf63c3dea13a807eb6132",
+    "wheel_sha256": "127ee21e891ff625caa443fd0a2d771fe6a8d64609847b9c7666e91dc0f285e6",
+    "scope": "Actual wheel read-only public-feed lifecycle plus one operator fixture prompt on the same original session; no Zulip human or phone certificate."
+  },
+  "resource_recovery_capture": {
+    "path": "parsed-resource-recovery.json",
+    "sha256": "0668df59889fcd527c62b2e367a665250c3df9378d9fbc6113c366762f275d53",
+    "qualification_wheel_sha256": "2551e9dc52ebed9b2e52b8437253ad8f0d7b6820ac42b936b9d3628f4f6334ef",
+    "scope": "Actual original-owner leaf resource proof rejects unresolved cancel state, then reconciles an explicit operator new fixture prompt in the same original session. Not automatic queue recovery, Zulip human or phone acceptance."
+  },
+  "resource_source_files": [
+    {
+      "path": "source/packages_core_src_session_projector.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/projector.ts",
+      "sha256": "b2145973cd8ae49fdbde760cb4277ed61113669447583805fcbd2669ced304b1",
+      "bytes": 30107
+    },
+    {
+      "path": "source/packages_core_src_session_store.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/store.ts",
+      "sha256": "50f2638f6ca183ed39f524003cc646af8308977e134fa2432d9bca0f3798ea06",
+      "bytes": 10962
+    },
+    {
+      "path": "source/packages_core_src_session_message-updater.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/message-updater.ts",
+      "sha256": "40d7a2ae2852db7b4c985ed0c2c8cfbebb92a91a3d60e3007b37b4f282703ee2",
+      "bytes": 20109
+    }
+  ],
+  "resource_turn_capture": {
+    "path": "parsed-resource-turn.json",
+    "sha256": "87da460a4465e149e0377942641b6f378b2aae2ab3937624c8af0258174477c9",
+    "format": "bridge-selected projected resources; not raw Native API or bus events",
+    "qualification_wheel_sha256": "61e131f843de6da0b008486900f27c33064075157a016f436d364bb4b49ca5e9",
+    "scope": "One explicit operator input, followed by an independent read-only recapture; same original session. Older unresolved input is not completed by newer success. No Human dispatch or phone certificate."
+  },
+  "operator_resource_observation": {
+    "path": "operator-resource-observation.json",
+    "sha256": "1df5386ea9b12f3ea582e43288f1fb744cff62418a90e85993c4128cc5343dc8",
+    "scope": "Original one-attempt operator observation, with a qualification bootstrap identifier; evidence only, never a service write certificate."
+  },
+  "model_setting_source_files": [
+    {
+      "path": "source/packages_core_src_session_session.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/session.ts",
+      "sha256": "53d67aef56a1a6b518fad623d51a15b26f071db25c7e5f1c71a21c36ac3a9d11",
+      "bytes": 16032
+    },
+    {
+      "path": "source/packages_core_src_session_info.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/info.ts",
+      "sha256": "d14557573746c0b2ed65f42f8a881012813f36235bb67d2f2a27661c017c80a6",
+      "bytes": 2601
+    }
+  ],
+  "model_setting_initial_observations": [
+    {
+      "path": "operator-model-setting-initial.json",
+      "sha256": "cfd8fa1c59b6515799020c5054716a37b04ada38333c2f5990c25d32df6c5698",
+      "scope": "First operator POST positively acknowledged. Harness failed on omitted variant versus Native info default normalization, not an automatic retry or service qualification."
+    },
+    {
+      "path": "operator-model-setting-restoration.json",
+      "sha256": "9e9af2126cb18efbafecee5fd68beb1f33f30b80362661dd6eba916d504d69cb",
+      "scope": "Separate single operator restoration to example-provider/none, original owner/idle unchanged and one real public model event. Native history retains the earlier omitted-variant change. Not a production write certificate."
+    }
+  ],
+  "model_setting_qualification": {
+    "path": "operator-model-setting-variants.json",
+    "sha256": "376d2aa95ff78f9cc198aa1958e83bce7ee2c927f0c2492c172f7b77be94146f",
+    "scope": "Two actual operator variant changes high then none, plus inherited genuine model-setting history with omitted/default normalization. Same original Idle, no prompt or Human. Not a production writer certificate."
+  },
+  "model_during_question_capture": {
+    "path": "operator-model-during-question.json",
+    "sha256": "3ebbd8b2446ad140ff6134cc1815a781bf64ba4881037218373bef3392e8b91d",
+    "wheel_sha256": "6fde844a3bdb940555ba980615d7f6dc73c199f6176a9e1e2eea374429b01dc9",
+    "scope": "One guarded operator input on the same original root. High/none changes preserved the same pending form, then one PASS answer and a resource-qualified successful final. No Zulip Human or phone acceptance."
+  },
+  "generated_output_source_files": [
+    {
+      "path": "source/packages_core_src_tool.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/tool.ts",
+      "sha256": "53d4b68ad8d7cf4ff4c88bf2c12ab028a0696fd5dfa41fa26951df55d633a2d4",
+      "verification": "official_source_tag_research_not_live_output"
+    },
+    {
+      "path": "source/packages_schema_src_tool.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/schema/src/tool.ts",
+      "sha256": "b5e35a5a5208f48bf564705563f4f77e5d46d7d57fd8c0091847b38772990e06",
+      "verification": "official_source_tag_research_not_live_output"
+    }
+  ],
+  "resource_static_observations": [
+    {
+      "path": "live-native-cancel-20261017.json",
+      "sha256": "bde26df31977d454c9ef9652ccca0eb45981586ee31ac0bee66517e2b9de8a80",
+      "scope": "Retained historical operator observation, offline replay only; not current owner, Human or phone authority."
+    },
+    {
+      "path": "live-leaf-recovery-20261017.json",
+      "sha256": "31717cd8d6ba44663bd9fbc734ae83ca9addf356f5c6ecbfd260496830e73ae5",
+      "scope": "Retained historical operator observation, offline replay only; not current owner, Human or phone authority."
+    },
+    {
+      "path": "live-public-feed-20261017.json",
+      "sha256": "ba4e2b800797a265e04fccfc5aed47d60a8250575dcfb15baa2074224e2f59fc",
+      "scope": "Historical operator observation, offline replay only; no current live authority."
+    }
+  ],
+  "check_source_tag_files": [
+    {
+      "path": "source/packages_core_src_session_shell.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/session/shell.ts",
+      "sha256": "30429785fb0481a24c82ad5f79af2caa268e1b8830f20490365d44a14bf8b311",
+      "bytes": 1085,
+      "qualification": "static tag source only, not installed shell permission/execution evidence"
+    },
+    {
+      "path": "source/packages_core_src_shell.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/shell.ts",
+      "sha256": "a715f3ebee5669722cbf3e70b6223760e2a2f0291fc4fa3d4bd8512556cb334d",
+      "bytes": 19516,
+      "qualification": "static tag source only, not installed shell permission/execution evidence"
+    },
+    {
+      "path": "source/packages_core_src_shell_result.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/shell/result.ts",
+      "sha256": "3020a8a9bb7a3c8a3b05cfcc8a8c9f0d6de6ce67a6cc5919e231c0859f4cf16c",
+      "bytes": 2759,
+      "qualification": "static tag source only, not installed shell permission/execution evidence"
+    },
+    {
+      "path": "source/packages_core_src_util_wildcard.ts",
+      "source": "https://raw.githubusercontent.com/anomalyco/opencode/v2.0.32/packages/core/src/util/wildcard.ts",
+      "sha256": "8c38258732c7e569febf52a36468181e2c851f2dceea7112b618c0cf43ed3170",
+      "bytes": 470,
+      "qualification": "static tag source only, not installed shell permission/execution evidence"
+    }
+  ],
+  "parsed_resource_outcomes_sha256": "13a82001410c19aa63ef74398bac4b22d81fdedf25e7fbac9ce74dba951c075f"
+}

@@ -1,0 +1,71 @@
+{
+  "phase": "complete",
+  "attempts": [
+    {
+      "operation": "session.prompt",
+      "body_sha256": "3c7f8bc44f6dcc015c822cd24d3c965028b521b9e7b3f9adf20343164e346304",
+      "phase": "acknowledged",
+      "source": "one explicit operator fixture; not a fabricated Zulip Human or bridge queue retry"
+    }
+  ],
+  "wheel_sha256": "61e131f843de6da0b008486900f27c33064075157a016f436d364bb4b49ca5e9",
+  "scope": "Actual isolated projected-message resources plus one explicit guarded operator fixture input on the same original session. No Zulip Human identity, automatic retry, durable event replay or phone certificate.",
+  "older_cancel_input_not_completed_by_later_success": true,
+  "upstream_id": "msg_0cfda7c9b0018kGJvUVt6wwoxS",
+  "passed": true,
+  "operator_prompt_attempt_count": 1,
+  "reader_native_mutations_enabled": false,
+  "exact_final_text": "JT_OZ_RESOURCE_TURN_OK_20261017",
+  "scoped_public_event_count": 13,
+  "original_owner_unchanged": true,
+  "native_pid": 33171,
+  "evidence": {
+    "format": "v2-native-resource-turn-v1",
+    "correlation": {
+      "reference": {
+        "backend_id": "server-opencode",
+        "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+        "upstream_session_id": "ses_000000000001FixtureRootA01",
+        "project_id": "example-project",
+        "canonical_directory": "/home/opencode/workspaces/example-project"
+      },
+      "action_id": "operator_resource_turn_20261017",
+      "operation_digest": "0f1606f86ffc3e0d59a2576c7e81a85d7d889fc47d95fa2e2b1e3926d8d357ca",
+      "upstream_id": "msg_0cfda7c9b0018kGJvUVt6wwoxS",
+      "text": "Synthetic operator prompt 02. Reply with exactly JT_OZ_RESOURCE_TURN_OK_20261017 and nothing else."
+    },
+    "contract_sha256": "1c42291edfab54761b7f6cf0f490a262be277d45d1daa926ab3b8de15e658bce",
+    "semantics_sha256": "e77be5d779535a93d9c09f594413794026effd75488d679b98ae014bae8a5c36",
+    "installed_evidence_sha256": "7c667002becb45d2073e2be22380d7c151876383532a4c9cceca8aff8555fdf1",
+    "connection_epoch": "985582c30305f11e8ddb226bff913fd96add67920faba97db637994ec492258c",
+    "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+    "ownership_evidence_sha256": "0d29115fecbd567aeb549c93822567d6974d82e06dcb0c06afeddc64d3791f89",
+    "session_info_sha256": "61b2d8e987ebd45c0ff46d773f62b815e4832794f2e544ad50a6ea2143650ffb",
+    "resource_fence": "a8efc89f12d735e8e100ce75daa6df0316a7f1bd6df94dcb3eb84ba464bba01f",
+    "observed_at": 1790193599.362263,
+    "expires_at": 1790193604.362263,
+    "turn": {
+      "user_id": "msg_0cfda7c9b0018kGJvUVt6wwoxS",
+      "user_projection_sha256": "73b85f3b1d774ca6ee95ea9f4b0012f1d268a63de186d0b29ada01eba50e3c49",
+      "terminal_id": "msg_0cfda812d001jVtw8c2MyBgskk",
+      "terminal_projection_sha256": "46c4cd72736e56f4a53fe04261c01d88f7624245cae0faa6390c0f66feaabf8d",
+      "terminal_created": 1790193598765.0,
+      "outcome": "succeeded",
+      "terminal_error_sha256": null,
+      "text": [
+        {
+          "assistant_id": "msg_0cfda7cca001tDkngPa3V8aH1b",
+          "content_index": 0,
+          "text": "JT_OZ_RESOURCE_TURN_OK_20261017"
+        }
+      ],
+      "tools": [],
+      "ordered_message_ids": [
+        "msg_0cfda7c9b0018kGJvUVt6wwoxS",
+        "msg_0cfda7cca001tDkngPa3V8aH1b",
+        "msg_0cfda812d001jVtw8c2MyBgskk"
+      ],
+      "selected_projection_sha256": "001c314650e04732c5c8ee0765961f579d4b554fe910e71521f4a18479a20d4a"
+    }
+  }
+}

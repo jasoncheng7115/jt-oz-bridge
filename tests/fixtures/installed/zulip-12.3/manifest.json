@@ -1,0 +1,16 @@
+{
+  "format": "installed-zulip-evidence-v1",
+  "server": "Zulip12.3 feature500",
+  "realm_id": 2,
+  "bot_id": 11,
+  "channel_id": 4,
+  "captures": [
+    {
+      "path": "bot-message-lifecycle.json",
+      "sha256": "6e340c7e110ac007eb7469e1f912bb1059ebfd037017af6dfbeeba317a33b975",
+      "scope": "Actual dedicated Bot own-message event registration/create/edit/delete only. No human command or phone certificate."
+    }
+  ],
+  "original_human_messages_captured": false,
+  "mobile_acceptance": false
+}

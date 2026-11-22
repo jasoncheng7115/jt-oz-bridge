@@ -1,0 +1,9 @@
+[Unit]
+Description=Every five minutes, start a jt-oz-bridge that systemd gave up on
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+
+[Install]
+WantedBy=timers.target

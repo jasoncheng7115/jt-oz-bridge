@@ -1,0 +1,235 @@
+{
+  "passed": true,
+  "scope": "Actual read-only archived Native projection matching for experimental operator interruption/failure fixtures; not a fresh turn witness, Human or service-write certificate.",
+  "native_mutation_attempts": 0,
+  "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+  "native_pid": 33171,
+  "contract_sha256": "1c42291edfab54761b7f6cf0f490a262be277d45d1daa926ab3b8de15e658bce",
+  "semantics_sha256": "e77be5d779535a93d9c09f594413794026effd75488d679b98ae014bae8a5c36",
+  "cases": [
+    {
+      "original_observation_sha256": "74a72e18f8ad8a1d26d69d11c30b6d6bacc03bf3a41d557f950f64da05b8caee",
+      "correlation": {
+        "reference": {
+          "backend_id": "server-opencode",
+          "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+          "upstream_session_id": "ses_000000000001FixtureRootA01",
+          "project_id": "example-project",
+          "canonical_directory": "/home/opencode/workspaces/example-project"
+        },
+        "action_id": "operator_resource_interrupt_20261017",
+        "operation_digest": "03a07ca042674de69b07e3c53b924de8752fe61a039492e5ffbb9ad86c3ad7a1",
+        "upstream_id": "msg_0d03afd1100146NmtUdbTydd0j",
+        "text": "Synthetic operator prompt 07. Reply with exactly JT_OZ_INTERRUPT_UNEXPECTED_REPLY_20261017 and nothing else. zeta synthetic only omicron kappa iota zeta tau alpha tau beta kappa beta omega theta kappa tau zeta kappa only iota zeta beta zeta beta sample zeta gamma fixture content words lambda beta kappa sample omicron beta kappa kappa sample kappa lambda sample iota."
+      },
+      "selected_descending": [
+        {
+          "id": "msg_0d03bfcdf001Iydb68KXQekOtK",
+          "type": "idle",
+          "time": {
+            "created": 1790199987423
+          },
+          "outcome": "interrupted"
+        },
+        {
+          "id": "msg_0d03afd5a001JtO2S7cSO6kTbc",
+          "type": "assistant",
+          "time": {
+            "created": 1790199922028,
+            "streamed": 1790199924131,
+            "completed": 1790199987418
+          },
+          "content": [
+            {
+              "type": "tool",
+              "index": 0,
+              "id": "call_5eded6a69ad805a7b759ff54",
+              "name": "question",
+              "status": "error",
+              "time": {
+                "created": 1790199923017,
+                "ran": 1790199924127,
+                "completed": 1790199987400
+              },
+              "error_sha256": "8d05563e1554639866725a2b326c9f62e6f7365a98225d3ca6940dd4e25cd113"
+            }
+          ]
+        },
+        {
+          "id": "msg_0d03afd1100146NmtUdbTydd0j",
+          "type": "user",
+          "time": {
+            "created": 1790199921996
+          },
+          "text": "Synthetic operator prompt 07. Reply with exactly JT_OZ_INTERRUPT_UNEXPECTED_REPLY_20261017 and nothing else. zeta synthetic only omicron kappa iota zeta tau alpha tau beta kappa beta omega theta kappa tau zeta kappa only iota zeta beta zeta beta sample zeta gamma fixture content words lambda beta kappa sample omicron beta kappa kappa sample kappa lambda sample iota.",
+          "metadata": {
+            "jt_oz_bridge": {
+              "action_id": "operator_resource_interrupt_20261017",
+              "operation_digest": "03a07ca042674de69b07e3c53b924de8752fe61a039492e5ffbb9ad86c3ad7a1"
+            }
+          },
+          "attachments_present": false
+        }
+      ],
+      "expected_turn": {
+        "user_id": "msg_0d03afd1100146NmtUdbTydd0j",
+        "user_projection_sha256": "d6eae2d81c74ff5df0ebf31b7a381f930c5b35b0ceac6cce43b4adbae686640e",
+        "terminal_id": "msg_0d03bfcdf001Iydb68KXQekOtK",
+        "terminal_projection_sha256": "3ae95ff2a6ac341e27f5980f6b58afcdf604a044c73b7355cb9b5d43535d31ae",
+        "terminal_created": 1790199987423.0,
+        "outcome": "interrupted",
+        "terminal_error_sha256": null,
+        "text": [],
+        "tools": [
+          {
+            "assistant_id": "msg_0d03afd5a001JtO2S7cSO6kTbc",
+            "content_index": 0,
+            "tool_id": "call_5eded6a69ad805a7b759ff54",
+            "name": "question",
+            "status": "error",
+            "exit_code": null,
+            "error_sha256": "8d05563e1554639866725a2b326c9f62e6f7365a98225d3ca6940dd4e25cd113"
+          }
+        ],
+        "ordered_message_ids": [
+          "msg_0d03afd1100146NmtUdbTydd0j",
+          "msg_0d03afd5a001JtO2S7cSO6kTbc",
+          "msg_0d03bfcdf001Iydb68KXQekOtK"
+        ],
+        "selected_projection_sha256": "b22c00d2c235c71fc3d39eb30910f021779aed58cbcd306fc8f79682e422f2af",
+        "setting_message_ids": []
+      }
+    },
+    {
+      "original_observation_sha256": "daa8606e8b4f1d24414e82e7f77b1c091903ee733d7f14de5803a355621e9724",
+      "correlation": {
+        "reference": {
+          "backend_id": "server-opencode",
+          "backend_identity": "cd0d41b0-02ff-4248-8b4b-4bbd99c967a9",
+          "upstream_session_id": "ses_000000000001FixtureRootA01",
+          "project_id": "example-project",
+          "canonical_directory": "/home/opencode/workspaces/example-project"
+        },
+        "action_id": "operator_resource_failure_20261017",
+        "operation_digest": "06b9bf88536e9bf329f91c672d362b5c771ae17c97b929076070594e829ff5c4",
+        "upstream_id": "msg_0d03da7600011XOXT0C3FRU0TL",
+        "text": "Synthetic operator prompt 08. Reply with exactly JT_OZ_FAILURE_UNEXPECTED_REPLY_20261017 and nothing else. kappa example upsilon words upsilon iota example sigma alpha placeholder beta epsilon sigma sample kappa sigma kappa theta lambda gamma upsilon zeta zeta sample beta kappa sample omicron gamma sigma omega synthetic fixture tau omega placeholder alpha eta alpha sigma."
+      },
+      "selected_descending": [
+        {
+          "id": "msg_0d03db952001Qig0qwAeSFvIJY",
+          "type": "model-switched",
+          "time": {
+            "created": 1790200101202
+          },
+          "model": {
+            "providerID": "example-provider",
+            "id": "example-model-1",
+            "variant": "none"
+          },
+          "previous": {
+            "providerID": "example-provider",
+            "id": "jt-oz-negative-fixture-nonexistent-20261017",
+            "variant": "none"
+          }
+        },
+        {
+          "id": "msg_0d03db70c0015GupVO3JGO5uWS",
+          "type": "idle",
+          "time": {
+            "created": 1790200100620
+          },
+          "outcome": "failed",
+          "error_sha256": "e05bafa21d7213920a0fafbe179c79f6792fd58a0d350b7069430d6ededacd31"
+        },
+        {
+          "id": "msg_0d03db3ca001XNrPK0DsTvDp0p",
+          "type": "model-switched",
+          "time": {
+            "created": 1790200099786
+          },
+          "model": {
+            "providerID": "example-provider",
+            "id": "jt-oz-negative-fixture-nonexistent-20261017",
+            "variant": "none"
+          },
+          "previous": {
+            "providerID": "example-provider",
+            "id": "example-model-1",
+            "variant": "none"
+          }
+        },
+        {
+          "id": "msg_0d03da793001gmG7dHsA6hXjMC",
+          "type": "assistant",
+          "time": {
+            "created": 1790200096670,
+            "streamed": 1790200098901,
+            "completed": 1790200100607
+          },
+          "content": [
+            {
+              "type": "tool",
+              "index": 0,
+              "id": "call_58349178647632d2c11a5c6f",
+              "name": "question",
+              "status": "completed",
+              "time": {
+                "created": 1790200097718,
+                "ran": 1790200098898,
+                "completed": 1790200100598
+              }
+            }
+          ]
+        },
+        {
+          "id": "msg_0d03da7600011XOXT0C3FRU0TL",
+          "type": "user",
+          "time": {
+            "created": 1790200096640
+          },
+          "text": "Synthetic operator prompt 08. Reply with exactly JT_OZ_FAILURE_UNEXPECTED_REPLY_20261017 and nothing else. kappa example upsilon words upsilon iota example sigma alpha placeholder beta epsilon sigma sample kappa sigma kappa theta lambda gamma upsilon zeta zeta sample beta kappa sample omicron gamma sigma omega synthetic fixture tau omega placeholder alpha eta alpha sigma.",
+          "metadata": {
+            "jt_oz_bridge": {
+              "action_id": "operator_resource_failure_20261017",
+              "operation_digest": "06b9bf88536e9bf329f91c672d362b5c771ae17c97b929076070594e829ff5c4"
+            }
+          },
+          "attachments_present": false
+        }
+      ],
+      "expected_turn": {
+        "user_id": "msg_0d03da7600011XOXT0C3FRU0TL",
+        "user_projection_sha256": "1c7c0e19aed9b44e76c915fee6f6f1c6fbd91ce0430bebf3d5c64d6f00bd4091",
+        "terminal_id": "msg_0d03db70c0015GupVO3JGO5uWS",
+        "terminal_projection_sha256": "558f09912f39ca39fd743c28ab6a69d07ee11295e7f3ca7816e3a6bd62a6f958",
+        "terminal_created": 1790200100620.0,
+        "outcome": "failed",
+        "terminal_error_sha256": "e05bafa21d7213920a0fafbe179c79f6792fd58a0d350b7069430d6ededacd31",
+        "text": [],
+        "tools": [
+          {
+            "assistant_id": "msg_0d03da793001gmG7dHsA6hXjMC",
+            "content_index": 0,
+            "tool_id": "call_58349178647632d2c11a5c6f",
+            "name": "question",
+            "status": "completed",
+            "exit_code": null,
+            "error_sha256": null
+          }
+        ],
+        "ordered_message_ids": [
+          "msg_0d03da7600011XOXT0C3FRU0TL",
+          "msg_0d03da793001gmG7dHsA6hXjMC",
+          "msg_0d03db3ca001XNrPK0DsTvDp0p",
+          "msg_0d03db70c0015GupVO3JGO5uWS"
+        ],
+        "selected_projection_sha256": "6392c8b897214df6e087e4d8b0790cb66307b7fc844cd60d2793447fd473e801",
+        "setting_message_ids": [
+          "msg_0d03db3ca001XNrPK0DsTvDp0p",
+          "msg_0d03db952001Qig0qwAeSFvIJY"
+        ]
+      }
+    }
+  ]
+}

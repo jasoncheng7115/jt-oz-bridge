@@ -1,0 +1,28 @@
+{
+  "owner_epoch": "210e7a1baa3f04c504f598e0c490dd040651f6e182184b3c02ebdbdf56f42d6c",
+  "session_id": "ses_000000000001FixtureRootA01",
+  "form_id": "frm_0cfa4d574001Vg4Or91zZFB46L",
+  "form_state": {
+    "status": "cancelled"
+  },
+  "retained_outcome": "succeeded",
+  "session_time": {
+    "created": 1790184449430,
+    "updated": 1790190197870,
+    "idle": 1790189583506
+  },
+  "selected_active": false,
+  "latest_message_fields": {
+    "id": "msg_0cfa4bf00001AlpdEBOvSccgHP",
+    "time": {
+      "created": 1790190075660,
+      "streamed": 1790190081387,
+      "completed": 1790190197870
+    },
+    "type": "assistant"
+  },
+  "pending_permissions": 0,
+  "pending_forms": 0,
+  "pending_inbox": 0,
+  "scope": "Authoritative API resource observations after operator no-message form.cancel. Current terminal and complete stream details remain unresolved; previous retained success is not current completion."
+}

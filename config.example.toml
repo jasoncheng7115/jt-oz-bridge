@@ -1,0 +1,172 @@
+# jt-oz-bridge example configuration.
+# Foundation CLI/admin application; live integrations remain disabled until enrollment.
+# Messages default to English. Keep real credentials out of this file; reference them instead.
+# What is off here stays off until you enroll it and set its credentials and grants.
+
+[app]
+name = "jt-oz-bridge"
+environment = "production"
+bind_host = "127.0.0.1"
+bind_port = 8765
+workers = 1
+state_dir = "/var/lib/jt-oz-bridge"
+log_level = "INFO"
+
+[runtime]
+enabled = false
+# Opt in only after original transcript readers are qualified for the enrolled Roots.
+# Adds own transcript history/sync; it never starts or replaces Native OpenCode.
+native_mirror_enabled = false
+# Coalesced preview edits; full final replies/outcomes still post separately.
+native_drafts_enabled = false
+# Original Native file reads and Zulip upload/readback evidence are required.
+# Outbound file returns only; this does not enable incoming workspace staging.
+file_returns_enabled = false
+# Requires v6 per-Root original generated-output metadata/byte qualifications.
+# Automatically freezes owned-turn outputs before allowing the next Native write.
+generated_returns_enabled = false
+# Requires v4/v5 source/namespace qualification; keeps the original Native session.
+workspace_inputs_enabled = false
+# Requires v5 per-Root catalog certificates and a qualified physical-directory helper.
+workspace_menus_enabled = false
+# Explicit per-project creation policy/RPC pins on a backend-scoped v2+ enrollment.
+# Selects the original creation/restoration graph; chat creation wiring is separate.
+session_creation_enabled = false
+# A confirmed `!fork` gets its own topic and Root with its source Root's policy.
+# Requires session_creation_enabled; only projects enrolled for creation qualify.
+session_fork_topics_enabled = false
+# `!oz git commit` / `!oz git push`: GET-only preview, one confirmed prompt to the Root's
+# own agent under its own rules, then GET-only checks. Needs qualified Git review reads.
+git_publish_enabled = false
+# "every 30 minutes check my mail until 18:00": shown back, then one `!confirm` makes the
+# bridge send that task to the same session at each time, as the person who asked.
+prompt_schedules_enabled = false
+# Before a session's first prompt, attach one instruction entry asking its AI to write for
+# Zulip (short, lists, spoiler blocks). Sent only if the put is in verified_operations.
+zulip_format_instructions_enabled = true
+# Root-managed evidence pins, explicit scope and installed qualification are required.
+# enrollment_file = "/etc/jt-oz-bridge/runtime.json"
+
+[i18n]
+default_locale = "en"
+supported_locales = ["en", "zh-TW"]
+allow_user_switch = true
+allow_topic_switch = true
+agent_response_language = "inherit"
+default_timezone = "UTC"
+
+[database]
+url = "sqlite+aiosqlite:////var/lib/jt-oz-bridge/bridge.db"
+sqlite_journal_mode = "WAL"
+sqlite_busy_timeout_ms = 30000
+# To use PostgreSQL, point url_ref at a secret that holds the whole asyncpg DSN.
+# url_ref = "env:JTOZ_DATABASE_URL"
+# Set url or url_ref, not both. Pointing it elsewhere does not move any data.
+
+[admin]
+enabled = true
+bootstrap_token_ref = "env:JTOZ_BOOTSTRAP_TOKEN"
+session_signing_key_ref = "env:JTOZ_SESSION_SIGNING_KEY"
+trusted_proxy_networks = []
+csrf_protection = true
+# Remote admin access needs public_url set to an HTTPS address first.
+public_url = ""
+
+[security]
+authorization_default = "deny"
+require_private_channels = true
+allow_other_bot_input = false
+allow_shell_on_bridge_host = false
+allow_plain_http_loopback = true
+allow_plain_http_non_loopback = false
+secret_key_ref = "env:JTOZ_SECRET_KEY"
+reveal_secrets_on_readback = false
+
+[commands]
+prefix = "!oz"
+menu_page_size = 10
+menu_token_ttl_seconds = 900
+interaction_token_ttl_seconds = 900
+require_scoped_confirmation = true
+
+[execution]
+max_active_sessions_global = 4
+max_active_sessions_per_backend = 2
+busy_input_policy = "queue"
+resume_queue_after_stop = "manual"
+ambiguous_mutation_policy = "hold_and_reconcile"
+recovered_unsent_input_policy = "hold_for_review"
+
+[rendering]
+stream_update_min_interval_ms = 1000
+history_backfill_messages = 20
+include_raw_reasoning = false
+long_output_mode = "summary_with_authorized_full_output"
+lock_screen_notification_detail = "minimal"
+
+[attachments]
+max_file_bytes = 20971520
+allowed_download_origins = []
+allow_cross_origin_redirects = false
+allow_private_url_fetch = false
+allow_automatic_extraction = false
+allow_automatic_execution = false
+# List each Zulip file origin you trust, private hosts included when you need them.
+# Anything not listed is refused, so the default above cannot be used to reach other hosts.
+
+[recovery]
+reconnect_min_seconds = 1
+reconnect_max_seconds = 60
+reconcile_interval_seconds = 60
+unknown_outbound_delivery_policy = "reconcile_then_hold"
+
+[retention]
+finalized_payload_days = 7
+temporary_artifact_days = 7
+audit_metadata_days = 90
+retain_pending_and_ambiguous = true
+artifact_quota_bytes = 2147483648
+# Separate plaintext input quota; encrypted artifacts retain their own budget.
+workspace_quota_bytes = 2147483648
+workspace_maximum_objects = 10000
+reserve_free_disk_bytes = 1073741824
+
+[observability]
+metrics_enabled = true
+metrics_bind_host = "127.0.0.1"
+redact_content_by_default = true
+
+[[zulip_realms]]
+# Optional root-managed, fresh per-user chat-language export; no personal API keys.
+# platform_locale_file = "/etc/jt-oz-bridge/user-languages.json"
+id = "primary"
+enabled = false
+url = "https://chat.example.com"
+bot_email = "oz-bridge-bot@example.com"
+api_key_ref = "env:JTOZ_ZULIP_API_KEY"
+default_locale = "en"
+allowed_user_ids = []
+allowed_channel_ids = []
+
+[zulip_realms.request_budget]
+requests = 180
+window_seconds = 60
+reserved_requests = 64
+
+[[opencode_backends]]
+id = "development"
+enabled = false
+base_url = "http://127.0.0.1:4096"
+api_generation = "auto"
+credential_ref = "env:JTOZ_OPENCODE_CREDENTIAL"
+require_identity_enrollment = true
+# How a backend authenticates depends on its adapter and version; V2 is not V1 Basic auth.
+
+[[projects]]
+id = "example-project"
+enabled = false
+backend_id = "development"
+workspace_root = "/srv/projects/example-project"
+realm_id = "primary"
+input_mode = "authorized_humans_in_bound_topic"
+default_topic_locale = "en"

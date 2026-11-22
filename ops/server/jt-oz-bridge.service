@@ -1,0 +1,52 @@
+[Unit]
+Description=jt-oz-bridge qualified Zulip and OpenCode consumer
+# After a reboot, start after OpenCode rather than burning the three tries below. Only
+# ordered, never pulled in: Bridge never starts an OpenCode someone stopped.
+Wants=network-online.target jt-opencode-owner.service
+After=network-online.target jt-opencode-owner.service opencode.service
+StartLimitIntervalSec=300
+StartLimitBurst=3
+# One Zulip notice when a failure does not fix itself; jt-oz-bridge-recovered.timer says when it is back.
+# The standby answers each topic once meanwhile and exits once Bridge is ready again.
+OnFailure=jt-oz-bridge-notice.service jt-oz-bridge-standby.service
+
+[Service]
+Type=simple
+User=jtoz
+Group=jtoz
+WorkingDirectory=/var/lib/jt-oz-bridge
+Environment=PYTHONDONTWRITEBYTECODE=1
+Environment=PYTHONUNBUFFERED=1
+# OpenCode takes a moment to listen after it starts; wait up to two minutes for it.
+ExecStartPre=/usr/bin/bash -c 'for _ in $$(seq 60); do (exec 3<>/dev/tcp/127.0.0.1/4096) 2>/dev/null && exit 0; sleep 2; done; echo opencode_not_listening; exit 1'
+ExecStart=/opt/jt-oz-bridge/venv/bin/jt-oz-bridge --config /etc/jt-oz-bridge/config.toml serve
+TimeoutStartSec=180
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=45
+KillMode=control-group
+UMask=0077
+NoNewPrivileges=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=true
+ProtectControlGroups=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+SystemCallArchitectures=native
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/jt-oz-bridge
+LimitCORE=0
+TasksMax=256
+MemoryMax=1G
+
+[Install]
+WantedBy=multi-user.target

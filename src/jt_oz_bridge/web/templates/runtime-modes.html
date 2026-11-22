@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="{{ locale }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ t('console.runtime_modes') }} · jt-oz-bridge</title><link rel="stylesheet" href="/static/app.css"><script src="/static/theme.js" defer></script></head>
+<body><a class="skip" href="#content">{{ t('console.skip') }}</a>
+<header><a href="/">jt-oz-bridge</a></header>
+<div class="console-layout"><nav aria-label="{{ t('console.navigation') }}"><a href="/">{{ t('console.overview') }}</a><a href="/admin/runtime-modes" aria-current="page">{{ t('console.runtime_modes') }}</a>{% for section in sections %}<a href="/admin/{{ section }}">{{ t('console.' + section) }}</a>{% endfor %}</nav>
+<main id="content" tabindex="-1"><h1>{{ t('console.runtime_modes') }}</h1>
+<p class="notice">{{ t('console.runtime_modes_scope') }}</p><p>{{ t('console.runtime_modes_freshness') }}</p>
+{% if result["items"] %}<div class="table-scroll" role="region" aria-label="{{ t('console.runtime_modes') }}" tabindex="0"><table><caption>{{ t('console.runtime_modes_current_bindings') }}</caption><thead><tr><th scope="col">{{ t('console.col_binding_id') }}</th><th scope="col">{{ t('console.runtime_mode') }}</th><th scope="col">{{ t('console.runtime_reason') }}</th><th scope="col">{{ t('console.runtime_transition') }}</th><th scope="col">{{ t('console.runtime_observed') }}</th></tr></thead><tbody>
+{% for row in result["items"] %}<tr><td>{{ row.binding_id }}</td><td>{{ t('console.runtime_mode_' + row.mode|replace('-', '_')) }}</td><td>{{ t('console.runtime_reason_' + row.reason|replace('-', '_')) }}</td><td>{{ row.transition_at|round(3) if row.transition_at is not none else '—' }}</td><td>{{ row.observed_at|round(3) if row.observed_at is not none else '—' }}</td></tr>{% endfor %}
+</tbody></table></div>{% else %}<p role="status">{{ t('console.runtime_modes_empty') }}</p>{% endif %}
+{% if next_url %}<a class="next" rel="next" href="{{ next_url }}">{{ t('console.next') }}</a>{% endif %}
+<p>{{ t('console.runtime_modes_refresh') }}</p></main></div></body></html>

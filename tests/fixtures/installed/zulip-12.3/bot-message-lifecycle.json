@@ -1,0 +1,58 @@
+{
+  "events": [
+    {
+      "type": "message",
+      "message": {
+        "id": 20,
+        "sender_id": 11,
+        "content": "JT_OZ_EVENT_f1cf90410c402def2c6c677b59bb51ec\n\nSynthetic bot event message text.",
+        "recipient_id": 10,
+        "timestamp": 1790191053,
+        "client": "python-httpx",
+        "subject": "example topic",
+        "topic_links": [],
+        "is_me_message": false,
+        "reactions": [],
+        "submessages": [],
+        "sender_full_name": "Example Bot",
+        "sender_email": "example-bot@example.com",
+        "sender_realm_str": "",
+        "display_recipient": "example-channel",
+        "type": "stream",
+        "stream_id": 4,
+        "avatar_url": "/user_avatars/2/860a300bf82c9e65c0d0b4b18daf0b4ca428c33a.png",
+        "content_type": "text/x-markdown"
+      },
+      "flags": [],
+      "id": 0
+    },
+    {
+      "type": "update_message",
+      "user_id": 11,
+      "edit_timestamp": 1790191054,
+      "message_id": 20,
+      "rendering_only": false,
+      "orig_content": "JT_OZ_EVENT_f1cf90410c402def2c6c677b59bb51ec\n\nSynthetic bot event message text.",
+      "orig_rendered_content": "<p>JT_OZ_EVENT_f1cf90410c402def2c6c677b59bb51ec</p>\n<p>Synthetic bot event message text.</p>",
+      "content": "JT_OZ_EVENT_f1cf90410c402def2c6c677b59bb51ec\n\nSynthetic bot event message text, edited.",
+      "rendered_content": "<p>JT_OZ_EVENT_f1cf90410c402def2c6c677b59bb51ec</p>\n<p>Synthetic bot event message text, edited.</p>",
+      "is_me_message": false,
+      "stream_name": "example-channel",
+      "stream_id": 4,
+      "message_ids": [
+        20
+      ],
+      "flags": [],
+      "id": 1
+    },
+    {
+      "type": "delete_message",
+      "stream_id": 4,
+      "topic": "example topic",
+      "message_type": "stream",
+      "message_id": 20,
+      "id": 2
+    }
+  ],
+  "scope": "Actual dedicated Bot own-message event registration/create/edit/delete only. No human command or phone certificate."
+}

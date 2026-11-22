@@ -1,0 +1,78 @@
+{
+  "format": "reconstructed-native-readback-v1",
+  "date": "2026-11-04",
+  "platform": "Linux amd64 container",
+  "version": "2.0.32",
+  "scope": "Reconstructed from a GET-only live readback on the server (OpenCode 2.0.32) on 2026-11-04, after a Native permission request was answered reject. Only the field shapes, the listed field values and the equalities/orderings between timestamps come from that readback; identifiers and epoch-millisecond values are synthetic. No message text, tool input/output, reasoning, agent or model data is retained. Not a byte-for-byte wire capture, owner certificate, Human or mobile acceptance.",
+  "readback": [
+    "GET /api/session/{id}",
+    "GET /api/session/{id}/message?limit=4&order=desc",
+    "GET /api/session/active",
+    "GET /api/session/{id}/inbox",
+    "GET /api/session/{id}/permission",
+    "GET /api/session/{id}/form",
+    "GET /api/shell"
+  ],
+  "observed_relations": [
+    "session time.updated == newest assistant time.completed",
+    "session time.idle == idle entry time.created (previous turn)",
+    "session outcome == idle entry outcome == succeeded (previous turn)",
+    "no idle entry newer than the aborted assistant",
+    "session not in session.active; inbox, permissions, forms and running shells empty"
+  ],
+  "session": {
+    "outcome": "succeeded",
+    "time": {
+      "created": 1793760000000,
+      "updated": 1793761290450,
+      "idle": 1793761100200
+    }
+  },
+  "active": {},
+  "inbox": [],
+  "permissions": [],
+  "forms": [],
+  "shells": [],
+  "messages_desc": [
+    {
+      "id": "msg_reconstructed_reject_assistant",
+      "type": "assistant",
+      "time": {
+        "created": 1793761210300,
+        "streamed": 1793761215800,
+        "completed": 1793761290450
+      },
+      "error": {
+        "type": "aborted",
+        "message": "Step interrupted"
+      },
+      "finish": "error"
+    },
+    {
+      "id": "msg_reconstructed_reject_user",
+      "type": "user",
+      "time": {
+        "created": 1793761210100
+      }
+    },
+    {
+      "id": "msg_reconstructed_previous_idle",
+      "type": "idle",
+      "time": {
+        "created": 1793761100200
+      },
+      "outcome": "succeeded"
+    },
+    {
+      "id": "msg_reconstructed_previous_assistant",
+      "type": "assistant",
+      "time": {
+        "created": 1793761050000,
+        "streamed": 1793761052000,
+        "completed": 1793761100100
+      },
+      "finish": "stop"
+    }
+  ],
+  "messages_desc_complete": false
+}

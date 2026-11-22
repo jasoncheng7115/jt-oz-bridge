@@ -1,0 +1,66 @@
+{
+  "synthetic_rendering_samples": true,
+  "message_posts": 0,
+  "upload_posts": 0,
+  "Native_requests": 0,
+  "cases": [
+    {
+      "name": "named_zh",
+      "source": "```spoiler 進階指令\n!oz choose SYNTHETIC_TOKEN 1\n```",
+      "wire": "```spoiler 進階指令\n&#33;oz choose SYNTHETIC&#95;TOKEN 1\n```",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>進階指令</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<p>&#33;oz choose SYNTHETIC&#95;TOKEN 1</p>\n</div></div>",
+      "safe": true
+    },
+    {
+      "name": "named_en",
+      "source": "```spoiler Advanced\n!oz choose SYNTHETIC_TOKEN 1\n```",
+      "wire": "```spoiler Advanced\n&#33;oz choose SYNTHETIC&#95;TOKEN 1\n```",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>Advanced</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<p>&#33;oz choose SYNTHETIC&#95;TOKEN 1</p>\n</div></div>",
+      "safe": true
+    },
+    {
+      "name": "heading_inert",
+      "source": "```spoiler @**all** <img src=x> :smile:\nDetails\n```",
+      "wire": "```spoiler &#64;&#42;&#42;all&#42;&#42; &lt;img src&#61;x&gt; &#58;smile&#58;\nDetails\n```",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>&#64;&#42;&#42;all&#42;&#42; &lt;img src&#61;x&gt; &#58;smile&#58;</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<p>Details</p>\n</div></div>",
+      "safe": true
+    },
+    {
+      "name": "spoiler_body_inert",
+      "source": "```spoiler Details\n@**all** <script>alert(1)</script>\n\n![pixel](https://example.invalid/pixel) [bad](javascript:alert(1))\n```",
+      "wire": "```spoiler Details\n&#64;​**all** &lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt;\n\n[pixel](https://example.invalid/pixel) &#91;bad&#93;&#40;javascript&#58;alert&#40;1&#41;&#41;\n```",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>Details</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<p>&#64;​<strong>all</strong> &lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt;</p>\n<p><a href=\"https://example.invalid/pixel\">pixel</a> &#91;bad&#93;&#40;javascript&#58;alert&#40;1&#41;&#41;</p>\n</div></div>",
+      "safe": true
+    },
+    {
+      "name": "quote_body_inert",
+      "source": "```quote\n@**all** <script>alert(1)</script>\n\n![pixel](https://example.invalid/pixel)\n```",
+      "wire": "> &#64;​**all** &lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt;\n> \n> [pixel](https://example.invalid/pixel)",
+      "rendered_html": "<blockquote>\n<p>&#64;​<strong>all</strong> &lt;script&gt;alert&#40;1&#41;&lt;&#47;script&gt;</p>\n<p><a href=\"https://example.invalid/pixel\">pixel</a></p>\n</blockquote>",
+      "safe": true
+    },
+    {
+      "name": "literal_reserved",
+      "source": "```text\n@**all** <img src=x>\n```",
+      "wire": "```text\n@**all** <img src=x>\n```",
+      "rendered_html": "<div class=\"codehilite\" data-code-language=\"Text only\"><pre><span></span><code>@**all** &lt;img src=x&gt;\n</code></pre></div>",
+      "safe": true
+    },
+    {
+      "name": "nested_json",
+      "source": "~~~spoiler 完整連線目標\n```json\n{\n  \"reference\": {\n    \"directory\": \"/synthetic/project\",\n    \"session\": \"synthetic-session\"\n  }\n}\n```\n~~~",
+      "wire": "~~~spoiler 完整連線目標\n```json\n{\n  \"reference\": {\n    \"directory\": \"/synthetic/project\",\n    \"session\": \"synthetic-session\"\n  }\n}\n```\n~~~",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>完整連線目標</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<div class=\"codehilite\" data-code-language=\"JSON\"><pre><span></span><code><span class=\"p\">{</span>\n<span class=\"w\">  </span><span class=\"nt\">\"reference\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"p\">{</span>\n<span class=\"w\">    </span><span class=\"nt\">\"directory\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"s2\">\"/synthetic/project\"</span><span class=\"p\">,</span>\n<span class=\"w\">    </span><span class=\"nt\">\"session\"</span><span class=\"p\">:</span><span class=\"w\"> </span><span class=\"s2\">\"synthetic-session\"</span>\n<span class=\"w\">  </span><span class=\"p\">}</span>\n<span class=\"p\">}</span>\n</code></pre></div>\n</div></div>",
+      "safe": true
+    },
+    {
+      "name": "opaque_token_code",
+      "source": "```spoiler Advanced\n`!oz choose _000000000000000000000000000000_ 1`\n```",
+      "wire": "~~~spoiler Advanced\n`!oz choose _000000000000000000000000000000_ 1`\n~~~",
+      "rendered_html": "<div class=\"spoiler-block\"><div class=\"spoiler-header\">\n<p>Advanced</p>\n</div><div class=\"spoiler-content\" aria-hidden=\"true\">\n<p><code>!oz choose _000000000000000000000000000000_ 1</code></p>\n</div></div>",
+      "safe": true
+    }
+  ],
+  "formal": false,
+  "provenance": "Actual Zulip /api/v1/messages/render responses, 2026-10-22; synthetic samples only, no posted messages, uploads or Native requests."
+}

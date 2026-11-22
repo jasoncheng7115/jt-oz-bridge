@@ -1,0 +1,6 @@
+<!doctype html>
+<html lang="{{ locale }}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>jt-oz-bridge</title><link rel="stylesheet" href="/static/app.css"><script src="/static/login.js" defer></script></head>
+<body data-connection-error="{{ t('error.generic') }}"><main><h1>jt-oz-bridge</h1><p>{{ t('admin.setup') }}</p>
+<form id="login"><label>{{ t('admin.username') }}<input name="username" autocomplete="username" required maxlength="128"></label><label>{{ t('admin.password') }}<input name="password" type="password" autocomplete="current-password" required maxlength="1024"></label><button>{{ t('admin.login') }}</button></form>
+<form id="reset" hidden><label>{{ t('admin.reset') }}<input name="password" type="password" autocomplete="new-password" required minlength="12" maxlength="1024"></label><button>{{ t('admin.save') }}</button></form><p id="result" role="status" aria-live="polite"></p>
+</main></body></html>

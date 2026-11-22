@@ -1,0 +1,14 @@
+[Unit]
+Description=Restricted metadata-only OpenCode project directory socket
+
+[Socket]
+ListenStream=/run/jt-opencode-directory/scope.sock
+SocketUser=root
+SocketGroup=jtoz
+SocketMode=0660
+DirectoryMode=0755
+RemoveOnStop=yes
+Backlog=8
+
+[Install]
+WantedBy=sockets.target
