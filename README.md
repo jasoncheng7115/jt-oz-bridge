@@ -7,7 +7,7 @@
 <p align="center"><strong>Talk to your AI coding agent from chat.<br>OpenCode × Zulip, self-hosted on your own infrastructure.</strong></p>
 
 <p align="center">
-  <img src="docs/assets/status-preview.svg" alt="Development preview: 0.1.0" height="24">
+  <img src="docs/assets/status-preview.svg" alt="Development preview: 0.1.1" height="24">
   <img src="docs/assets/runtime-python.svg" alt="Python 3.13" height="24">
   <a href="LICENSE"><img src="docs/assets/license-gpl3.svg" alt="GPL-3.0" height="24"></a>
   <img src="docs/assets/deployment-self-hosted.svg" alt="Self-hosted" height="24">
@@ -21,7 +21,7 @@ Zulip, the bridge, OpenCode and your model servers can all run on your own equip
 
 [Why](#why-jt-oz-bridge) · [Architecture](#how-it-fits-together) · [Commands](#chat-commands) · [Install](#install-upgrade-and-uninstall) · [Security](#security-model) · [Development](#development-quick-start) · [Testing](#testing-and-release-gates) · [Documentation](#documentation) · [License](#license)
 
-> **Status: development preview `0.1.0`.**  
+> **Status: development preview `0.1.1`.**  
 > This is not a finished production release. Core routing, persistence and security boundaries have a large automated test suite, and parts of the flow have been observed against a real OpenCode server and Zulip organization. Complete end-to-end acceptance by real people and official iOS/Android acceptance are **not** complete. Expect changes, and try it on a disposable project first.
 
 ---

@@ -7,7 +7,9 @@ archives or links, and Markdown links to files the tree does not have. An owner
 keeps a second list of exact words (host names, accounts, customers, projects)
 outside the repository and passes it with `--private-terms`; that list is never
 published. A git repository in the tree has its commit messages and identities
-checked the same way.
+checked the same way; only the one `Name <e-mail>` passed with `--identity` (or
+the `JTOZ_PUBLIC_IDENTITY` environment variable, which CI reads from a repository
+variable) may appear there as author and committer.
 
 It also refuses personal data (Taiwan national IDs, mobile numbers, card numbers),
 JWTs and written-out passwords, internal host names and IPv6 ULAs, AI assistant
@@ -29,6 +31,7 @@ Exit 0 only when nothing unreviewed matched. Findings mask the matched text.
 import argparse
 import hashlib
 import ipaddress
+import os
 import re
 import subprocess
 import sys
@@ -530,6 +533,11 @@ def main() -> int:
     parser.add_argument("tree", type=Path)
     parser.add_argument("--private-terms", type=Path)
     parser.add_argument("--spec-dir", type=Path, help="original specification, kept outside")
+    parser.add_argument(
+        "--identity",
+        default=os.environ.get("JTOZ_PUBLIC_IDENTITY") or None,
+        help="the one `Name <e-mail>` published as commit author (default $JTOZ_PUBLIC_IDENTITY)",
+    )
     args = parser.parse_args()
     terms = load_terms(args.private_terms)
     if args.private_terms is None:
@@ -537,9 +545,11 @@ def main() -> int:
     if args.spec_dir is None:
         print("WARNING: no --spec-dir; text copied from the specification is not checked")
     root = args.tree.resolve(strict=True)
-    findings = scan(root, terms, spec=spec_windows(args.spec_dir))
+    findings = scan(root, terms, args.identity, spec=spec_windows(args.spec_dir))
     for finding in findings:
         print(finding)
+    if args.identity is None and any(f.path == ".git (commits)" for f in findings):
+        print("HINT: pass --identity or set JTOZ_PUBLIC_IDENTITY to the published commit author")
     if findings:
         print(f"FAIL: {len(findings)} findings; nothing may be published")
         return 1

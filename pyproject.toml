@@ -1,6 +1,6 @@
 [project]
 name = "jt-oz-bridge"
-version = "0.1.0"
+version = "0.1.1"
 description = "A self-hosted bridge connecting AI agents with messaging, starting with OpenCode and Zulip"
 readme = "README.md"
 license = "GPL-3.0-only"

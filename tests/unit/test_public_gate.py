@@ -1,10 +1,11 @@
 import subprocess
+import sys
 import zlib
 
 import pytest
 
 from scripts.public_export import AUTHOR, build, commit, selected
-from scripts.public_gate import line_digest, load_terms, scan, spec_windows
+from scripts.public_gate import line_digest, load_terms, main, scan, spec_windows
 
 
 def write(root, name, text):
@@ -178,6 +179,31 @@ def test_export_author_is_one_name_and_address_and_only_it_skips_the_history_che
     # The chosen author and committer lines pass; the same word in the message does not.
     assert [f.rule for f in scan(out, terms, author)] == ["private-term-1"]
     assert sorted(f.rule for f in scan(out, terms)) == ["email", "email", *["private-term-1"] * 3]
+
+
+def test_ci_passes_the_published_identity_through_the_environment(tmp_path, monkeypatch, capsys):
+    root = private_repo(tmp_path)
+    out = tmp_path / "public"
+    build(root, "HEAD", out)
+    author = "Jane Doe <jane" + "@" + "zorblax" + ".com.tw>"
+    commit(out, author, "public source")
+    argv = ["public_gate", str(out)]
+    monkeypatch.delenv("JTOZ_PUBLIC_IDENTITY", raising=False)
+    # Without the identity the author's address in the history is a finding, with a hint.
+    monkeypatch.setattr(sys, "argv", argv)
+    assert main() == 1
+    assert "HINT: pass --identity or set JTOZ_PUBLIC_IDENTITY" in capsys.readouterr().out
+    # An empty repository variable is no identity.
+    monkeypatch.setenv("JTOZ_PUBLIC_IDENTITY", "")
+    assert main() == 1
+    monkeypatch.setenv("JTOZ_PUBLIC_IDENTITY", author)
+    assert main() == 0
+    # Another address is still refused.
+    monkeypatch.setenv("JTOZ_PUBLIC_IDENTITY", "Jane Doe <jane@example.org>")
+    assert main() == 1
+    monkeypatch.delenv("JTOZ_PUBLIC_IDENTITY")
+    monkeypatch.setattr(sys, "argv", [*argv, "--identity", author])
+    assert main() == 0
 
 
 def png(*chunks):

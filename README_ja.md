@@ -7,7 +7,7 @@
 <p align="center"><strong>チャットから AI コーディングエージェントと対話する。<br>OpenCode × Zulip、すべて自前のインフラでセルフホスト。</strong></p>
 
 <p align="center">
-  <img src="docs/assets/status-preview.svg" alt="開発プレビュー：0.1.0" height="24">
+  <img src="docs/assets/status-preview.svg" alt="開発プレビュー：0.1.1" height="24">
   <img src="docs/assets/runtime-python.svg" alt="Python 3.13" height="24">
   <a href="LICENSE"><img src="docs/assets/license-gpl3.svg" alt="GPL-3.0" height="24"></a>
   <img src="docs/assets/deployment-self-hosted.svg" alt="セルフホスト" height="24">
@@ -21,7 +21,7 @@ Zulip、ブリッジ、OpenCode、モデルサーバーはすべて自前の機�
 
 [特長](#jt-oz-bridge-を使う理由) · [アーキテクチャ](#全体の構成) · [コマンド](#チャットコマンド) · [インストール](#インストールアップグレードアンインストール) · [セキュリティ](#セキュリティモデル) · [開発](#開発クイックスタート) · [テスト](#テストとリリースゲート) · [ドキュメント](#ドキュメント) · [ライセンス](#ライセンス)
 
-> **ステータス：開発プレビュー `0.1.0`。**  
+> **ステータス：開発プレビュー `0.1.1`。**  
 > 本番向けの完成版リリースではありません。コアのルーティング、永続化、セキュリティ境界には大規模な自動テストがあり、フローの一部は実際の OpenCode サーバーと Zulip 組織で確認済みです。ただし、実際の利用者によるエンドツーエンドの受け入れと、公式 iOS／Android アプリでの受け入れは**完了していません**。今後も変更が入る前提で、まずは使い捨てのプロジェクトでお試しください。
 
 ---

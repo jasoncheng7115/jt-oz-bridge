@@ -2,7 +2,7 @@
 
 [English](OPERATIONS_SOP.md) · [安裝](INSTALL_zh-tw.md) · [升級](UPGRADE_zh-tw.md) · [測試](TESTING_zh-tw.md)
 
-說明如何在已有 OpenCode 的 Linux 主機上執行 jt-oz-bridge。路徑都是預設值：設定在 `/etc/jt-oz-bridge`，狀態在 `/var/lib/jt-oz-bridge/service`，版本在 `/opt/jt-oz-bridge/releases/<wheel-sha256>`。這是開發版（0.1.0），尚無正式發行；照這些步驟做，本身並不代表部署已可正式上線。
+說明如何在已有 OpenCode 的 Linux 主機上執行 jt-oz-bridge。路徑都是預設值：設定在 `/etc/jt-oz-bridge`，狀態在 `/var/lib/jt-oz-bridge/service`，版本在 `/opt/jt-oz-bridge/releases/<wheel-sha256>`。這是開發版（0.1.1），尚無正式發行；照這些步驟做，本身並不代表部署已可正式上線。
 
 ## 永遠適用的規則
 

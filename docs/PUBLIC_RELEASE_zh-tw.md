@@ -34,3 +34,4 @@
 6. 在匯出目錄跑公開 CI 的步驟：`uv sync --locked`、`ruff check`、`ruff format --check`、`mypy src`、`pytest -q tests`。
 7. 第 4～6 步都通過後才推到 GitHub。推上去就立刻公開，就算之後刪掉也可能已被複製；萬一推出任何私有內容，先輪替該機密，再重寫公開 repository。
 8. 發布檔（wheel、CycloneDX SBOM、checksum）來自同一個 commit 的完整測試。
+9. 每個公開 repository 只需做一次，在它的 GitHub 設定裡：Pages 的來源設成 GitHub Actions；Secrets and variables → Actions 新增變數 `JTOZ_PUBLIC_IDENTITY`，內容和第 4 步的 `Name <e-mail>` 相同。CI 會把它交給守門檢查，沒有設定時，commit 作者的 email 會被擋下。

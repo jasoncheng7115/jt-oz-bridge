@@ -34,3 +34,4 @@ Some tests feed fake keys or credentials on purpose, for example to prove that r
 6. In the export, run the public CI steps: `uv sync --locked`, `ruff check`, `ruff format --check`, `mypy src`, `pytest -q tests`.
 7. Push the export to GitHub only after steps 4–6 passed. Pushing makes the content public at once and it may be copied even if deleted later; if anything private is ever pushed, rotate that secret first, then rewrite the public repository.
 8. Release artifacts (wheel, CycloneDX SBOM, checksums) come from the full gate of the same commit.
+9. Once per public repository, in its GitHub settings: under Pages set the source to GitHub Actions, and under Secrets and variables → Actions add the variable `JTOZ_PUBLIC_IDENTITY` with the same `Name <e-mail>` as step 4. CI passes it to the gate, which otherwise refuses the commit author's address.

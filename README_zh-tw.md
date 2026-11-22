@@ -7,7 +7,7 @@
 <p align="center"><strong>在聊天軟體裡和你的 AI 程式開發 Agent 對話。<br>OpenCode × Zulip，全部地端，自有建置。</strong></p>
 
 <p align="center">
-  <img src="docs/assets/status-preview.svg" alt="開發預覽：0.1.0" height="24">
+  <img src="docs/assets/status-preview.svg" alt="開發預覽：0.1.1" height="24">
   <img src="docs/assets/runtime-python.svg" alt="Python 3.13" height="24">
   <a href="LICENSE"><img src="docs/assets/license-gpl3.svg" alt="GPL-3.0" height="24"></a>
   <img src="docs/assets/deployment-self-hosted.svg" alt="自架部署" height="24">
@@ -21,7 +21,7 @@ Zulip、橋接服務、OpenCode 與模型伺服器都可以部署在自有設備
 
 [為什麼](#為什麼使用-jt-oz-bridge) · [系統架構](#系統如何配合) · [指令](#聊天指令) · [安裝](#安裝升級與移除) · [資安](#資安模型) · [開發](#開發環境快速開始) · [測試](#測試與發布閘門) · [文件](#文件索引) · [授權](#授權)
 
-> **狀態：開發預覽版 `0.1.0`。**  
+> **狀態：開發預覽版 `0.1.1`。**  
 > 這不是已完成的正式版本。核心路由、資料保存與資安邊界已有大量自動化測試，部分流程也已在真實的 OpenCode 伺服器與 Zulip 組織上實測。完整的真人端到端驗收與官方 iOS／Android 驗收**尚未**完成。功能仍會調整，請先在拋棄式專案上試用。
 
 ---

@@ -37,6 +37,9 @@ jobs:
         run: uv sync --locked --python 3.13
 
       - name: Public content gate
+        # The one published commit author is a repository variable, not text in a file.
+        env:
+          JTOZ_PUBLIC_IDENTITY: ${{ vars.JTOZ_PUBLIC_IDENTITY }}
         run: uv run --no-sync python -m scripts.public_gate .
 
       - name: Tests

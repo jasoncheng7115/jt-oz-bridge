@@ -2,7 +2,7 @@
 
 [English](INSTALL.md) · 繁體中文 · [日本語](INSTALL_ja.md) · [升級](UPGRADE_zh-tw.md) · [移除](UNINSTALL_zh-tw.md) · [總覽](../README_zh-tw.md)
 
-本指南說明如何在已執行 OpenCode 的 Linux 主機上，把橋接安裝成 systemd 服務；可從網路安裝，也可用離線（隔離網路）套件包安裝。jt-oz-bridge `0.1.0` 是**開發預覽版**：完整的真人與手機驗收尚未完成，請先用拋棄式的 OpenCode 專案開始。
+本指南說明如何在已執行 OpenCode 的 Linux 主機上，把橋接安裝成 systemd 服務；可從網路安裝，也可用離線（隔離網路）套件包安裝。jt-oz-bridge `0.1.1` 是**開發預覽版**：完整的真人與手機驗收尚未完成，請先用拋棄式的 OpenCode 專案開始。
 
 橋接永遠不會安裝、啟動、重啟或升級 OpenCode，永遠不讀 OpenCode 的資料庫，也不會為了繞過問題而建立或複製 session。安裝過程中也請維持這些原則。
 
@@ -162,7 +162,7 @@ PY=$(echo /opt/jt-oz-bridge/python/cpython-3.13.*/bin/python3.13)
 ```sh
 cd /path/to/jt-oz-bridge-<version>
 sha256sum -c SHA256SUMS
-VERSION=0.1.0
+VERSION=0.1.1
 WHEEL=jt_oz_bridge-$VERSION-py3-none-any.whl
 SHA=$(sha256sum "$WHEEL" | cut -d' ' -f1)
 R=/opt/jt-oz-bridge/releases/$SHA

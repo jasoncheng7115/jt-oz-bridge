@@ -4,6 +4,10 @@
 
 版本號遵循 [語意化版本](https://semver.org/lang/zh-TW/)。1.0.0 之前，次版本可能變更設定或行為；說明會寫出如何升級。
 
+## 0.1.1
+
+- 公開 CI 的守門檢查改從 repository 變數 `JTOZ_PUBLIC_IDENTITY`（或 `--identity`）讀取唯一公開的 commit 作者。少了它，守門檢查會擋下該作者的 email，所以 0.1.0 只打了標籤、沒有發布。
+
 ## 0.1.0
 
 第一個公開預覽版。這不是完成的正式版本，請看 [README](README_zh-tw.md) 的狀態說明。

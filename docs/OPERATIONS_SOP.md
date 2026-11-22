@@ -2,7 +2,7 @@
 
 [繁體中文](OPERATIONS_SOP_zh-tw.md) · [Install](INSTALL.md) · [Upgrade](UPGRADE.md) · [Testing](TESTING.md)
 
-How to run jt-oz-bridge on a Linux host next to an existing OpenCode. Paths are the defaults: `/etc/jt-oz-bridge` for config, `/var/lib/jt-oz-bridge/service` for state, `/opt/jt-oz-bridge/releases/<wheel-sha256>` for releases. This is a development build (0.1.0) with no formal release yet; following these steps does not by itself make a deployment production-ready.
+How to run jt-oz-bridge on a Linux host next to an existing OpenCode. Paths are the defaults: `/etc/jt-oz-bridge` for config, `/var/lib/jt-oz-bridge/service` for state, `/opt/jt-oz-bridge/releases/<wheel-sha256>` for releases. This is a development build (0.1.1) with no formal release yet; following these steps does not by itself make a deployment production-ready.
 
 ## Rules that always apply
 
