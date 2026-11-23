@@ -292,6 +292,41 @@ async def test_unauthorized_socket_peer_never_reaches_observer_handler(socket_pa
         await server.close()
 
 
+async def test_unauthorized_reply_reaches_a_client_that_writes_after_the_server_decided(
+    socket_path,
+):
+    # A refusal that closed on the unread request failed the late client's write,
+    # and the client then reported the observer as unavailable (exit 2, not 4).
+    async def forbidden(query):
+        raise AssertionError("must not query")
+
+    def slow_client_peer(connection):
+        time.sleep(0.2)
+        return os.geteuid()
+
+    def client():
+        return asyncio.run(
+            inspect_query(
+                socket_path,
+                InspectionQuery(),
+                expected_uid=os.geteuid(),
+                peer_reader=slow_client_peer,
+            )
+        )
+
+    server = InspectionSocketServer(
+        socket_path, os.getegid(), frozenset({111}), forbidden, peer_reader=lambda connection: 222
+    )
+    await server.start()
+    try:
+        for _ in range(3):
+            result = await asyncio.to_thread(client)
+            assert result.status == "error" and [i.code for i in result.issues] == ["unauthorized"]
+    finally:
+        await server.close()
+    assert not server.tasks
+
+
 @pytest.mark.parametrize(
     "payload",
     [

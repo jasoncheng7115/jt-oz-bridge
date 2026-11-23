@@ -138,6 +138,10 @@ class InspectionSocketServer:
         started = InspectionClock.capture(time.time, time.monotonic)
         try:
             if self.peer_reader(writer.get_extra_info("socket")) not in self.allowed:
+                # Take the request line off the socket unread: closing on unread bytes
+                # fails the client's write, and it would report the observer as down.
+                with contextlib.suppress(Exception):
+                    await asyncio.wait_for(reader.readuntil(b"\n"), 2)
                 response = error("unauthorized")
             else:
                 raw = await asyncio.wait_for(reader.readuntil(b"\n"), 2)

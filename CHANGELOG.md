@@ -8,8 +8,9 @@ Versions follow [Semantic Versioning](https://semver.org/). Before 1.0.0 a minor
 
 - The public CI gate reads the one published commit author from the repository variable `JTOZ_PUBLIC_IDENTITY` (or `--identity`). Without it the gate refused that author's address, so 0.1.0 was tagged but never released.
 - The Traditional Chinese and Japanese README tables show the offline install in bold instead of literal asterisks; a test now renders every project document and refuses emphasis markers left as text.
-- The project site is rewritten in plain words around a sample topic, with when the bridge fits and when it does not; the home page opens in the visitor's language.
-- CI lists each failed test as an annotation on the run page, which anyone can read, since the job log needs admin rights.
+- The project site is rewritten in plain words around a sample topic, with when the bridge fits and when it does not; the home page opens in the visitor's language. It stays light whatever the system theme.
+- CI lists each failed test as an annotation on the run page, which anyone can read, since the job log needs admin rights. Each annotation carries the end of the traceback.
+- `jt-oz-bridge sessions` and the other local inspection commands report a peer the observer does not allow as `unauthorized` (exit 4) every time. The observer closed such a connection before reading the request, so a client that wrote a moment later saw a failed write and reported the observer as unavailable (exit 2).
 
 ## 0.1.0
 
