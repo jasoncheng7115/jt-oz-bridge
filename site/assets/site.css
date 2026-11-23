@@ -1,6 +1,6 @@
 /* jt-oz-bridge project site. Self-contained: no external fonts, scripts or CDNs. */
 :root {
-  color-scheme: light dark;
+  color-scheme: light;
   --bg: #ffffff;
   --band: #f4f7f6;
   --surface: #ffffff;
@@ -29,35 +29,6 @@
   --radius: 10px;
   --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0e1418;
-    --band: #131b21;
-    --surface: #151e25;
-    --text: #e4eaef;
-    --muted: #9aa8b4;
-    --border: #26323c;
-    --accent: #4fc4b6;
-    --accent-strong: #79d6cb;
-    --accent-soft: #12302d;
-    --warn-bg: #2a2212;
-    --warn-border: #7d6024;
-    --warn-text: #f0d59c;
-    --code-bg: #1c2730;
-    --code-text: #dbe4eb;
-    --pre-bg: #0a0f13;
-    --chat-bg: #151e25;
-    --chat-head: #1b252d;
-    --chat-me: #17242a;
-    --bot-tag: #26323c;
-    --line: #8d9daa;
-    --node: #151e25;
-    --node-core: #12302d;
-    --node-border: #3a4a57;
-    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px rgba(0, 0, 0, 0.3);
-  }
 }
 
 *,
@@ -292,13 +263,6 @@ pre code {
   background: var(--accent-strong);
   border-color: var(--accent-strong);
   color: #fff;
-}
-
-@media (prefers-color-scheme: dark) {
-  .button.primary,
-  .button.primary:hover {
-    color: #08201d;
-  }
 }
 
 .stack {
