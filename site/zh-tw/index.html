@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>jt-oz-bridge</title>
-  <meta name="description" content="在手機或電腦的 Zulip 上使用你的 OpenCode session。自架部署，GPL-3.0。">
+  <meta name="description" content="在手機或電腦的自建 Zulip 上使用你的 OpenCode session。全部自建在地端，GPL-3.0。">
   <meta name="color-scheme" content="light">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <script src="../assets/lang.js"></script>
@@ -19,6 +19,7 @@
     <div class="wrap">
       <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="24" height="24">jt-oz-bridge</a>
       <nav class="nav" aria-label="章節">
+        <a href="#onprem">全地端</a>
         <a href="#use">怎麼用</a>
         <a href="#fit">適合誰</a>
         <a href="#how">運作方式</a>
@@ -38,8 +39,9 @@
     <div class="wrap">
       <div>
         <p class="version"><b>v0.1.1</b> 開發預覽版</p>
-        <h1>離開電腦，也能繼續用 OpenCode 工作</h1>
-        <p class="lead">jt-oz-bridge 把 Zulip 的一個話題接到你伺服器上既有的 OpenCode session。在手機上交代任務、看它正在做什麼、核准它要執行的指令、讀它的回覆；回到電腦前，同一個 session 就在 OpenCode 裡，剛才的內容都在。</p>
+        <p class="kicker">全部自建在地端：通訊、橋接、Agent、模型</p>
+        <h1>人在外面，手機也能交辦<span class="nowrap">地端 AI Agent</span></h1>
+        <p class="lead">jt-oz-bridge 把自建 Zulip 的一個話題，接到你自己主機上既有的 OpenCode session。不用開電腦、不用 VPN 連進終端機：在手機上交辦任務、看它正在做什麼、核准它要執行的指令、讀它的回覆；回到電腦前，同一個 session 就在 OpenCode 裡，剛才的內容都在。</p>
         <div class="actions">
           <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub</a>
           <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_zh-tw.md">安裝指南</a>
@@ -93,6 +95,26 @@
     </div>
   </div>
 
+  <div class="onprem" id="onprem">
+    <div class="wrap">
+      <h2>全部自建在地端</h2>
+      <p class="intro">通訊、橋接、Agent、模型都架在你自己的主機上。Bridge 只連你的 Zulip 和本機的 OpenCode，不經過任何外部雲端服務。</p>
+      <ol class="chain">
+        <li class="zulip"><b>手機／電腦 Zulip</b><span>人在外面、值班時直接問</span></li>
+        <li class="zulip"><b>自建 Zulip</b><span>單位自有的通訊平台</span></li>
+        <li class="core"><b>jt-oz-bridge</b><span>轉交任務、回報進度與結果</span></li>
+        <li class="oc"><b>OpenCode Agent</b><span>原本的 session 繼續做，自己決定呼叫哪些 MCP 工具</span></li>
+        <li class="model"><b>地端模型＋MCP</b><span>模型與工具都在機房內</span></li>
+      </ol>
+      <ul class="perks">
+        <li><b>資料不出機房</b>搭配地端模型時，提問、回覆與檔案只在你的 Zulip、Bridge、OpenCode 與模型之間傳。</li>
+        <li><b>紀錄也在地端</b>誰交辦了什麼、核准了什麼，Bridge 都記在你自己的主機上。</li>
+        <li><b>權限照樣限制</b>Agent 能做什麼，仍由 OpenCode 的權限與工具設定決定。</li>
+        <li><b>不必開電腦</b>不用開電腦、不用 VPN 連進終端機，在自建通訊軟體裡問就好。</li>
+      </ul>
+    </div>
+  </div>
+
   <main>
     <div class="wrap">
       <div class="status" role="note">
@@ -119,6 +141,7 @@
           <div>
             <h3>適合</h3>
             <ul>
+              <li>你要讓通訊、Agent 與模型都留在地端，不經過外部雲端服務。</li>
               <li>OpenCode 已經以伺服器模式跑在你管得到的 Linux 主機上，Bridge 可以裝在同一台。</li>
               <li>你有自己的 Zulip 伺服器，或願意架一台。</li>
               <li>同一個私人頻道裡的人都可以看到其中的工作：只有你自己，或一個小團隊。</li>
@@ -147,6 +170,8 @@
             <defs>
               <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
             </defs>
+            <rect class="zone" x="214" y="6" width="742" height="308" rx="12"/>
+            <text class="zone-label" x="230" y="28">你的機房（全部自建在地端）</text>
             <path class="edge" d="M200 68L250 136" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M200 232L250 164" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M440 150H490" marker-start="url(#h)" marker-end="url(#h)"/>
@@ -180,8 +205,8 @@
             <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI／App</text>
             <text class="sub" x="840" y="62" text-anchor="middle">在你的電腦上</text>
             <rect class="node oc" x="730" y="244" width="220" height="56" rx="8"/>
-            <text class="title" x="840" y="268" text-anchor="middle">模型 provider</text>
-            <text class="sub" x="840" y="286" text-anchor="middle">自架或其他</text>
+            <text class="title" x="840" y="268" text-anchor="middle">地端模型</text>
+            <text class="sub" x="840" y="286" text-anchor="middle">例如 Ollama，也可接其他</text>
           </svg>
         </div>
         <p class="scroll-hint muted">圖可以左右捲動。</p>

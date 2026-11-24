@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>jt-oz-bridge</title>
-  <meta name="description" content="Use your OpenCode sessions from Zulip on your phone or computer. Self-hosted, GPL-3.0.">
+  <meta name="description" content="Use your OpenCode sessions from your self-hosted Zulip on your phone or computer. Fully on premises, GPL-3.0.">
   <meta name="color-scheme" content="light">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <script src="assets/lang.js"></script>
@@ -19,6 +19,7 @@
     <div class="wrap">
       <a class="brand" href="./"><img src="assets/favicon.svg" alt="" width="24" height="24">jt-oz-bridge</a>
       <nav class="nav" aria-label="Sections">
+        <a href="#onprem">On premises</a>
         <a href="#use">Use</a>
         <a href="#fit">Fit</a>
         <a href="#how">How it works</a>
@@ -38,8 +39,9 @@
     <div class="wrap">
       <div>
         <p class="version"><b>v0.1.1</b> development preview</p>
-        <h1>Keep working with OpenCode when you are away from your desk</h1>
-        <p class="lead">jt-oz-bridge connects a Zulip topic to an OpenCode session that already exists on your server. From your phone you can give it a task, see what it is doing, approve the commands it wants to run and read its answer. Back at your desk, the same session is open in OpenCode with all of it in place.</p>
+        <p class="kicker">Self-hosted end to end: chat, bridge, agent, model</p>
+        <h1>Hand work to your on-premises AI agent, even from your phone</h1>
+        <p class="lead">jt-oz-bridge connects a topic on your self-hosted Zulip to an OpenCode session that already exists on your own server. No laptop and no VPN into a terminal: from your phone you can give it a task, see what it is doing, approve the commands it wants to run and read its answer. Back at your desk, the same session is open in OpenCode with all of it in place.</p>
         <div class="actions">
           <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub</a>
           <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL.md">Install guide</a>
@@ -93,6 +95,26 @@
     </div>
   </div>
 
+  <div class="onprem" id="onprem">
+    <div class="wrap">
+      <h2>Everything self-hosted, on premises</h2>
+      <p class="intro">Chat, bridge, agent and model all run on machines you own. The bridge talks only to your Zulip and to OpenCode on the same host, and uses no outside cloud service.</p>
+      <ol class="chain">
+        <li class="zulip"><b>Zulip on phone or desktop</b><span>Ask directly when you are out or on call</span></li>
+        <li class="zulip"><b>Your own Zulip</b><span>A chat platform your organization owns</span></li>
+        <li class="core"><b>jt-oz-bridge</b><span>Passes tasks on, reports progress and results</span></li>
+        <li class="oc"><b>OpenCode agent</b><span>Carries on in the original session and picks its own MCP tools</span></li>
+        <li class="model"><b>Local model + MCP</b><span>Model and tools stay inside your server room</span></li>
+      </ol>
+      <ul class="perks">
+        <li><b>Data stays in your server room</b>With a local model, questions, answers and files move only between your Zulip, the bridge, OpenCode and the model.</li>
+        <li><b>Records stay on premises</b>The bridge keeps its record of who asked for and approved what on your own host.</li>
+        <li><b>Permissions still apply</b>What the agent may do is still decided by OpenCode's permissions and tool settings.</li>
+        <li><b>No laptop needed</b>No laptop and no VPN into a terminal: just ask in your own chat.</li>
+      </ul>
+    </div>
+  </div>
+
   <main>
     <div class="wrap">
       <div class="status" role="note">
@@ -119,6 +141,7 @@
           <div>
             <h3>It fits if</h3>
             <ul>
+              <li>You want chat, agent and model to stay on premises, with no outside cloud service in between.</li>
               <li>OpenCode already runs as a server on a Linux host you control, and the bridge can run on the same host.</li>
               <li>You run your own Zulip server, or are willing to.</li>
               <li>Everyone in a private channel may see the work done in it: you alone, or a small team.</li>
@@ -147,6 +170,8 @@
             <defs>
               <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
             </defs>
+            <rect class="zone" x="214" y="6" width="742" height="308" rx="12"/>
+            <text class="zone-label" x="230" y="28">Your server room (all self-hosted)</text>
             <path class="edge" d="M200 68L250 136" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M200 232L250 164" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M440 150H490" marker-start="url(#h)" marker-end="url(#h)"/>
@@ -180,8 +205,8 @@
             <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI / app</text>
             <text class="sub" x="840" y="62" text-anchor="middle">at your desk</text>
             <rect class="node oc" x="730" y="244" width="220" height="56" rx="8"/>
-            <text class="title" x="840" y="268" text-anchor="middle">Model providers</text>
-            <text class="sub" x="840" y="286" text-anchor="middle">self-hosted or others</text>
+            <text class="title" x="840" y="268" text-anchor="middle">Local model</text>
+            <text class="sub" x="840" y="286" text-anchor="middle">e.g. Ollama, or others</text>
           </svg>
         </div>
         <p class="scroll-hint muted">Scroll the diagram sideways.</p>

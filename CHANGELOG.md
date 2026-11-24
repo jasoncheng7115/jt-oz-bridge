@@ -7,6 +7,7 @@ Versions follow [Semantic Versioning](https://semver.org/). Before 1.0.0 a minor
 ## Unreleased
 
 - The project site gets colour while staying light: a tinted hero, alternating section bands, numbered cards with coloured edges, green and red fit lists, and a diagram coloured by role (Zulip, the bridge, OpenCode, storage).
+- The project site puts the self-hosted, on-premises setup first: a hero that says so, a new section showing the chain from Zulip on your phone through your own Zulip, the bridge and OpenCode to a local model with MCP, and a diagram that marks everything inside your server room. The wording follows the talk that introduced jt-oz-bridge.
 
 ## 0.1.1
 

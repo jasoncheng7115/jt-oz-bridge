@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>jt-oz-bridge</title>
-  <meta name="description" content="スマートフォンやパソコンの Zulip から OpenCode のセッションを使えます。セルフホスト、GPL-3.0。">
+  <meta name="description" content="自前の Zulip から、スマートフォンやパソコンで OpenCode のセッションを使えます。すべてオンプレミス、GPL-3.0。">
   <meta name="color-scheme" content="light">
   <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
   <script src="../assets/lang.js"></script>
@@ -19,6 +19,7 @@
     <div class="wrap">
       <a class="brand" href="./"><img src="../assets/favicon.svg" alt="" width="24" height="24">jt-oz-bridge</a>
       <nav class="nav" aria-label="セクション">
+        <a href="#onprem">オンプレミス</a>
         <a href="#use">使い方</a>
         <a href="#fit">向き・不向き</a>
         <a href="#how">仕組み</a>
@@ -38,8 +39,9 @@
     <div class="wrap">
       <div>
         <p class="version"><b>v0.1.1</b> 開発プレビュー</p>
-        <h1>席を離れても、OpenCode で作業を続けられます</h1>
-        <p class="lead">jt-oz-bridge は、Zulip のトピックをサーバー上の既存の OpenCode セッションにつなぎます。スマートフォンから作業を頼み、いま何をしているかを確認し、実行したいコマンドを承認して、返事を読めます。席に戻れば、同じセッションが OpenCode にそのまま残っています。</p>
+        <p class="kicker">すべてオンプレミス：チャット・ブリッジ・エージェント・モデル</p>
+        <h1>外出先でも、オンプレミスの AI エージェントに頼めます</h1>
+        <p class="lead">jt-oz-bridge は、自前の Zulip のトピックを、自分のサーバー上の既存の OpenCode セッションにつなぎます。パソコンを開かなくても、VPN でターミナルに入らなくても、スマートフォンから作業を頼み、いま何をしているかを確認し、実行したいコマンドを承認して、返事を読めます。席に戻れば、同じセッションが OpenCode にそのまま残っています。</p>
         <div class="actions">
           <a class="button primary" href="https://github.com/jasoncheng7115/jt-oz-bridge">GitHub</a>
           <a class="button" href="https://github.com/jasoncheng7115/jt-oz-bridge/blob/main/docs/INSTALL_ja.md">インストールガイド</a>
@@ -93,6 +95,26 @@
     </div>
   </div>
 
+  <div class="onprem" id="onprem">
+    <div class="wrap">
+      <h2>すべて自前、オンプレミスで</h2>
+      <p class="intro">チャット、ブリッジ、エージェント、モデルはすべて自分の管理するマシンで動きます。ブリッジがやり取りするのは自分の Zulip と同じホストの OpenCode だけで、外部のクラウドサービスは使いません。</p>
+      <ol class="chain">
+        <li class="zulip"><b>スマートフォン／パソコンの Zulip</b><span>外出中や当番中にそのまま質問</span></li>
+        <li class="zulip"><b>自前の Zulip</b><span>組織で所有するチャット基盤</span></li>
+        <li class="core"><b>jt-oz-bridge</b><span>作業を渡し、進捗と結果を返す</span></li>
+        <li class="oc"><b>OpenCode エージェント</b><span>元のセッションで作業を続け、使う MCP ツールを自分で選ぶ</span></li>
+        <li class="model"><b>ローカルモデル＋MCP</b><span>モデルもツールもサーバールームの中</span></li>
+      </ol>
+      <ul class="perks">
+        <li><b>データは外に出ない</b>ローカルモデルなら、質問・返事・ファイルは Zulip、ブリッジ、OpenCode、モデルの間だけでやり取りされます。</li>
+        <li><b>記録もオンプレミス</b>誰が何を頼み、何を承認したかの記録は、自分のホストに残ります。</li>
+        <li><b>権限はそのまま</b>エージェントにできることは、引き続き OpenCode の権限とツール設定で決まります。</li>
+        <li><b>パソコン不要</b>パソコンを開かず、VPN でターミナルに入らず、自前のチャットで聞くだけです。</li>
+      </ul>
+    </div>
+  </div>
+
   <main>
     <div class="wrap">
       <div class="status" role="note">
@@ -119,6 +141,7 @@
           <div>
             <h3>向いている</h3>
             <ul>
+              <li>チャット、エージェント、モデルをオンプレミスに置き、外部のクラウドサービスを通したくない。</li>
               <li>OpenCode がすでに、自分で管理する Linux ホストでサーバーとして動いていて、ブリッジも同じホストに置ける。</li>
               <li>自分の Zulip サーバーがある、または立てるつもりがある。</li>
               <li>プライベートチャンネルのメンバー全員が、その中の作業を見てよい（自分だけ、または少人数のチーム）。</li>
@@ -147,6 +170,8 @@
             <defs>
               <marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="head" d="M0 0L10 5L0 10Z"/></marker>
             </defs>
+            <rect class="zone" x="214" y="6" width="742" height="308" rx="12"/>
+            <text class="zone-label" x="230" y="28">自分のサーバールーム（すべて自前）</text>
             <path class="edge" d="M200 68L250 136" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M200 232L250 164" marker-start="url(#h)" marker-end="url(#h)"/>
             <path class="edge" d="M440 150H490" marker-start="url(#h)" marker-end="url(#h)"/>
@@ -180,8 +205,8 @@
             <text class="title" x="840" y="44" text-anchor="middle">OpenCode TUI／アプリ</text>
             <text class="sub" x="840" y="62" text-anchor="middle">手元のパソコン</text>
             <rect class="node oc" x="730" y="244" width="220" height="56" rx="8"/>
-            <text class="title" x="840" y="268" text-anchor="middle">モデルプロバイダー</text>
-            <text class="sub" x="840" y="286" text-anchor="middle">セルフホストなど</text>
+            <text class="title" x="840" y="268" text-anchor="middle">ローカルモデル</text>
+            <text class="sub" x="840" y="286" text-anchor="middle">Ollama など、ほかも可</text>
           </svg>
         </div>
         <p class="scroll-hint muted">図は横にスクロールできます。</p>
