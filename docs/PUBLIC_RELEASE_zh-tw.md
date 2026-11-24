@@ -35,3 +35,4 @@
 7. 第 4～6 步都通過後才推到 GitHub。推上去就立刻公開，就算之後刪掉也可能已被複製；萬一推出任何私有內容，先輪替該機密，再重寫公開 repository。
 8. 發布檔（wheel、CycloneDX SBOM、checksum）來自同一個 commit 的完整測試。
 9. 每個公開 repository 只需做一次，在它的 GitHub 設定裡：Pages 的來源設成 GitHub Actions；Secrets and variables → Actions 新增變數 `JTOZ_PUBLIC_IDENTITY`，內容和第 4 步的 `Name <e-mail>` 相同。CI 會把它交給守門檢查，沒有設定時，commit 作者的 email 會被擋下。
+10. 兩次發布之間只能更新網站、`docs/` 與最上層的 Markdown 檔，方式是在 `main` 上加一個不打標籤的 commit，由 Pages 發布。程式碼、測試與打包的變更只能隨新版本發布。

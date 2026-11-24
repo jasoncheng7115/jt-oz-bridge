@@ -4,6 +4,10 @@ English · [繁體中文](CHANGELOG_zh-tw.md) · [日本語](CHANGELOG_ja.md)
 
 Versions follow [Semantic Versioning](https://semver.org/). Before 1.0.0 a minor version may change configuration or behaviour; the notes say how to upgrade.
 
+## Unreleased
+
+- The project site gets colour while staying light: a tinted hero, alternating section bands, numbered cards with coloured edges, green and red fit lists, and a diagram coloured by role (Zulip, the bridge, OpenCode, storage).
+
 ## 0.1.1
 
 - The public CI gate reads the one published commit author from the repository variable `JTOZ_PUBLIC_IDENTITY` (or `--identity`). Without it the gate refused that author's address, so 0.1.0 was tagged but never released.
