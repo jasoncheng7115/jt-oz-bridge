@@ -45,5 +45,21 @@
         }
       });
     }
+
+    // The language button is a <details> menu: close it on a click elsewhere or Esc.
+    var menu = document.querySelector("details.lang");
+    if (menu) {
+      document.addEventListener("click", function (event) {
+        if (menu.open && !menu.contains(event.target)) {
+          menu.open = false;
+        }
+      });
+      document.addEventListener("keydown", function (event) {
+        if (menu.open && event.key === "Escape") {
+          menu.open = false;
+          menu.querySelector("summary").focus();
+        }
+      });
+    }
   });
 })();
