@@ -749,9 +749,15 @@ async def test_status_says_when_an_old_waiting_message_was_sent_and_offers_butto
 @pytest.mark.parametrize(
     ("names", "note"),
     [
-        (["vm_start"], "It is waiting for the tool vm&#95;start to finish."),
-        ([], "The model is thinking or writing."),
+        (("vm_start",), "It is waiting for the tool vm&#95;start to finish."),
+        ((), "The model is thinking or writing."),
         (None, None),  # The newest entry does not tell: nothing is said.
+        (
+            {"attempt": 2, "error": {"type": "APIError", "status": 429}},
+            "The model service failed for now (too many requests; the model service is "
+            "rate limiting); OpenCode is retrying (attempt 2).",
+        ),
+        ("compacting", "OpenCode is compacting the conversation."),
     ],
 )
 async def test_status_of_a_running_turn_says_whether_it_waits_on_a_tool_or_the_model(
@@ -759,7 +765,18 @@ async def test_status_of_a_running_turn_says_whether_it_waits_on_a_tool_or_the_m
 ):
     from jt_oz_bridge.domain.control import ExecutionState
     from jt_oz_bridge.services import router as router_module
+    from jt_oz_bridge.services.still_working import Doing
     from tests.integration.test_dispatch import SyntheticExecution
+
+    names = (
+        None
+        if names is None
+        else Doing(compacting=True)
+        if names == "compacting"
+        else Doing(retry=names)
+        if isinstance(names, dict)
+        else Doing(names)
+    )
 
     bindings, binding, control, _audience = await bound(db, control=SyntheticExecution())
     fence = await DurableStore(db).acquire_lease("router")
@@ -781,14 +798,37 @@ async def test_status_of_a_running_turn_says_whether_it_waits_on_a_tool_or_the_m
 
 
 async def test_what_a_topic_waits_on_is_read_from_its_own_transcript(db):
-    from jt_oz_bridge.services.still_working import waits_on
+    from jt_oz_bridge.services.still_working import Doing, waits_on
     from tests.integration.test_transcript_publisher import Turn, step
     from tests.integration.test_typing_status import running_tool, unfinished
 
     t = await Turn().initialize(db)
     await t.add(unfinished("s1", running_tool("bash")))
     async with db.sessions() as session:
-        assert await waits_on(session, t.binding) == ["bash"]
+        assert await waits_on(session, t.binding) == Doing(("bash",))
     await t.add(step("s2", "read"))  # A finished step: the model thinks about the next.
     async with db.sessions() as session:
-        assert await waits_on(session, t.binding) == []
+        assert await waits_on(session, t.binding) == Doing()
+
+
+async def test_a_retry_or_a_running_compaction_is_what_a_topic_waits_on(db):
+    from jt_oz_bridge.services.still_working import Doing, waits_on
+    from tests.integration.test_transcript_publisher import Turn, compaction, retrying
+    from tests.integration.test_typing_status import running_tool
+
+    t = await Turn().initialize(db)
+    await t.add(retrying("s1", 3, {"type": "APIError", "status": 503, "message": "secret"}))
+    async with db.sessions() as session:
+        assert await waits_on(session, t.binding) == Doing(
+            retry={"attempt": 3, "error": {"type": "APIError", "status": 503}}
+        )
+    # A tool that runs is the wait, whatever else the step carries.
+    await t.add(retrying("s2", 1, {"status": 429}, running_tool("bash")))
+    async with db.sessions() as session:
+        assert await waits_on(session, t.binding) == Doing(("bash",))
+    await t.add(compaction("c1", "running"))
+    async with db.sessions() as session:
+        assert await waits_on(session, t.binding) == Doing(compacting=True)
+    await t.add(compaction("c2", "completed"))  # Done: the newest entry does not tell.
+    async with db.sessions() as session:
+        assert await waits_on(session, t.binding) is None

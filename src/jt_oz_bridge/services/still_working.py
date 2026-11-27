@@ -13,6 +13,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Callable, Mapping
+from dataclasses import dataclass
 from typing import Any, cast
 
 from sqlalchemy import func, select, update
@@ -26,6 +27,7 @@ from jt_oz_bridge.i18n import Translator
 from jt_oz_bridge.presentation.markdown import literal
 from jt_oz_bridge.services.routed_output import RoutedOutbox
 from jt_oz_bridge.services.runtime import error_label
+from jt_oz_bridge.services.transcript_commands import failure_reason
 from jt_oz_bridge.services.transcript_publisher import SUBAGENT_TOOLS
 from jt_oz_bridge.services.transcript_records import (
     TranscriptState,
@@ -50,7 +52,9 @@ QUIET_SECONDS = 120.0
 PRIORITY = 70
 # A topic whose line was refused is tried again no sooner than this.
 RETRY_SECONDS = 60.0
-# OpenCode tool states of a call that has not finished yet.
+# OpenCode tool states of a call that has not finished yet. A tool still
+# `streaming` has not started: the model is still writing its input, so the
+# step waits on the model, not on that tool.
 UNFINISHED = frozenset({"pending", "running"})
 # At most this many tool names in one line.
 SHOWN_TOOLS = 3
@@ -76,12 +80,25 @@ def running_tools(content: list[dict[str, Any]]) -> list[str]:
     return list(names)
 
 
-async def doing(session: AsyncSession, state: TranscriptState) -> list[str] | None:
+@dataclass(frozen=True)
+class Doing:
+    """What a running turn waits on.
+
+    ``tools`` while a step still runs tools. Otherwise the model, unless OpenCode
+    waits to call it again after a failure (``retry``: the attempt and the error
+    summary) or compacts the conversation (``compacting``).
+    """
+
+    tools: tuple[str, ...] = ()
+    retry: Mapping[str, Any] | None = None
+    compacting: bool = False
+
+
+async def doing(session: AsyncSession, state: TranscriptState) -> Doing | None:
     """What the turn waits on, from the newest entry Bridge saw of the session.
 
-    Tool names while a step still runs tools; an empty list while the model
-    thinks or writes (after the input, or between and inside steps that run no
-    tool); None when the newest entry does not tell.
+    The model after the input, or between and inside steps that run no tool;
+    None when the newest entry does not tell.
     """
     record = await session.scalar(
         select(TranscriptMessage)
@@ -104,13 +121,19 @@ async def doing(session: AsyncSession, state: TranscriptState) -> list[str] | No
     except (Conflict, ValueError):
         return None
     if entry.kind == "user":
-        return []
+        return Doing()
+    if entry.kind == "compaction":
+        return Doing(compacting=True) if incomplete(entry) else None
     if entry.kind != "assistant":
         return None
-    return running_tools(entry.projection()["content"]) if incomplete(entry) else []
+    value = entry.projection()
+    tools = tuple(running_tools(value["content"])) if incomplete(entry) else ()
+    # OpenCode clears a retry when the step starts again, fails or the turn ends.
+    retry = value.get("retry")
+    return Doing(tools, retry if isinstance(retry, dict) and not tools else None)
 
 
-async def waits_on(session: AsyncSession, binding: Binding) -> list[str] | None:
+async def waits_on(session: AsyncSession, binding: Binding) -> Doing | None:
     """`doing` for this topic's session; None while its replies are held for a gap."""
     stream = await session.scalar(
         select(TranscriptStream).where(
@@ -125,7 +148,7 @@ async def waits_on(session: AsyncSession, binding: Binding) -> list[str] | None:
     return None if state is None or state.status == "gap" else await doing(session, state)
 
 
-def tool_names(tr: Translator, locale: Locale, names: list[str]) -> str:
+def tool_names(tr: Translator, locale: Locale, names: list[str] | tuple[str, ...]) -> str:
     """At most `SHOWN_TOOLS` names as literal text; OpenCode's subagent tool in words."""
     label = tr.render("transcript.tool_label.subagent", locale)
     shown = [label if n in SUBAGENT_TOOLS else literal(n[:80]) for n in names[:SHOWN_TOOLS]]
@@ -265,17 +288,27 @@ class StillWorkingNotices:
             waiting_for = await doing(session, state) if state is not None else None
         locale = cast(Locale, binding.locale) if binding.locale in {"en", "zh-TW"} else "en"
         minutes = max(1, int((now - since) // 60))
-        if waiting_for:
+        if waiting_for is None:
+            text = self.tr.render("runtime.still_working", locale, minutes=minutes)
+        elif waiting_for.tools:
             text = self.tr.render(
                 "runtime.still_working_tool",
                 locale,
                 minutes=minutes,
-                tools=tool_names(self.tr, locale, waiting_for),
+                tools=tool_names(self.tr, locale, waiting_for.tools),
             )
-        elif waiting_for is not None:
-            text = self.tr.render("runtime.still_working_model", locale, minutes=minutes)
+        elif waiting_for.retry is not None:
+            text = self.tr.render(
+                "runtime.still_working_retry",
+                locale,
+                minutes=minutes,
+                reason=failure_reason(self.tr, locale, waiting_for.retry.get("error")),
+                attempt=waiting_for.retry.get("attempt"),
+            )
+        elif waiting_for.compacting:
+            text = self.tr.render("runtime.still_working_compaction", locale, minutes=minutes)
         else:
-            text = self.tr.render("runtime.still_working", locale, minutes=minutes)
+            text = self.tr.render("runtime.still_working_model", locale, minutes=minutes)
         with request_lane("normal"):
             await self.outbox.queue_batch(
                 "still-working:"
@@ -293,7 +326,15 @@ class StillWorkingNotices:
             "still_working_notice_queued binding=%s minutes=%d waits_on=%s",
             binding.id,
             minutes,
-            "unknown" if waiting_for is None else "tool" if waiting_for else "model",
+            "unknown"
+            if waiting_for is None
+            else "tool"
+            if waiting_for.tools
+            else "retry"
+            if waiting_for.retry is not None
+            else "compaction"
+            if waiting_for.compacting
+            else "model",
         )
         return True
 

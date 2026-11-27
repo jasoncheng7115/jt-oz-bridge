@@ -2,7 +2,7 @@
 
 [English](OPERATIONS_SOP.md) · [安裝](INSTALL_zh-tw.md) · [升級](UPGRADE_zh-tw.md) · [測試](TESTING_zh-tw.md)
 
-說明如何在已有 OpenCode 的 Linux 主機上執行 jt-oz-bridge。路徑都是預設值：設定在 `/etc/jt-oz-bridge`，狀態在 `/var/lib/jt-oz-bridge/service`，版本在 `/opt/jt-oz-bridge/releases/<wheel-sha256>`。這是開發版（0.1.1），尚無正式發行；照這些步驟做，本身並不代表部署已可正式上線。
+說明如何在已有 OpenCode 的 Linux 主機上執行 jt-oz-bridge。路徑都是預設值：設定在 `/etc/jt-oz-bridge`，狀態在 `/var/lib/jt-oz-bridge/service`，版本在 `/opt/jt-oz-bridge/releases/<wheel-sha256>`。這是開發版（0.1.2），尚無正式發行；照這些步驟做，本身並不代表部署已可正式上線。
 
 ## 永遠適用的規則
 
@@ -238,7 +238,7 @@ journalctl -u jt-oz-bridge --since -1h --no-pager | grep -E 'work_deferred|root_
 | `uncertain_prompt_readback_unavailable`／`uncertain_prompt_left_for_review check=...` | 這個 Bridge 無法回讀，或這則訊息不能用回讀確認（`check` 說明原因：檔案、文字、操作種類或其他 Root）。它維持結果不明，Bridge 不會重送 | 保留 log 回報；本人看話題，一直沒回覆就重送 |
 | `zulip_change_paused reason=... scope=... bindings=N` | Zulip 的變動暫停了話題：`queue_registered`（啟動）、`queue_expired`、訊息被移動／刪除，或頻道、成員、人員、組織變更（`scope=all` 會暫停所有話題）。沒有其他待處理的工作時，被暫停話題的下一則一般訊息就會恢復；否則回 `!go` | 不用動；若一直出現又沒有已知的變更再查 |
 | `zulip_release_not_qualified version=... feature_level=... qualified=V/L` | Zulip 伺服器跑的版本不是 Bridge 驗證過的，Bridge 拒絕處理 Zulip 工作並重啟，直到版本相符。驗證過的版本之後同一大版的維護版（例如驗證 11.1、實際 11.3）會自動接受：Zulip 在同一大版內維持 API，安全修正也這樣發布。新的大版（13.0）或開發版不會自動接受 | 同一大版內的 Zulip 更新可直接升級（先跑 `check_zulip_upgrade.py`）。跨大版升級前，先讓 Bridge 完成該版的驗證，否則把 Zulip 退回 |
-| 話題出現 ⏳「AI 還在處理中（已 N 分鐘）」 | 該話題的這一輪還在執行，且話題已 2 分鐘沒有新內容（只有「輸入中」很容易漏看）。每一輪最多一則，和其他訊息一樣送出；權限要求或選項按鈕等本人回覆時不發。這一輪中途 Bridge 重啟，只要那則仍是最新一則就不會再發。回覆或這一輪結束比它先到時，尚未送出的那則會取消不送（稽核事件 `still_working_notice_retired`）。這一行可能寫「正在等工具 X 跑完」（慢在工具，也就是 OpenCode 或它背後的 MCP 伺服器）或「模型正在思考或撰寫回覆」（慢在模型，可開新對話或用 `!model` 選較低的 variant）。journal 記 `still_working_notice_queued binding=... minutes=N waits_on=tool|model|unknown` | 不用動。一直沒有回覆再照上面檢查 |
+| 話題出現 ⏳「AI 還在處理中（已 N 分鐘）」 | 該話題的這一輪還在執行，且話題已 2 分鐘沒有新內容（只有「輸入中」很容易漏看）。每一輪最多一則，和其他訊息一樣送出；權限要求或選項按鈕等本人回覆時不發。這一輪中途 Bridge 重啟，只要那則仍是最新一則就不會再發。回覆或這一輪結束比它先到時，尚未送出的那則會取消不送（稽核事件 `still_working_notice_retired`）。這一行可能寫「正在等工具 X 跑完」（慢在工具，也就是 OpenCode 或它背後的 MCP 伺服器）或「模型正在思考或撰寫回覆」（慢在模型，可開新對話或用 `!model` 選較低的 variant），也可能寫模型服務暫時失敗、OpenCode 正在重試（原因如請求太多，來自模型服務），或 OpenCode 正在壓縮對話。journal 記 `still_working_notice_queued binding=... minutes=N waits_on=tool|retry|compaction|model|unknown` | 不用動。一直沒有回覆再照上面檢查 |
 | 話題出現 ⚠️「AI 好像在重複同一步（已 N 次）」 | 同一輪中模型連續 5 次說同樣的話、呼叫同樣的工具（該步驟的訊息會計數，例如 `🔧 search ×5`）。每一輪最多一則；與該步驟的計畫一起排入，Bridge 重啟不會再發（稽核事件 `transcript_repeat_hint_queued`）。這一輪的回覆、結果或下一則輸入先到時，尚未送出的那則會取消不送（狀態 `repeat_hint_superseded`，稽核事件 `transcript_repeat_hint_retired`）。Bridge 不會自己停止這一輪 | 由本人決定：`!stop`（或按鈕）停止這一輪，否則繼續執行。常常重複的模型可能不適合這個工作 |
 | 話題出現 💡「這個對話已經很長（約 N tokens）」 | 某則回覆所屬步驟讀入的內容達 60,000 tokens 以上，之後每一步都要重讀這麼多而變慢（從幾秒變成幾分鐘）。每個已連線話題只發一則，排在回覆之後（稽核事件 `transcript_long_context_hint_queued`），重啟不會再發。只有該 binding 的專案已開放開新對話時，才會提到在新話題送 `!new` | 由本人決定：開新對話會比較快。若要在還不能從聊天開新對話的專案使用，替該專案開放開新對話（`ops/server/certify_creation.py`） |
 | `restart_pause_released`／`restart_pause_kept_old binding=... after=unclear_work` | 重啟後，話題等一則不明訊息結清（每 30 秒檢查）。`released` 已送出保留的訊息；`kept_old` 已在話題提醒一次用 `!go` | 不用動 |

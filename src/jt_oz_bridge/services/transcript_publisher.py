@@ -13,9 +13,16 @@ from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry
 from jt_oz_bridge.config import Locale
 from jt_oz_bridge.domain.delivery import without_marker
 from jt_oz_bridge.i18n import Translator
-from jt_oz_bridge.presentation.markdown import MobileMarkdown, literal, sanitize_controls
+from jt_oz_bridge.presentation.markdown import (
+    MobileMarkdown,
+    code_span,
+    literal,
+    sanitize_controls,
+)
 from jt_oz_bridge.presentation.menu_buttons import notice_widget
+from jt_oz_bridge.security.policy import AccessDenied
 from jt_oz_bridge.security.redaction import RedactionError, redact_json, redact_text
+from jt_oz_bridge.security.workspace_paths import disclosed_path
 from jt_oz_bridge.services.batch_dependencies import validate_dependency
 from jt_oz_bridge.services.bindings import reference
 from jt_oz_bridge.services.execution_receipts import native_receipt
@@ -68,6 +75,15 @@ LONG_CONTEXT_AT = 60_000
 LONG_CONTEXT_RENDERER = "transcript-long-context-hint-v1"
 # As a reply (80) and queued after the one it follows, so it never lands before it.
 LONG_CONTEXT_PRIORITY = 80
+# A turn's reply names the files its steps changed: at most this many by name, from
+# earlier versions searched back to the turn's input, outcome or previous reply.
+FILES_SHOWN = 5
+FILES_SCAN = 300
+
+
+def reply_context(tokens: int) -> str:
+    """About how many tokens, to the nearest thousand: "120k"."""
+    return f"{round(tokens / 1000)}k"
 
 
 def context_size(tokens: int, locale: Locale) -> str:
@@ -218,6 +234,9 @@ class TranscriptPublisher:
         # Whether `!new` in another topic can start a conversation in this binding's
         # project; the long-context notice names it only then.
         self.creates_here: Callable[[Binding], bool] | None = None
+        # Whether `!diff` works in this binding's topic; a reply's changed files
+        # name it only then.
+        self.diff_here: Callable[[Binding], bool] | None = None
 
     async def next_pending(self) -> tuple[Literal["bootstrap", "gap", "version"], str] | None:
         async with self.db.sessions() as session:
@@ -592,13 +611,21 @@ class TranscriptPublisher:
         error = " (" + self.tr.render("transcript.tool_status.error", locale) + ")"
         names: dict[str, None] = {}
         for tool in tools:
-            for call in tool.get("calls") or ({"tool": tool["name"], "status": tool["status"]},):
+            ran = {"tool": tool["name"], "status": tool["status"], "exit": tool.get("exit_code")}
+            for call in tool.get("calls") or (ran,):
                 failed = call["status"] in {"error", "failed"}
                 name = literal(call["tool"])
                 if call["tool"] in SUBAGENT_TOOLS:
                     # OpenCode's subagent tool; the bare name says little on a phone.
                     name = self.tr.render("transcript.tool_label.subagent", locale)
-                names[name + (error if failed else "")] = None
+                # A command that ended with a non-zero exit code says which; zero says nothing.
+                code = call.get("exit")
+                ended = (
+                    self.tr.render("transcript.tool_exit", locale, code=code)
+                    if type(code) is int and code != 0
+                    else ""
+                )
+                names[name + (error if failed else "") + ended] = None
         return self.tr.render("transcript.tools_used", locale, names=", ".join(names))
 
     async def shown_signature(
@@ -993,6 +1020,119 @@ class TranscriptPublisher:
             )
         )
 
+    async def turn_files(
+        self,
+        session: AsyncSession,
+        state: TranscriptState,
+        record: TranscriptMessage,
+        row: TranscriptVersion,
+        reply: TranscriptEntry,
+    ) -> tuple[tuple[str, ...], int]:
+        """The files a turn's steps changed up to this reply, from earlier sealed versions.
+
+        The turn runs back to the nearest input, outcome or earlier reply. Each step
+        counts once, by its newest version. Every earlier version is already
+        planned, so the answer is fixed when this plan is sealed. A turn longer
+        than the scan names only the files of its later steps.
+        """
+        earlier = (
+            await session.execute(
+                select(TranscriptVersion, TranscriptMessage)
+                .join(TranscriptMessage, TranscriptMessage.id == TranscriptVersion.record_id)
+                .where(
+                    TranscriptMessage.scope_key == state.key,
+                    or_(
+                        TranscriptMessage.ordinal < record.ordinal,
+                        and_(
+                            TranscriptMessage.ordinal == record.ordinal,
+                            TranscriptVersion.version < row.version,
+                        ),
+                    ),
+                )
+                .order_by(TranscriptMessage.ordinal.desc(), TranscriptVersion.version.desc())
+                .limit(FILES_SCAN)
+            )
+        ).all()
+        steps: list[TranscriptEntry] = [reply]
+        seen = {record.id}
+        for version, message in earlier:
+            if message.id in seen:
+                continue
+            seen.add(message.id)
+            try:
+                value = read_snapshot(version, message, state)
+            except (Conflict, ValueError):
+                break
+            entry = value.observation.entry
+            if (
+                value.historical
+                or entry.kind in {"user", "idle"}
+                or plain_reply(entry)
+                and any(p["type"] == "text" and p["text"] for p in entry.projection()["content"])
+            ):
+                break
+            if entry.kind == "assistant" and not incomplete(entry):
+                steps.append(entry)
+        paths: dict[str, None] = {}
+        unnamed = 0
+        for step in reversed(steps):
+            files, total = step.changed_files()
+            paths.update(dict.fromkeys(files))
+            unnamed += total - len(files)
+        return tuple(paths), len(paths) + unnamed
+
+    def reply_notes(
+        self,
+        binding: Binding,
+        locale: Locale,
+        files: tuple[tuple[str, ...], int],
+        tokens: int | None,
+    ) -> str:
+        """Short lines under a turn's reply: the files it changed and the context size.
+
+        File names show only for paths Bridge's file policy would disclose, at
+        most `FILES_SHOWN` of them as code; the rest are counted. `!diff` is
+        named only where it works.
+        """
+        notes = []
+        paths, total = files
+        if total:
+            shown = []
+            for path in paths:
+                try:
+                    disclosed_path(path)
+                except (AccessDenied, ValueError):
+                    continue
+                shown.append(code_span(sanitize_controls(path)[0]))
+                if len(shown) == FILES_SHOWN:
+                    break
+            count = (
+                self.tr.render("transcript.files_count_one", locale)
+                if total == 1
+                else self.tr.render("transcript.files_count", locale, count=total)
+            )
+            if shown:
+                line = self.tr.render(
+                    "transcript.files_changed",
+                    locale,
+                    files=count,
+                    names=self.tr.render("transcript.files_separator", locale).join(shown),
+                )
+                if total > len(shown):
+                    line += self.tr.render(
+                        "transcript.files_more", locale, count=total - len(shown)
+                    )
+            else:
+                line = self.tr.render("transcript.files_changed_unnamed", locale, files=count)
+            if self.diff_here is not None and self.diff_here(binding):
+                line += self.tr.render("transcript.files_diff", locale)
+            notes.append(line)
+        if tokens is not None and tokens >= LONG_CONTEXT_AT:
+            notes.append(
+                self.tr.render("transcript.reply_context", locale, size=reply_context(tokens))
+            )
+        return "\n\n".join(notes)
+
     def progress_pages(self, lines: tuple[str, ...]) -> tuple[str, ...]:
         """A new progress message for these lines, split only when one is too long."""
         budget = self.replies.message_limit - FOOTER_SIZE - PROGRESS_MARGIN
@@ -1081,8 +1221,12 @@ class TranscriptPublisher:
         locale: Locale,
         *,
         shown: tuple[str, str] | None = None,
+        notes: str = "",
     ) -> tuple[PublicationMode, tuple[str, ...]]:
-        """``shown`` is the topic's last model/Agent line; an equal one is left out."""
+        """``shown`` is the topic's last model/Agent line; an equal one is left out.
+
+        ``notes`` end a plain reply (`reply_notes`); other entries never show them.
+        """
         entry = value.observation.entry
         if entry.kind in {"system", "synthetic", "skill"}:
             return "empty", ()
@@ -1104,6 +1248,7 @@ class TranscriptPublisher:
                 "\n\n".join((*said, self._tools_line(tools, locale)))
                 if tools
                 else self.formatter(entry, locale, footer=shown != reply_signature(entry))
+                + ("\n\n" + notes if notes else "")
             )
             header = ""
         else:
@@ -1118,7 +1263,8 @@ class TranscriptPublisher:
                 if entry.kind == "idle"
                 else "control"
             )
-            header = self.tr.render("mirror." + key, locale)
+            # A compaction is no setting: its own 🗜️ line says what happens.
+            header = "" if entry.kind == "compaction" else self.tr.render("mirror." + key, locale)
         if value.recovering:
             header += "\n" + self.tr.render("mirror.recovered", locale)
         maximum = self.tr.render("output.page", locale, index=100, total=100)
@@ -1226,19 +1372,28 @@ class TranscriptPublisher:
                 if earlier is not None:
                     raise Conflict("transcript_earlier_version_not_planned")
                 locale = await self.own_locale(session, value, binding)
-                shown = (
-                    await self.shown_signature(session, state, record, row)
-                    if record.current_version == row.version
+                reply = (
+                    record.current_version == row.version
                     and not value.historical
                     and plain_reply(value.observation.entry)
-                    else None
+                )
+                shown = await self.shown_signature(session, state, record, row) if reply else None
+                notes = (
+                    self.reply_notes(
+                        binding,
+                        locale,
+                        await self.turn_files(session, state, record, row, value.observation.entry),
+                        value.observation.entry.context_tokens(),
+                    )
+                    if reply
+                    else ""
                 )
                 mode, pages = (
                     ("superseded", ())
                     if record.current_version > row.version
                     else ("historical", ())
                     if value.historical
-                    else self.pages(value, locale, shown=shown)
+                    else self.pages(value, locale, shown=shown, notes=notes)
                 )
                 if value.source_action_id is not None:
                     original = await self.collector.origin(session, binding, value.observation)

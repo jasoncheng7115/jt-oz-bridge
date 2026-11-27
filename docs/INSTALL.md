@@ -2,7 +2,7 @@
 
 English · [繁體中文](INSTALL_zh-tw.md) · [日本語](INSTALL_ja.md) · [Upgrade](UPGRADE.md) · [Uninstall](UNINSTALL.md) · [Overview](../README.md)
 
-This guide installs the bridge as a systemd service on a Linux host that already runs OpenCode, from the internet or from an offline (air-gapped) bundle. jt-oz-bridge `0.1.1` is a **development preview**: complete real-human and mobile acceptance are not finished. Start with a disposable OpenCode project.
+This guide installs the bridge as a systemd service on a Linux host that already runs OpenCode, from the internet or from an offline (air-gapped) bundle. jt-oz-bridge `0.1.2` is a **development preview**: complete real-human and mobile acceptance are not finished. Start with a disposable OpenCode project.
 
 The bridge never installs, starts, restarts or upgrades OpenCode, never reads OpenCode's database and never creates or copies a session to get past a problem. Keep it that way while you install.
 
@@ -162,7 +162,7 @@ On the target, in the copied release directory:
 ```sh
 cd /path/to/jt-oz-bridge-<version>
 sha256sum -c SHA256SUMS
-VERSION=0.1.1
+VERSION=0.1.2
 WHEEL=jt_oz_bridge-$VERSION-py3-none-any.whl
 SHA=$(sha256sum "$WHEEL" | cut -d' ' -f1)
 R=/opt/jt-oz-bridge/releases/$SHA

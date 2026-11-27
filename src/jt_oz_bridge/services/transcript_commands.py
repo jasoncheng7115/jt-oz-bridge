@@ -7,15 +7,17 @@ from typing import Any, Literal
 from pydantic import Field, StrictInt, model_validator
 
 from jt_oz_bridge.adapters.opencode.transcript import (
+    ERROR_TYPE,
     NativeTranscriptPage,
     TranscriptEntry,
     TranscriptReader,
 )
 from jt_oz_bridge.config import Locale
-from jt_oz_bridge.domain.control import ControlModel
+from jt_oz_bridge.domain.control import ControlModel, SessionSnapshot
 from jt_oz_bridge.domain.enrollment_views import readonly_enrollment
 from jt_oz_bridge.domain.execution import HumanMessage, SourceReader
 from jt_oz_bridge.domain.models import SessionRef
+from jt_oz_bridge.i18n import Translator
 from jt_oz_bridge.presentation.commands import parse_input
 from jt_oz_bridge.presentation.markdown import MobileMarkdown, literal, sanitize_controls
 from jt_oz_bridge.security.redaction import RedactionError, redact_text
@@ -34,6 +36,64 @@ def model_label(model: dict[str, Any]) -> str:
     if "variant" in model:
         value += " [" + model["variant"] + "]"
     return literal(value)
+
+
+type FailureKind = Literal[
+    "auth", "rate_limited", "timeout", "service", "too_long", "stopped", "type", "unknown"
+]
+TIMEOUT = re.compile(r"time[_.:-]?out|timed[_.:-]?out")
+
+
+def failure_kind(error: object) -> FailureKind:
+    """What an OpenCode error summary ({type?, status?}) says went wrong, in one word.
+
+    The HTTP status decides first; then words in the error type. A type that is
+    not a safe identifier counts as missing.
+    """
+    raw = error if isinstance(error, Mapping) else {}
+    status = raw.get("status")
+    status = status if type(status) is int and 100 <= status <= 599 else None
+    kind = raw.get("type")
+    kind = kind if isinstance(kind, str) and ERROR_TYPE.fullmatch(kind) else None
+    lowered = kind.lower() if kind else ""
+    if status in {401, 403}:
+        return "auth"
+    if status == 429:
+        return "rate_limited"
+    if status in {408, 504} or TIMEOUT.search(lowered):
+        return "timeout"
+    if status is not None and status >= 500:
+        return "service"
+    if "overflow" in lowered or "context" in lowered:
+        return "too_long"
+    if "abort" in lowered:
+        return "stopped"
+    return "type" if kind else "unknown"
+
+
+def failure_reason(tr: Translator, locale: Locale, error: object) -> str:
+    """Why OpenCode failed, for a person; never the error's own message or body."""
+    kind = failure_kind(error)
+    if kind == "type":
+        assert isinstance(error, Mapping)
+        # A safe identifier has no backtick, so the code span holds it as is.
+        return tr.render("transcript.failure.type", locale, type=error["type"])
+    return tr.render("transcript.failure." + kind, locale)
+
+
+def compaction_line(tr: Translator, locale: Locale, data: Mapping[str, Any]) -> str:
+    """One line for OpenCode's compaction of the conversation, by its status."""
+    status = data.get("status")
+    if status == "running":
+        key = "auto" if data.get("reason") == "auto" else "manual"
+        return tr.render("transcript.compaction.running_" + key, locale)
+    if status == "failed":
+        return tr.render(
+            "transcript.compaction.failed",
+            locale,
+            reason=failure_reason(tr, locale, data.get("error")),
+        )
+    return tr.render("transcript.compaction.completed", locale)
 
 
 def reply_signature(entry: TranscriptEntry) -> tuple[str, str] | None:
@@ -199,6 +259,15 @@ class NativeTranscriptCommands(HistoryCommands):
                             exit=part.get("exit_code", "—"),
                         )
                     )
+            if "error" in data and failure_kind(data["error"]) != "stopped":
+                # A step `!stop` ended says so in its outcome, not as a failure.
+                lines.append(
+                    self.tr.render(
+                        "transcript.step_failed",
+                        locale,
+                        reason=failure_reason(self.tr, locale, data["error"]),
+                    )
+                )
             if footer:
                 model = data["model"]
                 lines.append(
@@ -210,6 +279,12 @@ class NativeTranscriptCommands(HistoryCommands):
                 lines.append(self.tr.render("transcript.incomplete", locale))
             return "\n\n".join(lines)
         if entry.kind == "idle":
+            if data["outcome"] == "failed" and "error" in data:
+                return self.tr.render(
+                    "transcript.outcome_failed_reason",
+                    locale,
+                    reason=failure_reason(self.tr, locale, data["error"]),
+                )
             return self.tr.render(
                 "transcript.outcome",
                 locale,
@@ -220,7 +295,9 @@ class NativeTranscriptCommands(HistoryCommands):
             return self.tr.render("transcript.model", locale, model=model_label(model))
         if entry.kind == "agent-switched":
             return self.tr.render("transcript.agent", locale, agent=literal(data["agent"]))
-        if entry.kind in {"shell", "compaction"}:
+        if entry.kind == "compaction":
+            return compaction_line(self.tr, locale, data)
+        if entry.kind == "shell":
             return self.tr.render(
                 "transcript.control_status",
                 locale,
@@ -437,11 +514,20 @@ class NativeTranscriptCommands(HistoryCommands):
             return await super().status(binding, message, locale)
         await self.source(binding, message, frozenset({"status", "choose"}))
         ref = reference(binding)
-        state = await self.selected(binding).snapshot(ref)
+        reader = self.selected(binding)
+        try:
+            state: SessionSnapshot | None = await reader.snapshot(ref)
+        except (ValueError, TimeoutError, ConnectionError):
+            # The router asks here after its own live check failed. While a tool
+            # runs, OpenCode's evidence can change mid-check: that is an answer
+            # for `!status`, not a stale request.
+            state = None
         checked = await self.source(binding, message, frozenset({"status", "choose"}))
-        if state.reference != ref or not state.reconciled:
-            raise Conflict("original_history_status_not_current")
         paused = self.tr.render("router.yes" if checked.dispatch_paused else "router.no", locale)
+        if state is None or not state.reconciled:
+            return self.tr.render("transcript.status_unconfirmed", locale, paused=paused)
+        if state.reference != ref:
+            raise Conflict("original_history_status_not_current")
         return self.tr.render(
             "transcript.live_status",
             locale,

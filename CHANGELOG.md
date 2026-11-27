@@ -4,8 +4,14 @@ English · [繁體中文](CHANGELOG_zh-tw.md) · [日本語](CHANGELOG_ja.md)
 
 Versions follow [Semantic Versioning](https://semver.org/). Before 1.0.0 a minor version may change configuration or behaviour; the notes say how to upgrade.
 
-## Unreleased
+## 0.1.2
 
+- `!export` works again for real conversations. Its safety check refused any finished step with token counts, the time OpenCode started streaming, a tool's start time or a code-mode step's tool names, so every export of a session with a finished reply was refused.
+- A turn's reply says what changed and how long the conversation is. It ends with one line naming the files the turn's steps changed (`Changed 3 files: a.py, b.py, c.py`, at most five names, then "… and N more", and a pointer to `!diff` where it works); paths come only from OpenCode's list of changed files, a secret such as `.env` is counted but not named, and a turn that changed nothing gets no line. Once a reply's step read 60,000 tokens or more it also ends with `Context: about 120k tokens`. In the progress message, a command that ended with a non-zero exit code says so (`🔧 bash (exit 1)`).
+- The topic says why OpenCode is slow or failed instead of "model thinking" or a bare "Run failed.". While OpenCode retries a failed model call, the "still working" line and `!status` say so with the attempt and the reason (for example too many requests); a failed run or compaction names the cause (authentication, rate limit, timeout, service error, conversation too long, or the error type) without the error's own message; and compaction gets its own 🗜️ lines ("The conversation is long; OpenCode is compacting it", "Conversation compacted") instead of "Setting changed".
+- After a restart, messages Bridge missed more than a day ago are no longer reported in the topic again. A restart on 11-25 told a topic about two messages missed in an outage eleven days earlier.
+- `!status` sent while a tool runs answers again. When the OpenCode server could not confirm its live state, the fallback asked the same check again and the reply was "This request has expired or is no longer valid". It now says the live state could not be confirmed, names a tool that is still running, and lists the waiting messages.
+- A message sent while OpenCode is working joins the running turn again. The Zulip formatting wrapper around the dispatcher dropped the steer flag, so every such message failed before it was sent and was reported as not sent.
 - The project site gets colour while staying light: a tinted hero, alternating section bands, numbered cards with coloured edges, green and red fit lists, and a diagram coloured by role (Zulip, the bridge, OpenCode, storage).
 - The project site puts the self-hosted, on-premises setup first: a hero that says so, a new section showing the chain from Zulip on your phone through your own Zulip, the bridge and OpenCode to a local model with MCP, and a diagram that marks everything inside your server room. The wording follows the talk that introduced jt-oz-bridge.
 - The project site's language choice is one button with a menu instead of three buttons side by side; it closes on a click elsewhere or Esc.

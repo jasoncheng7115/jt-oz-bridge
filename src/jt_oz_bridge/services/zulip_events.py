@@ -128,6 +128,9 @@ class ZulipEventClaim:
 ROUTED = TypeAdapter(RoutedInput)
 # Messages sent at most this long before Bridge came back are sent by themselves.
 RESTART_RESEND_SECONDS = 600
+# Unseen messages older than this were missed in an earlier outage: past acting on,
+# and a later restart must not report them again as if just missed.
+MISSED_NOTICE_SECONDS = 86400
 # A message held this long is old: a new message no longer carries it along, so a
 # days-old "ok" never reaches the AI as if just typed.
 OLD_HELD_SECONDS = 3600
@@ -401,7 +404,8 @@ class ZulipEventJournal:
         Returns the recent unedited ones (a proposal only: routing reads each one
         again) and how many others there are. Nothing here grants authority.
         """
-        cutoff = (time.time() if now is None else now) - RESTART_RESEND_SECONDS
+        moment = time.time() if now is None else now
+        cutoff = moment - RESTART_RESEND_SECONDS
         candidates = [
             item
             for item in messages
@@ -428,15 +432,22 @@ class ZulipEventJournal:
             if item["id"] in seen or anchor is not None and item["id"] <= anchor:
                 continue
             stamp = item.get("timestamp")
+            sent = (
+                float(stamp)
+                if isinstance(stamp, int | float)
+                and not isinstance(stamp, bool)
+                and math.isfinite(stamp)
+                else None
+            )
+            if sent is not None and sent < moment - MISSED_NOTICE_SECONDS:
+                continue
             if (
                 binding is not None
                 and item.get("type") == "stream"
                 and item.get("stream_id") == binding.channel_id
                 and item.get("last_edit_timestamp") is None
-                and isinstance(stamp, int | float)
-                and not isinstance(stamp, bool)
-                and math.isfinite(stamp)
-                and stamp >= cutoff
+                and sent is not None
+                and sent >= cutoff
             ):
                 recent.append(item)
             else:

@@ -12,7 +12,7 @@ import asyncio
 import logging
 import time
 from collections.abc import Callable, Mapping
-from typing import Any
+from typing import Any, cast
 
 from jt_oz_bridge.adapters.opencode.instructions import V2SessionInstructions
 from jt_oz_bridge.domain.control import InteractionSnapshot, SessionSnapshot
@@ -106,8 +106,18 @@ class FormattedExecution:
         return await self.client.interaction(reference, request_id)
 
     async def submit(
-        self, reference: SessionRef, payload: dict[str, Any], action_id: str
+        self,
+        reference: SessionRef,
+        payload: dict[str, Any],
+        action_id: str,
+        *,
+        steer: bool = False,
     ) -> Admission:
         if payload.get("operation") == "prompt":
             await self.instructions.ensure(reference)
+        if steer:
+            # `steer_supported` reaches the wrapped client through `__getattr__`, so the
+            # dispatcher steers through here too; dropping it failed every steer.
+            submit_steer: Any = self.client.submit
+            return cast(Admission, await submit_steer(reference, payload, action_id, steer=True))
         return await self.client.submit(reference, payload, action_id)

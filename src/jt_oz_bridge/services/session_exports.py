@@ -19,6 +19,10 @@ from weakref import ref as weakref
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from jt_oz_bridge.adapters.opencode.transcript import (
+    ERROR_TYPE,
+    FILE_PATH_LIMIT,
+    FILES_LIMIT,
+    TOKEN_LIMIT,
     NativeTranscriptPage,
     TranscriptEntry,
     TranscriptReader,
@@ -30,6 +34,7 @@ from jt_oz_bridge.domain.execution import HumanMessage
 from jt_oz_bridge.domain.models import SessionRef
 from jt_oz_bridge.presentation.commands import parse_input
 from jt_oz_bridge.security.policy import Permission
+from jt_oz_bridge.security.workspace_paths import canonical_relative
 from jt_oz_bridge.services.artifacts import FileDescriptor
 from jt_oz_bridge.services.bindings import reference
 from jt_oz_bridge.services.command_receipts import CommandClaim
@@ -63,20 +68,41 @@ def safe_export_entry(entry: TranscriptEntry) -> dict[str, object]:
     value = checked.projection()
     fields = {
         "user": {"text", "attachments_present"},
-        "assistant": {"content", "agent", "model"},
-        "idle": {"outcome", "error_sha256"},
+        "assistant": {
+            "content",
+            "agent",
+            "model",
+            "tokens",
+            "error",
+            "retry",
+            "files",
+            "files_total",
+        },
+        "idle": {"outcome", "error_sha256", "error"},
         "model-switched": {"model", "previous"},
         "agent-switched": {"agent"},
         "shell": {"status", "exit"},
-        "compaction": {"status", "exit"},
+        "compaction": {"status", "exit", "reason", "error"},
     }.get(entry.kind, set())
     if set(value) - {"id", "type", "time"} - fields:
         raise Conflict("session_export_projection_widened")
 
+    def error(raw: object) -> None:
+        """Only the safe type and HTTP status the adapter keeps of an OpenCode error."""
+        if (
+            not isinstance(raw, dict)
+            or set(raw) - {"type", "status"}
+            or "type" in raw
+            and not (isinstance(raw["type"], str) and ERROR_TYPE.fullmatch(raw["type"]))
+            or "status" in raw
+            and not (type(raw["status"]) is int and 100 <= raw["status"] <= 599)
+        ):
+            raise Conflict("session_export_error_projection_changed")
+
     def timestamp(raw: object) -> None:
         if (
             not isinstance(raw, dict)
-            or set(raw) - {"created", "started", "completed"}
+            or set(raw) - {"created", "started", "streamed", "ran", "completed"}
             or any(
                 type(v) not in {int, float} or not math.isfinite(v) or v < 0 for v in raw.values()
             )
@@ -91,6 +117,32 @@ def safe_export_entry(entry: TranscriptEntry) -> dict[str, object]:
         ):
             raise Conflict("session_export_model_projection_changed")
 
+    def calls(raw: object) -> None:
+        """Only the MCP tool names and states a code-mode step ran."""
+        if (
+            not isinstance(raw, list)
+            or len(raw) > 20
+            or any(
+                not isinstance(call, dict)
+                or set(call) != {"tool", "status"}
+                or not isinstance(call["tool"], str)
+                or len(call["tool"]) > 200
+                or not isinstance(call["status"], str)
+                or len(call["status"]) > 32
+                for call in raw
+            )
+        ):
+            raise Conflict("session_export_tool_calls_projection_changed")
+
+    def tokens(raw: object) -> None:
+        """A finished step's whole-number token counts, nothing else."""
+        if (
+            not isinstance(raw, dict)
+            or set(raw) != {"input", "output", "reasoning", "cache_read", "cache_write"}
+            or any(type(v) is not int or not 0 <= v <= TOKEN_LIMIT for v in raw.values())
+        ):
+            raise Conflict("session_export_tokens_projection_changed")
+
     timestamp(value["time"])
     if entry.kind == "user" and not isinstance(value.get("text"), str):
         raise Conflict("session_export_text_projection_changed")
@@ -104,7 +156,17 @@ def safe_export_entry(entry: TranscriptEntry) -> dict[str, object]:
             allowed = (
                 {"type", "index", "text"}
                 if part.get("type") == "text"
-                else {"type", "index", "id", "name", "status", "time", "exit_code", "error_sha256"}
+                else {
+                    "type",
+                    "index",
+                    "id",
+                    "name",
+                    "status",
+                    "time",
+                    "exit_code",
+                    "error_sha256",
+                    "calls",
+                }
             )
             if part.get("type") not in {"text", "tool"} or set(part) - allowed:
                 raise Conflict("session_export_part_projection_widened")
@@ -114,12 +176,48 @@ def safe_export_entry(entry: TranscriptEntry) -> dict[str, object]:
                 timestamp(part.get("time"))
                 if any(not isinstance(part.get(k), str) for k in ("id", "name", "status")):
                     raise Conflict("session_export_tool_projection_changed")
+                if "calls" in part:
+                    calls(part["calls"])
     if entry.kind == "model-switched":
         model(value.get("model"))
         if value.get("previous") is not None:
             model(value["previous"])
+    if "tokens" in value:
+        tokens(value["tokens"])
+    if "error" in value:
+        error(value["error"])
+    if "retry" in value:
+        retry = value["retry"]
+        if (
+            not isinstance(retry, dict)
+            or set(retry) != {"attempt", "error"}
+            or type(retry["attempt"]) is not int
+            or retry["attempt"] < 1
+        ):
+            raise Conflict("session_export_retry_projection_changed")
+        error(retry["error"])
+    if "files" in value or "files_total" in value:
+        # Only the bounded canonical relative paths the adapter keeps of a snapshot.
+        files, total = value.get("files"), value.get("files_total", None)
+        try:
+            if (
+                not isinstance(files, list)
+                or not 1 <= len(files) <= FILES_LIMIT
+                or any(
+                    not isinstance(path, str)
+                    or len(path) > FILE_PATH_LIMIT
+                    or canonical_relative(path) != path
+                    for path in files
+                )
+                or len(set(files)) != len(files)
+                or "files_total" in value
+                and (type(total) is not int or total <= len(files))
+            ):
+                raise ValueError("session_export_files_shape")
+        except ValueError:
+            raise Conflict("session_export_files_projection_changed") from None
     # No nested arbitrary objects may ride in an otherwise allowed scalar.
-    for key in fields - {"content", "model", "previous"}:
+    for key in fields - {"content", "model", "previous", "tokens", "error", "retry", "files"}:
         if key in value and not isinstance(value[key], (str, int, float, bool, type(None))):
             raise Conflict("session_export_scalar_projection_changed")
     return value

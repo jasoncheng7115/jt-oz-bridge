@@ -939,6 +939,7 @@ class ConsumerPipeline:
         if self.transcript_output is not None:
             self.transcript_output.gap_notice_due = self.gap_notice_due
             self.transcript_output.creates_here = self.creates_here
+            self.transcript_output.diff_here = self.diff_here
         self.draft_output = (
             TranscriptDraftPublisher(
                 self.mirrors,
@@ -1890,6 +1891,10 @@ class ConsumerPipeline:
             project.template.scope.backend_id,
             project.template.scope.backend_identity,
         ) == (binding.backend_id, binding.backend_identity)
+
+    def diff_here(self, binding: Binding) -> bool:
+        """Whether `!diff` in this binding's topic shows its conversation's changes."""
+        return self.file_menus is not None and self.file_menus.available(binding, "diff")
 
     def gap_notice_due(self, binding: Binding, reason: str | None) -> bool:
         """Hold an OpenCode restart's notice while automatic reconnect may still answer.

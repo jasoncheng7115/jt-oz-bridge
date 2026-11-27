@@ -2,7 +2,7 @@
 
 [English](INSTALL.md) · [繁體中文](INSTALL_zh-tw.md) · 日本語 · [アップグレード](UPGRADE_ja.md) · [アンインストール](UNINSTALL_ja.md) · [概要](../README_ja.md)
 
-このガイドでは、すでに OpenCode が動いている Linux ホストに、ブリッジを systemd サービスとしてインストールします。インターネットから、またはオフライン（エアギャップ）バンドルからインストールできます。jt-oz-bridge `0.1.1` は**開発プレビュー**であり、実際の利用者とモバイルでの受け入れは完了していません。まずは使い捨ての OpenCode プロジェクトで始めてください。
+このガイドでは、すでに OpenCode が動いている Linux ホストに、ブリッジを systemd サービスとしてインストールします。インターネットから、またはオフライン（エアギャップ）バンドルからインストールできます。jt-oz-bridge `0.1.2` は**開発プレビュー**であり、実際の利用者とモバイルでの受け入れは完了していません。まずは使い捨ての OpenCode プロジェクトで始めてください。
 
 ブリッジが OpenCode をインストール、起動、再起動、アップグレードすることはなく、OpenCode のデータベースを読むことも、問題を回避するためにセッションを作成またはコピーすることもありません。インストール作業中もこの原則を守ってください。
 
@@ -162,7 +162,7 @@ PY=$(echo /opt/jt-oz-bridge/python/cpython-3.13.*/bin/python3.13)
 ```sh
 cd /path/to/jt-oz-bridge-<version>
 sha256sum -c SHA256SUMS
-VERSION=0.1.1
+VERSION=0.1.2
 WHEEL=jt_oz_bridge-$VERSION-py3-none-any.whl
 SHA=$(sha256sum "$WHEEL" | cut -d' ' -f1)
 R=/opt/jt-oz-bridge/releases/$SHA

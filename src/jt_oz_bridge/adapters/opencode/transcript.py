@@ -1,7 +1,9 @@
 """Original Native message pages; never synthetic Human inputs or replay events."""
 
 import math
+import re
 import time
+from collections.abc import Collection
 from typing import Any, Literal, Protocol, cast
 from uuid import uuid4
 
@@ -19,6 +21,7 @@ from jt_oz_bridge.adapters.opencode.turn_resources import (
 from jt_oz_bridge.domain.control import ControlModel, ExecutionState, SessionSnapshot
 from jt_oz_bridge.domain.models import SessionRef
 from jt_oz_bridge.security.json_data import strict_loads
+from jt_oz_bridge.security.workspace_paths import canonical_relative
 from jt_oz_bridge.storage.cipher_types import checked_json
 from jt_oz_bridge.storage.durable import digest
 
@@ -60,19 +63,43 @@ class TranscriptEntry(ControlModel):
             raise ValueError("native_transcript_projection_object_required")
         return result
 
-    def sha256_before_tool_calls(self) -> str:
-        """A record saved before tool names (or token counts) were kept is not a new version."""
+    def sha256_before_tool_calls(self, *, omit: Collection[str] = ()) -> str:
+        """A record saved before tool names (or token counts) were kept is not a new version.
+
+        ``omit`` also leaves out those fields (of `LATER_FIELDS`), for a record
+        saved before they were kept.
+        """
         value = self.projection()
         value.pop("tokens", None)
+        for key in omit:
+            value.pop(key, None)
         for part in value.get("content", ()):
             if isinstance(part, dict):
                 part.pop("calls", None)
         return digest(value)
 
-    def sha256_without_tokens(self) -> str:
+    def sha256_without_tokens(self, *, omit: Collection[str] = ()) -> str:
         value = self.projection()
         value.pop("tokens", None)
+        for key in omit:
+            value.pop(key, None)
         return digest(value)
+
+    def settled(self) -> bool:
+        """Whether OpenCode is done with it: a finished step, an ended shell or compaction."""
+        value = self.projection()
+        if self.kind == "assistant":
+            return "completed" in value["time"]
+        return self.kind not in {"shell", "compaction"} or value.get("status") != "running"
+
+    def changed_files(self) -> tuple[tuple[str, ...], int]:
+        """The files a finished step changed, and how many there were in all."""
+        value = self.projection()
+        files = value.get("files")
+        if not isinstance(files, list) or not all(isinstance(f, str) for f in files):
+            return (), 0
+        total = value.get("files_total")
+        return tuple(files), total if type(total) is int and total > len(files) else len(files)
 
     def context_tokens(self) -> int | None:
         """How much context a finished step read: its input, cached or not."""
@@ -85,15 +112,32 @@ class TranscriptEntry(ControlModel):
         return sum(cast(list[int], values))
 
 
+# Fields Bridge began to keep later. A settled record saved before one was kept
+# lacks it; OpenCode never adds one to a finished step, an idle or an ended
+# compaction, so the re-read that has it shows the same message.
+LATER_FIELDS = ("error", "files", "files_total")
+
+
 def same_message(old: TranscriptEntry, new: TranscriptEntry) -> bool:
     """Whether ``new`` shows what ``old`` showed: token counts are not content.
 
     A record saved before tool names or token counts were kept is the same message
-    as its re-read that has them.
+    as its re-read that has them. So is a settled record saved before its error
+    summary or its changed files were kept (`LATER_FIELDS`). A retry is the live
+    state of a step and always counts.
     """
-    return old.projection_sha256 == new.projection_sha256 or old.sha256_without_tokens() in {
+    saved = old.sha256_without_tokens()
+    if old.projection_sha256 == new.projection_sha256 or saved in {
         new.sha256_without_tokens(),
         new.sha256_before_tool_calls(),
+    }:
+        return True
+    if not old.settled():
+        return False
+    missing = [key for key in LATER_FIELDS if key not in old.projection()]
+    return bool(missing) and saved in {
+        new.sha256_without_tokens(omit=missing),
+        new.sha256_before_tool_calls(omit=missing),
     }
 
 
@@ -117,6 +161,57 @@ def token_counts(raw: dict[str, Any]) -> dict[str, int] | None:
     if any(type(v) not in {int, float} or not math.isfinite(v) or v < 0 for v in values.values()):
         return None
     return {key: min(int(v), TOKEN_LIMIT) for key, v in values.items()}
+
+
+# The only part of an OpenCode error that leaves this adapter is a type identifier
+# of this shape and an HTTP status; never its message or response body.
+ERROR_TYPE = re.compile(r"[A-Za-z][A-Za-z0-9_.:-]{0,63}")
+# A retry count no real step reaches; a larger one is kept as this.
+RETRY_LIMIT = 10**6
+
+
+def error_summary(raw: object) -> dict[str, Any]:
+    """An OpenCode error as its safe type and HTTP status; what is unsafe stays out."""
+    summary: dict[str, Any] = {}
+    if not isinstance(raw, dict):
+        return summary
+    kind, status = raw.get("type"), raw.get("status")
+    if isinstance(kind, str) and ERROR_TYPE.fullmatch(kind):
+        summary["type"] = kind
+    if type(status) is int and 100 <= status <= 599:
+        summary["status"] = status
+    return summary
+
+
+def retry_summary(raw: object) -> dict[str, Any] | None:
+    """The attempt OpenCode retries a failed model call with, and why; None otherwise."""
+    attempt = raw.get("attempt") if isinstance(raw, dict) else None
+    if not isinstance(raw, dict) or type(attempt) is not int or attempt < 1:
+        return None
+    return {"attempt": min(attempt, RETRY_LIMIT), "error": error_summary(raw.get("error"))}
+
+
+# At most this many changed files of one step are kept, each at most this long.
+FILES_LIMIT = 50
+FILE_PATH_LIMIT = 300
+
+
+def changed_files(raw: object) -> tuple[list[str], int]:
+    """The relative paths a finished step changed (its `snapshot.files`), and how many.
+
+    Only canonical relative paths within the project are kept: never an absolute
+    path, `..`, a backslash or a control character. Contents never enter.
+    """
+    listed = raw.get("files") if isinstance(raw, dict) else None
+    kept: dict[str, None] = {}
+    for path in listed if isinstance(listed, list) else ():
+        if not isinstance(path, str) or len(path) > FILE_PATH_LIMIT:
+            continue
+        try:
+            kept[canonical_relative(path)] = None
+        except ValueError:
+            continue
+    return list(kept)[:FILES_LIMIT], len(kept)
 
 
 def tool_calls(part: dict[str, Any]) -> list[dict[str, str]]:
@@ -147,12 +242,24 @@ def project_message(raw: dict[str, Any]) -> TranscriptEntry:
         # Numbers only, once the step is finished: how long the context has grown.
         if "completed" in raw["time"] and (tokens := token_counts(raw)) is not None:
             value["tokens"] = tokens
+        # Paths only, once the step is finished and only when it changed any.
+        files, total = changed_files(raw.get("snapshot")) if "completed" in raw["time"] else ([], 0)
+        if files:
+            value["files"] = files
+            if total > len(files):
+                value["files_total"] = total
+        # Only while OpenCode waits to call the model again after a failure.
+        if (retry := retry_summary(raw.get("retry"))) is not None:
+            value["retry"] = retry
     elif kind == "agent-switched":
         value["agent"] = raw["agent"]
     elif kind in {"shell", "compaction"}:
         value["status"] = raw["status"]
         if type(raw.get("exit")) is int:
             value["exit"] = raw["exit"]
+    # Only when OpenCode reports one, so every other entry keeps its exact projection.
+    if kind in {"assistant", "idle", "compaction"} and "error" in raw:
+        value["error"] = error_summary(raw["error"])
     return TranscriptEntry(
         native_id=raw["id"],
         kind=kind,

@@ -1652,3 +1652,58 @@ async def test_a_still_working_line_stays_general_when_the_newest_entry_does_not
     assert content.startswith(
         "⏳ The AI is still working (5 min so far); the reply will appear here."
     )
+
+
+@pytest.mark.parametrize(
+    ("locale", "text"),
+    [
+        (
+            "en",
+            "⏳ The AI is still working (5 min so far); the model service failed for now "
+            "(model service error) and OpenCode is retrying (attempt 3); the reply will "
+            "appear here.",
+        ),
+        (
+            "zh-TW",
+            "⏳ AI 還在處理中（已 5 分鐘），模型服務暫時失敗（模型服務錯誤），"
+            "OpenCode 正在第 3 次重試；完成後會在這裡回覆。",
+        ),
+    ],
+)
+async def test_a_still_working_line_says_opencode_retries_a_failed_model_call(db, locale, text):
+    from tests.integration.test_transcript_publisher import SECRET_ERROR, retrying
+
+    error = SECRET_ERROR | {"status": 503}
+    content = await turn_notices(db, locale, retrying("s1", 3, error))
+    assert content.startswith(text) and "PRIVATE" not in content
+
+
+@pytest.mark.parametrize(
+    ("locale", "text"),
+    [
+        (
+            "en",
+            "⏳ The AI is still working (5 min so far); OpenCode is compacting the "
+            "conversation, and the reply will appear here.",
+        ),
+        ("zh-TW", "⏳ AI 還在處理中（已 5 分鐘），OpenCode 正在壓縮對話；完成後會在這裡回覆。"),
+    ],
+)
+async def test_a_still_working_line_says_the_conversation_is_being_compacted(db, locale, text):
+    from tests.integration.test_transcript_publisher import compaction, step
+
+    # OpenCode's automatic compaction inside the turn, after a tool step.
+    content = await turn_notices(db, locale, step("s0", "bash"), compaction("c1", "running"))
+    assert content.startswith(text)
+
+
+async def test_a_tool_whose_input_still_streams_is_the_model_writing_not_a_tool_run(db):
+    from jt_oz_bridge.services.still_working import running_tools
+
+    # OpenCode's `streaming`: the model still writes the call's input; nothing runs yet.
+    streaming = unfinished("s1", running_tool("bash", "streaming"))
+    assert running_tools(streaming.projection()["content"]) == []
+    content = await turn_notices(db, "zh-TW", streaming)
+    assert content.startswith(
+        "⏳ AI 還在處理中（已 5 分鐘），模型正在思考或撰寫回覆；完成後會在這裡回覆。"
+    )

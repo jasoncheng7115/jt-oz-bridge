@@ -73,6 +73,7 @@ from jt_oz_bridge.services.session_lifecycle_commands import SessionLifecycleCom
 from jt_oz_bridge.services.session_lifecycle_controls import SessionLifecycleControls
 from jt_oz_bridge.services.still_working import tool_names, waits_on
 from jt_oz_bridge.services.tokens import MINTED, TokenService
+from jt_oz_bridge.services.transcript_commands import failure_reason
 from jt_oz_bridge.services.transcript_reconnect import KIND as RECONNECT_TOKEN
 from jt_oz_bridge.services.transcript_reconnect import ReconnectUnavailable
 from jt_oz_bridge.services.unbound_router import STATUS_TOPIC, UnboundRouter
@@ -342,16 +343,33 @@ class CommandRouter:
                 return "\n\n" + self.tr.render("router.gap_go", locale)
         return ""
 
-    async def _doing_note(self, binding: Binding, locale: Locale) -> str:
-        """`!status` of a running turn says whether it waits on a tool or the model."""
+    async def _doing_note(
+        self, binding: Binding, locale: Locale, *, tools_only: bool = False
+    ) -> str:
+        """`!status` of a running turn says whether it waits on a tool or the model.
+
+        Or that OpenCode retries a failed model call, or compacts the conversation.
+
+        `tools_only` when the live state is unknown: an unfinished tool in Bridge's
+        own transcript still says so, but no tool may just mean the turn ended.
+        """
         async with self.db.sessions() as session:
-            names = await waits_on(session, binding)
-        if names is None:
+            what = await waits_on(session, binding)
+        if what is None or (tools_only and not what.tools):
             return ""
-        if names:
+        if what.tools:
             text = self.tr.render(
-                "router.status_doing_tool", locale, tools=tool_names(self.tr, locale, names)
+                "router.status_doing_tool", locale, tools=tool_names(self.tr, locale, what.tools)
             )
+        elif what.retry is not None:
+            text = self.tr.render(
+                "router.status_doing_retry",
+                locale,
+                reason=failure_reason(self.tr, locale, what.retry.get("error")),
+                attempt=what.retry.get("attempt"),
+            )
+        elif what.compacting:
+            text = self.tr.render("router.status_doing_compaction", locale)
         else:
             text = self.tr.render("router.status_doing_model", locale)
         return "\n\n" + text
@@ -1457,6 +1475,7 @@ class CommandRouter:
                 text = await self.history.status(binding, message, locale)
                 return (
                     text
+                    + await self._doing_note(binding, locale, tools_only=True)
                     + await self._queued(binding, message, locale)
                     + await self._waiting_note(binding, message, locale)
                     + await self._background_stop_note(binding, locale)

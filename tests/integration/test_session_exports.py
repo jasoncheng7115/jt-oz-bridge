@@ -23,6 +23,7 @@ from jt_oz_bridge.services.session_exports import (
     SessionExportJournal,
     capture_conversation,
     encode_conversation,
+    safe_export_entry,
 )
 from jt_oz_bridge.services.tokens import TokenService
 from jt_oz_bridge.storage.artifact_models import Artifact
@@ -426,6 +427,138 @@ async def test_custom_reader_cannot_widen_the_existing_safe_history_projection(d
         await send(v.router, v.source, message("!oz export"))
         assert not await all_rows(db, ControlToken) and not await all_rows(db, FileTransfer)
         assert not await all_rows(db, Artifact) and v.export_remote.posts == 0
+
+
+def test_an_export_keeps_error_summaries_and_compaction_reasons_but_nothing_wider():
+    from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry
+    from tests.integration.test_transcript_publisher import (
+        SECRET_ERROR,
+        compaction,
+        failed_idle,
+        failed_step,
+        retrying,
+    )
+
+    for entry in (
+        failed_idle("i1", SECRET_ERROR),
+        failed_step("s1", "Half", SECRET_ERROR),
+        retrying("s2", 2, SECRET_ERROR),
+        compaction("c1", "running"),
+        compaction("c2", "failed", error=SECRET_ERROR),
+    ):
+        value = safe_export_entry(entry)
+        assert "PRIVATE" not in json.dumps(value)
+    for widened in (
+        {"type": "APIError", "message": "PRIVATE"},
+        {"type": "has space"},
+        {"status": 999},
+        "APIError",
+    ):
+        value = failed_idle("i1", SECRET_ERROR).projection() | {"error": widened}
+        forged = TranscriptEntry(
+            native_id="i1",
+            kind="idle",
+            projection_json=json.dumps(value),
+            projection_sha256=digest(value),
+        )
+        with pytest.raises(Conflict, match="session_export_error_projection_changed"):
+            safe_export_entry(forged)
+    value = retrying("s2", 2, SECRET_ERROR).projection()
+    value["retry"]["at"] = 1
+    forged = TranscriptEntry(
+        native_id="s2",
+        kind="assistant",
+        projection_json=json.dumps(value),
+        projection_sha256=digest(value),
+    )
+    with pytest.raises(Conflict, match="session_export_retry_projection_changed"):
+        safe_export_entry(forged)
+
+
+def test_an_export_keeps_changed_file_paths_but_nothing_wider():
+    from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry
+    from tests.integration.test_transcript_publisher import changed
+
+    plain = changed("s1", "src/a.py", "docs/b.md", text="Done")
+    assert safe_export_entry(plain)["files"] == ["src/a.py", "docs/b.md"]
+    many = changed("s2", *(f"f{i}.py" for i in range(60)), text="Done")
+    assert safe_export_entry(many)["files_total"] == 60
+    for widened in (
+        {"files": ["/etc/passwd"]},
+        {"files": ["../x"]},
+        {"files": ["a.py", "a.py"]},
+        {"files": [{"path": "a.py"}]},
+        {"files": []},
+        {"files": "a.py"},
+        {"files": ["x" * 301]},
+        {"files": [f"f{i}" for i in range(51)]},
+        {"files_total": 9},
+        {"files": ["a.py"], "files_total": 1},
+        {"files": ["a.py"], "files_total": "9"},
+    ):
+        value = {k: v for k, v in plain.projection().items() if k != "files"} | widened
+        forged = TranscriptEntry(
+            native_id="s1",
+            kind="assistant",
+            projection_json=json.dumps(value),
+            projection_sha256=digest(value),
+        )
+        with pytest.raises(Conflict, match="session_export_files_projection_changed"):
+            safe_export_entry(forged)
+
+
+def test_an_export_takes_a_real_finished_step_with_tokens_streamed_time_and_tool_calls():
+    from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry, project_message
+
+    raw = {
+        "id": "msg_real",
+        "type": "assistant",
+        "agent": "build",
+        "model": {"providerID": "local", "id": "m"},
+        "time": {"created": 1.0, "streamed": 2.0, "completed": 3.0},
+        "tokens": {"input": 120, "output": 30, "reasoning": 5, "cache": {"read": 7, "write": 0}},
+        "content": [
+            {"type": "text", "text": "Done"},
+            {
+                "type": "tool",
+                "id": "prt_1",
+                "name": "code",
+                "state": {
+                    "status": "completed",
+                    "input": {},
+                    "output": "PRIVATE",
+                    "metadata": {"toolCalls": [{"tool": "search", "status": "completed"}]},
+                },
+                "time": {"created": 1.0, "ran": 1.5, "completed": 2.0},
+            },
+        ],
+    }
+    value = safe_export_entry(project_message(raw))
+    assert value["tokens"]["input"] == 120 and value["time"]["streamed"] == 2.0
+    assert value["content"][1]["calls"] == [{"tool": "search", "status": "completed"}]
+    assert "PRIVATE" not in json.dumps(value)
+    for key, widened, reason in (
+        ("tokens", {"input": 1}, "tokens"),
+        (
+            "tokens",
+            {"input": -1, "output": 0, "reasoning": 0, "cache_read": 0, "cache_write": 0},
+            "tokens",
+        ),
+        ("calls", [{"tool": "search", "status": "completed", "args": "PRIVATE"}], "tool_calls"),
+    ):
+        forged = project_message(raw).projection()
+        if key == "calls":
+            forged["content"][1]["calls"] = widened
+        else:
+            forged[key] = widened
+        entry = TranscriptEntry(
+            native_id="msg_real",
+            kind="assistant",
+            projection_json=json.dumps(forged),
+            projection_sha256=digest(forged),
+        )
+        with pytest.raises(Conflict, match=f"session_export_{reason}_projection_changed"):
+            safe_export_entry(entry)
 
 
 async def test_token_consumption_and_export_transfer_roll_back_together(db, tmp_path):

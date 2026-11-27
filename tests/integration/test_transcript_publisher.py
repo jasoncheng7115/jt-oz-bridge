@@ -3,6 +3,7 @@
 import asyncio
 import copy
 import html
+import json
 import time
 
 import pytest
@@ -935,7 +936,9 @@ async def test_a_long_conversation_gets_one_notice_after_the_reply_for_good(db, 
     await deliver(t.worker)
     await t.add(entry("in3", "Again"), finished("r3", "Yes", context=130000))
     assert len(await notices(db)) == 1
-    assert sum(size in text for text in t.shown()) == 1
+    # The notice shows once; each long reply's own footer only says the size.
+    assert sum("💡" in text for text in t.shown()) == 1
+    assert sum(size in text and "💡" in text for text in t.shown()) == 1
 
 
 @pytest.mark.parametrize(
@@ -1077,3 +1080,455 @@ async def test_a_subagent_call_is_named_as_one_on_the_phone(db, tool):
     await t.add(step("s1", tool), step("s2", "read"))
     lines = [x for group in t.progress() for x in group]
     assert "*🔧 subagent*" in lines or "*🔧 子 agent*" in lines
+
+
+def retrying(identity, attempt, error, *tools, completed=False):
+    """A step OpenCode waits to run again after its model call failed with ``error``."""
+    return project_message(
+        {
+            "id": identity,
+            "type": "assistant",
+            "agent": "build",
+            "model": {"providerID": "fixture", "id": "model"},
+            "time": {"created": 2, **({"completed": 3} if completed else {})},
+            "content": list(tools),
+            "retry": {"attempt": attempt, "at": 1.5e12, "error": error},
+        }
+    )
+
+
+def failed_idle(identity, error):
+    return project_message(
+        {
+            "id": identity,
+            "type": "idle",
+            "time": {"created": 4},
+            "outcome": "failed",
+            "error": error,
+        }
+    )
+
+
+def failed_step(identity, text, error):
+    return project_message(
+        {
+            "id": identity,
+            "type": "assistant",
+            "agent": "build",
+            "model": {"providerID": "fixture", "id": "model"},
+            "time": {"created": 2, "completed": 3},
+            "content": [{"type": "text", "text": text}],
+            "error": error,
+        }
+    )
+
+
+def compaction(identity, status, *, reason="auto", error=None):
+    raw = {
+        "id": identity,
+        "type": "compaction",
+        "time": {"created": 3},
+        "status": status,
+        "reason": reason,
+        "summary": "PRIVATE_SUMMARY",
+        "recent": "",
+    }
+    if error is not None:
+        raw["error"] = error
+    return project_message(raw)
+
+
+def before_error_summaries(entry):
+    """``entry`` as Bridge saved it before error summaries were kept."""
+    from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry
+    from jt_oz_bridge.storage.durable import digest
+
+    value = entry.projection()
+    value.pop("error")
+    return TranscriptEntry(
+        native_id=entry.native_id,
+        kind=entry.kind,
+        projection_json=json.dumps(value),
+        projection_sha256=digest(value),
+    )
+
+
+SECRET_ERROR = {
+    "type": "APIError",
+    "message": "PRIVATE_MESSAGE",
+    "status": 429,
+    "response": {"body": "PRIVATE_BODY"},
+}
+
+
+def test_only_an_error_type_and_status_enter_the_projection_and_only_when_reported():
+    from jt_oz_bridge.adapters.opencode.transcript import error_summary
+
+    failed = failed_idle("i1", SECRET_ERROR)
+    assert failed.projection()["error"] == {"type": "APIError", "status": 429}
+    assert "PRIVATE" not in failed.projection_json
+    waiting = retrying("s1", 2, SECRET_ERROR)
+    assert waiting.projection()["retry"] == {
+        "attempt": 2,
+        "error": {"type": "APIError", "status": 429},
+    }
+    assert "PRIVATE" not in waiting.projection_json and "1.5e" not in waiting.projection_json
+    lost = compaction("c1", "failed", error={"type": "Overflow", "message": "PRIVATE"})
+    assert lost.projection()["error"] == {"type": "Overflow"}
+    assert "PRIVATE" not in lost.projection_json
+    for bad in ({"type": "has space"}, {"type": "x" * 65}, {"type": 7}, {"type": "1abc"}):
+        assert error_summary(bad) == {}
+    for status in (99, 600, "429", True, 429.0):
+        assert error_summary({"type": "E", "status": status}) == {"type": "E"}
+    assert error_summary({"type": "Error\n"}) == {} and error_summary("text") == {}
+    assert "retry" not in retrying("s1", 0, SECRET_ERROR).projection()
+    # Every ordinary entry keeps exactly the projection (and hash) it had before.
+    for ordinary in (
+        assistant("r1", "Done"),
+        idle("i2"),
+        compaction("c2", "running"),
+        compaction("c3", "completed"),
+    ):
+        assert not {"error", "retry"} & set(ordinary.projection())
+
+
+def test_a_settled_entry_saved_before_error_summaries_is_the_same_message():
+    from jt_oz_bridge.adapters.opencode.transcript import same_message
+
+    for now in (
+        failed_idle("i1", SECRET_ERROR),
+        compaction("c1", "failed", error=SECRET_ERROR),
+        failed_step("s1", "Partial", {"type": "APIError", "status": 500}),
+    ):
+        assert same_message(before_error_summaries(now), now)
+    assert not same_message(failed_idle("i1", {"status": 500}), failed_idle("i1", {"status": 401}))
+    # A retry is live: a running step that gains one, or its next attempt, is new.
+    running = finished("s2", "", completed=False)
+    assert not same_message(running, retrying("s2", 1, SECRET_ERROR))
+    assert not same_message(retrying("s2", 1, SECRET_ERROR), retrying("s2", 2, SECRET_ERROR))
+
+
+async def test_a_failed_outcome_read_again_with_its_error_is_not_posted_again(db):
+    t = await Turn().initialize(db)
+    now = failed_idle("i1", SECRET_ERROR)
+    await t.add(entry("in1", "Hello"), before_error_summaries(now))
+    count, calls = len(await versions(db)), len(t.chat.calls)
+    assert "Run failed." in t.shown()[-1]
+    # As after an upgrade: the same outcome, now read with its error summary.
+    index = next(i for i, m in enumerate(t.reader.messages) if m.native_id == "i1")
+    t.reader.messages[index] = now
+    await t.add()
+    assert len(await versions(db)) == count and len(t.chat.calls) == calls
+
+
+@pytest.mark.parametrize(
+    ("locale", "error", "text"),
+    [
+        ("en", SECRET_ERROR, "Result\n\nRun failed: too many requests; the model service is"),
+        ("zh-TW", {"status": 401}, "執行結果\n\n執行失敗：模型服務驗證或權限失敗。"),
+        ("en", {"type": "ContextOverflowError"}, "Result\n\nRun failed: the conversation is"),
+        ("zh-TW", {"type": "ProviderError"}, "執行結果\n\n執行失敗：錯誤類型：`ProviderError`。"),
+        ("en", {"message": "PRIVATE"}, "Result\n\nRun failed: unknown error."),
+    ],
+)
+async def test_a_failed_outcome_says_why_without_the_error_message(db, locale, error, text):
+    t = await Turn().initialize(db, locale=locale)
+    await t.add(entry("in1", "Hello"), failed_idle("i1", error))
+    shown = t.shown()[-1]
+    assert shown.startswith(text) and "PRIVATE" not in shown
+
+
+@pytest.mark.parametrize(
+    ("locale", "running", "done"),
+    [
+        (
+            "en",
+            "🗜️ The conversation is long; OpenCode is compacting it",
+            "🗜️ Conversation compacted",
+        ),
+        ("zh-TW", "🗜️ 對話太長，OpenCode 正在自動壓縮", "🗜️ 對話已壓縮"),
+    ],
+)
+async def test_a_compaction_says_so_in_its_own_words_not_as_a_setting(db, locale, running, done):
+    t = await Turn().initialize(db, locale=locale)
+    await t.add(compaction("c1", "running"))
+    await ended(t, compaction("c1", "completed"))
+    first, second = t.shown()[-2:]
+    assert first.startswith(running) and second.startswith(done)
+    assert not any(word in first + second for word in ("Setting changed", "設定變更", "PRIVATE"))
+
+
+async def ended(t, now):
+    """The same Native entry read again once OpenCode changed it."""
+    index = next(i for i, m in enumerate(t.reader.messages) if m.native_id == now.native_id)
+    t.reader.messages[index] = now
+    await t.add()
+
+
+async def test_a_manual_or_failed_compaction_is_said_plainly(db):
+    t = await Turn().initialize(db, locale="zh-TW")
+    await t.add(compaction("c1", "running", reason="manual"))
+    await ended(t, compaction("c1", "failed", reason="manual", error={"status": 504}))
+    first, second = t.shown()[-2:]
+    assert first.startswith("🗜️ OpenCode 正在壓縮對話")
+    assert second.startswith("🗜️ 壓縮失敗：逾時")
+
+
+async def test_a_shell_entry_keeps_its_control_wording(db):
+    t = await Turn().initialize(db)
+    await t.add(
+        project_message(
+            {
+                "id": "sh1",
+                "type": "shell",
+                "time": {"created": 3},
+                "shellID": "x",
+                "command": "PRIVATE_COMMAND",
+                "status": "running",
+            }
+        )
+    )
+    assert t.shown()[-1].startswith("Setting changed\n\nStatus: running.")
+    assert "PRIVATE" not in t.shown()[-1]
+
+
+def changed(identity, *paths, text="", tools=(), context=None, completed=True, snapshot=None):
+    """A step whose snapshot says it changed ``paths``; tool steps when ``tools``."""
+    raw = {
+        "id": identity,
+        "type": "assistant",
+        "agent": "build",
+        "model": {"providerID": "fixture", "id": "model"},
+        "time": {"created": 2, **({"completed": 3} if completed else {})},
+        "content": [{"type": "text", "text": text}, *tools],
+        "snapshot": {"start": "snap0", "end": "snap1", "files": list(paths)}
+        if snapshot is None
+        else snapshot,
+    }
+    if context is not None:
+        raw["tokens"] = {
+            "input": 1000,
+            "output": 50,
+            "reasoning": 0,
+            "cache": {"read": context - 1200, "write": 200},
+        }
+    return project_message(raw)
+
+
+def edited(identity, *paths):
+    """A tool step that edited ``paths``."""
+    return changed(identity, *paths, tools=(tool("edit", f"{identity}_0"),))
+
+
+def before_changed_files(entry):
+    """``entry`` as Bridge saved it before changed files were kept."""
+    from jt_oz_bridge.adapters.opencode.transcript import TranscriptEntry
+    from jt_oz_bridge.storage.durable import digest
+
+    value = entry.projection()
+    value.pop("files")
+    value.pop("files_total", None)
+    return TranscriptEntry(
+        native_id=entry.native_id,
+        kind=entry.kind,
+        projection_json=json.dumps(value),
+        projection_sha256=digest(value),
+    )
+
+
+def test_changed_files_enter_the_projection_as_bounded_relative_paths_only():
+    from jt_oz_bridge.adapters.opencode.transcript import FILE_PATH_LIMIT, FILES_LIMIT
+
+    step = changed(
+        "s1",
+        "src/a.py",
+        "/etc/passwd",
+        "../outside.txt",
+        "src/../../x",
+        "dir\\win.txt",
+        "bad\nname",
+        "",
+        "x" * (FILE_PATH_LIMIT + 1),
+        "src/a.py",
+        7,
+        "docs/b.md",
+    )
+    assert step.projection()["files"] == ["src/a.py", "docs/b.md"]
+    assert "files_total" not in step.projection()
+    assert step.changed_files() == (("src/a.py", "docs/b.md"), 2)
+    assert "snap" not in step.projection_json and "passwd" not in step.projection_json
+    many = changed("s2", *(f"f{i}.py" for i in range(FILES_LIMIT + 30)))
+    assert len(many.projection()["files"]) == FILES_LIMIT
+    assert many.changed_files()[1] == FILES_LIMIT + 30
+    # A running step, no snapshot, no files or none kept: no field, the same hash.
+    assert "files" not in changed("s3", "a.py", completed=False).projection()
+    for snapshot in ({}, {"files": []}, {"files": "a.py"}, "x", {"files": ["/abs"]}):
+        quiet = changed("s4", snapshot=snapshot)
+        assert "files" not in quiet.projection()
+        assert quiet.projection_sha256 == assistant("s4", "").projection_sha256
+    assert assistant("r1", "Done").changed_files() == ((), 0)
+
+
+def test_a_finished_step_saved_before_changed_files_is_the_same_message():
+    from jt_oz_bridge.adapters.opencode.transcript import same_message
+
+    for now in (
+        changed("s1", "a.py", "b.py", text="Done", context=95000),
+        edited("s2", *(f"f{i}.py" for i in range(80))),
+    ):
+        assert same_message(before_changed_files(now), now)
+    # Saved before both error summaries and changed files were kept.
+    both = project_message(
+        {
+            "id": "s4",
+            "type": "assistant",
+            "agent": "build",
+            "model": {"providerID": "fixture", "id": "model"},
+            "time": {"created": 2, "completed": 3},
+            "content": [{"type": "text", "text": "x"}],
+            "error": {"status": 500},
+            "snapshot": {"files": ["a.py"]},
+        }
+    )
+    assert same_message(before_error_summaries(before_changed_files(both)), both)
+    # Files are content once kept: other files, or a running step finishing with them.
+    assert not same_message(changed("s5", "a.py", text="x"), changed("s5", "b.py", text="x"))
+    assert not same_message(
+        changed("s6", text="x", completed=False, snapshot={}), changed("s6", "a.py", text="x")
+    )
+
+
+async def test_a_step_read_again_with_its_changed_files_is_not_posted_again(db):
+    t = await Turn().initialize(db)
+    now = edited("s1", "a.py", "b.py")
+    await t.add(entry("in1", "Fix it"), before_changed_files(now), assistant("r1", "Fixed"))
+    count, calls = len(await versions(db)), len(t.chat.calls)
+    assert "Changed" not in t.shown()[-1]
+    # As after an upgrade: the same finished step, now read with its changed files.
+    index = next(i for i, m in enumerate(t.reader.messages) if m.native_id == "s1")
+    t.reader.messages[index] = now
+    await t.add()
+    assert len(await versions(db)) == count and len(t.chat.calls) == calls
+
+
+@pytest.mark.parametrize(
+    ("locale", "line"),
+    [
+        ("en", "Changed 3 files: `a.py`, `src/b.py`, `docs/c.md`"),
+        ("zh-TW", "改了 3 個檔案：`a.py`、`src/b.py`、`docs/c.md`"),
+    ],
+)
+async def test_a_turns_reply_names_the_files_its_steps_changed(db, locale, line):
+    t = await Turn().initialize(db, locale=locale)
+    await t.add(entry("in1", "Fix the bug"), edited("s1", "a.py", "src/b.py"))
+    # A finished step with no words or tools (reasoning only) shows nothing and ends nothing.
+    await t.add(edited("s2", "src/b.py"), assistant("e1", ""))
+    await t.add(changed("r1", "docs/c.md", text="Fixed it"))
+    reply = t.shown()[-1]
+    assert reply.startswith("Fixed it") and line in reply
+    assert "!diff" not in reply and "snap" not in reply
+    # Only the reply says it: the progress message keeps its tool lines.
+    assert t.progress() == [["*🔧 edit* ×2"]]
+    # The next turn names only its own files, and one that changed none says nothing.
+    await t.add(idle("i1"), entry("in2", "And this"), step("s3", "read"))
+    await t.add(assistant("r2", "Done too"))
+    assert "Changed" not in t.shown()[-1] and "改了" not in t.shown()[-1]
+    await t.add(idle("i2"), entry("in3", "Once more"), edited("s4", "y.py"))
+    await t.add(assistant("r3", "Third"))
+    third = t.shown()[-1]
+    assert "`y.py`" in third and "a.py" not in third and "c.md" not in third
+
+
+@pytest.mark.parametrize(
+    ("locale", "line"),
+    [
+        (
+            "en",
+            "Changed 9 files: `f0.py`, `f1.py`, `f2.py`, `f3.py`, `f4.py` … and 4 more"
+            " (`!diff` shows the changes)",
+        ),
+        (
+            "zh-TW",
+            "改了 9 個檔案：`f0.py`、`f1.py`、`f2.py`、`f3.py`、`f4.py`…等另外 4 個（`!diff` 看差異）",
+        ),
+    ],
+)
+async def test_many_changed_files_show_five_names_and_diff_where_it_works(db, locale, line):
+    t = await Turn().initialize(db, locale=locale)
+    t.publisher.diff_here = lambda binding: binding.id == t.binding.id
+    # A secret's name is counted but never shown.
+    await t.add(entry("in1", "Refactor"), edited("s1", ".env", *(f"f{i}.py" for i in range(8))))
+    await t.add(assistant("r1", "Refactored"))
+    reply = t.shown()[-1]
+    assert line in reply and ".env" not in reply
+
+
+async def test_only_hidden_files_are_counted_without_names(db):
+    t = await Turn().initialize(db)
+    await t.add(entry("in1", "Rotate"), edited("s1", ".env"), assistant("r1", "Rotated"))
+    reply = t.shown()[-1]
+    assert "Changed 1 file" in reply and "Changed 1 file:" not in reply and ".env" not in reply
+
+
+@pytest.mark.parametrize(
+    ("locale", "line"),
+    [("en", "Context: about 95k tokens"), ("zh-TW", "對話已用約 95k token")],
+)
+async def test_a_long_conversations_reply_says_its_context_size(db, locale, line):
+    from jt_oz_bridge.services.transcript_publisher import LONG_CONTEXT_AT
+
+    t = await Turn().initialize(db, locale=locale)
+    await t.add(entry("in1", "Hello"), finished("r1", "Hi", context=LONG_CONTEXT_AT - 1))
+    assert "token" not in t.shown()[-1].lower()
+    await t.add(entry("in2", "More"), changed("r2", "a.py", text="Done", context=95_400))
+    reply = next(text for text in t.shown() if text.startswith("Done"))
+    # The files line first, then the context line, at the end of the reply.
+    files = "Changed 1 file: `a.py`" if locale == "en" else "改了 1 個檔案：`a.py`"
+    assert reply.index(files) < reply.index(line)
+    # Every later long reply says it again; the one-time notice stays one.
+    await t.add(entry("in3", "Again"), finished("r3", "Still", context=123_456))
+    later = next(text for text in t.shown() if text.startswith("Still"))
+    assert line.replace("95k", "123k") in later
+    assert len(await notices(db)) == 1
+
+
+@pytest.mark.parametrize(
+    ("locale", "failed", "error"),
+    [
+        ("en", "*🔧 bash (exit 1)*", " (error) (exit 2)"),
+        ("zh-TW", "*🔧 bash（結束碼 1）*", " (錯誤)（結束碼 2）"),
+    ],
+)
+async def test_a_command_that_failed_says_its_exit_code(db, locale, failed, error):
+    def run(identity, code, status="completed"):
+        state = {"status": status, "metadata": {"exit": code}}
+        if status == "error":
+            state["error"] = {"type": "ToolError", "message": "PRIVATE"}
+        return {
+            "type": "tool",
+            "id": identity,
+            "name": "bash",
+            "time": {"created": 2},
+            "state": state,
+        }
+
+    t = await Turn().initialize(db, locale=locale)
+    await t.add(entry("in1", "Build"), assistant("s1", "", tools=(run("c1", 1),)))
+    await t.add(entry("in2", "Again"), assistant("s2", "", tools=(run("c2", 0), tool("read"))))
+    await t.add(entry("in3", "Once more"), assistant("s3", "", tools=(run("c3", 2, "error"),)))
+    assert t.progress() == [[failed], ["*🔧 bash, read*"], [f"*🔧 bash{error}*"]]
+    assert not any("PRIVATE" in text for text in t.shown())
+
+
+def test_runtime_names_diff_only_where_file_menus_show_it():
+    from types import SimpleNamespace
+
+    from jt_oz_bridge.services.consumer_runtime import ConsumerPipeline
+
+    asked = []
+    menus = SimpleNamespace(available=lambda binding, command: asked.append(command) or True)
+    assert ConsumerPipeline.diff_here(SimpleNamespace(file_menus=menus), object())
+    assert asked == ["diff"]
+    refused = SimpleNamespace(available=lambda binding, command: False)
+    assert not ConsumerPipeline.diff_here(SimpleNamespace(file_menus=refused), object())
+    assert not ConsumerPipeline.diff_here(SimpleNamespace(file_menus=None), object())

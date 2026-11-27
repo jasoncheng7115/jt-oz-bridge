@@ -482,6 +482,18 @@ async def test_older_missed_messages_get_one_reply_and_are_not_sent(db, old):
         await c.scope.client.close()
 
 
+async def test_a_message_missed_in_an_outage_days_ago_is_not_reported_again(db):
+    # 11-25: a restart told the topic about two messages missed in the 11-14 outage.
+    c, s, b, control = await setup(db, publisher=AsyncMock())
+    try:
+        s.topic_history = [history(s, 150, age=2 * 86400)]
+        assert await restart_pause_state(db, c, b) is False
+        assert await c.poll() == () and await count(db, Action) == 0
+        assert s.posted == []
+    finally:
+        await c.scope.client.close()
+
+
 @pytest.mark.parametrize("reason", [None, "queue_paused"])
 async def test_work_the_restart_held_goes_out_again(db, reason):
     from jt_oz_bridge.storage.models import AuditEvent

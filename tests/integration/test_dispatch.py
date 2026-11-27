@@ -1207,6 +1207,32 @@ async def test_busy_session_new_messages_steer_into_the_running_turn_one_by_one(
     assert execution.steered == [second, third] and len(execution.submitted) == 1
 
 
+async def test_a_steer_passes_through_the_zulip_formatting_wrapper_the_runtime_installs(
+    db, steering, caplog
+):
+    # The runtime wraps the dispatcher's client in FormattedExecution. Its submit took
+    # no `steer`, so every steer raised TypeError before the post and was refused.
+    from jt_oz_bridge.services.format_instructions import (
+        FormattedExecution,
+        ZulipFormatInstructions,
+    )
+
+    execution, reader = SteeringExecution(), SyntheticReader()
+    bindings, binding, _, _audience = await bound(db, control=execution)
+    holder = "synthetic-dispatcher"
+    fence = await DurableStore(db).acquire_lease(holder)
+    wrapped = FormattedExecution(execution, ZulipFormatInstructions({}))
+    worker = Dispatcher(bindings, wrapped, reader, holder, fence, require_control_source=False)
+    first = await queued_prompt(worker, binding, reader, 101, "Write the report")
+    assert await worker.advance(first) == "admitted"
+    execution.state = ExecutionState.RUNNING
+    second = await queued_prompt(worker, binding, reader, 102, "Make it shorter")
+    with caplog.at_level(logging.WARNING, logger="jt_oz_bridge.services.dispatch"):
+        assert await worker.advance(second) == "admitted"
+    assert execution.steered == [second] and len(execution.submitted) == 1
+    assert [r.getMessage() for r in caplog.records] == ["dispatch_steered"]
+
+
 async def test_a_prompt_that_cannot_steer_now_is_not_attempted_while_busy(db, steering):
     worker, binding, execution, reader = await steering_dispatcher(db)
     first = await queued_prompt(worker, binding, reader, 101, "Write the report")

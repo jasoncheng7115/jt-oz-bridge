@@ -233,6 +233,18 @@ async def test_status_is_current_native_state_instead_of_a_saved_action_outcome(
     assert "Last saved" not in reply.text and await count(db, Action) == 0
 
 
+async def test_status_says_unconfirmed_when_both_live_checks_fail_during_a_tool_run(db):
+    # 11-25: `!status` while a shell tool ran got "expired or invalid": the router's
+    # live check failed, and the fallback asked the same changing evidence again.
+    router, binding, source, native, audience, commands = await setup(db)
+    changed = ValueError("v2_execution_owner_or_snapshot_evidence_changed")
+    commands.history.bindings.control.snapshot = AsyncMock(side_effect=changed)
+    native.snapshot = AsyncMock(side_effect=changed)
+    reply = await send(router, source, message("!status", 101))
+    assert "could not confirm its live status" in reply.text and "Queue paused: No" in reply.text
+    assert "expired" not in reply.text and await count(db, Action) == 0
+
+
 async def test_bilingual_menu_and_selected_original_input(db):
     router, binding, source, native, audience, commands = await setup(db)
     source.messages[101] = item = message("!oz history", 101)
@@ -366,3 +378,113 @@ def test_history_preview_strips_controls_and_clips_text_before_literal_encoding(
     parser.feed(MobileMarkdown().preview_html(preview))
     assert "".join(parser.text).strip() == original[:9]
     assert "\x1b" not in preview and "&#" not in "".join(parser.text)
+
+
+@pytest.mark.parametrize(
+    ("error", "kind"),
+    [
+        ({"type": "APIError", "status": 401}, "auth"),
+        ({"status": 403}, "auth"),
+        ({"type": "ContextOverflowError", "status": 429}, "rate_limited"),
+        ({"status": 408}, "timeout"),
+        ({"type": "ProviderError", "status": 504}, "timeout"),
+        ({"type": "TimeoutError"}, "timeout"),
+        ({"type": "request_timed_out"}, "timeout"),
+        ({"type": "ETIMEDOUT"}, "timeout"),
+        ({"status": 500}, "service"),
+        ({"type": "APIError", "status": 599}, "service"),
+        ({"type": "ContextOverflowError", "status": 400}, "too_long"),
+        ({"type": "context_length_exceeded"}, "too_long"),
+        ({"type": "aborted"}, "stopped"),
+        ({"type": "MessageAbortedError"}, "stopped"),
+        ({"type": "ProviderAuthError", "status": 400}, "type"),
+        ({"type": "has space"}, "unknown"),
+        ({"type": "x" * 65}, "unknown"),
+        ({"type": "Error\n", "status": 600}, "unknown"),
+        ({"status": True}, "unknown"),
+        ({}, "unknown"),
+        (None, "unknown"),
+        ("APIError", "unknown"),
+    ],
+)
+def test_one_function_says_what_an_opencode_error_was_from_its_status_then_its_type(error, kind):
+    from jt_oz_bridge.services.transcript_commands import failure_kind
+
+    assert failure_kind(error) == kind
+
+
+@pytest.mark.parametrize(
+    ("locale", "error", "text"),
+    [
+        ("en", {"status": 401}, "model service authentication or permission failed"),
+        ("zh-TW", {"status": 401}, "模型服務驗證或權限失敗"),
+        ("en", {"status": 429}, "too many requests; the model service is rate limiting"),
+        ("zh-TW", {"status": 429}, "請求太多，模型服務暫時限流"),
+        ("en", {"status": 504}, "timed out"),
+        ("zh-TW", {"type": "TimeoutError"}, "逾時"),
+        ("en", {"status": 502}, "model service error"),
+        ("zh-TW", {"status": 502}, "模型服務錯誤"),
+        (
+            "en",
+            {"type": "ContextOverflowError"},
+            "the conversation is longer than the model allows",
+        ),
+        ("zh-TW", {"type": "ContextOverflowError"}, "對話超過模型能處理的長度"),
+        ("en", {"type": "aborted"}, "stopped"),
+        ("zh-TW", {"type": "aborted"}, "已停止"),
+        ("en", {"type": "ProviderError"}, "error type: `ProviderError`"),
+        ("zh-TW", {"type": "ProviderError"}, "錯誤類型：`ProviderError`"),
+        ("en", {"type": "<b>"}, "unknown error"),
+        ("zh-TW", None, "未知錯誤"),
+    ],
+)
+def test_a_failure_reason_reads_naturally_in_each_language(locale, error, text):
+    from jt_oz_bridge.i18n import Translator
+    from jt_oz_bridge.services.transcript_commands import failure_reason
+
+    assert failure_reason(Translator(), locale, error) == text
+
+
+def native(raw):
+    if raw["type"] == "assistant":
+        raw = {"agent": "build", "model": {"providerID": "fixture", "id": "test"}, **raw}
+    return project_message(raw)
+
+
+async def test_history_says_why_a_run_or_step_failed_and_what_a_compaction_did(db):
+    _, _, _, _, _, commands = await setup(db)
+    secret = {"type": "APIError", "status": 429, "message": "PRIVATE", "response": {"body": "P"}}
+    outcome = native(
+        {"id": "i1", "type": "idle", "time": {"created": 1}, "outcome": "failed", "error": secret}
+    )
+    assert commands.body(outcome, "en") == (
+        "Run failed: too many requests; the model service is rate limiting."
+    )
+    assert commands.body(outcome, "zh-TW") == "執行失敗：請求太多，模型服務暫時限流。"
+    # Without a reported error, as before.
+    plain = native({"id": "i2", "type": "idle", "time": {"created": 1}, "outcome": "failed"})
+    assert commands.body(plain, "en") == "Run failed."
+    step = {
+        "id": "s1",
+        "type": "assistant",
+        "time": {"created": 1, "completed": 2},
+        "content": [{"type": "text", "text": "Half"}],
+    }
+    failed = commands.body(native(step | {"error": {"status": 500, "message": "PRIVATE"}}), "en")
+    assert "Half\n\nThis step failed: model service error." in failed and "PRIVATE" not in failed
+    # A step `!stop` ended is no failure; its outcome says it was interrupted.
+    stopped = commands.body(native(step | {"error": {"type": "aborted", "message": "x"}}), "en")
+    assert "failed" not in stopped
+    compacted = {"id": "c1", "type": "compaction", "time": {"created": 1}, "summary": "PRIVATE"}
+    compacted |= {"recent": "", "reason": "auto"}
+    for status, text in [
+        ("running", "🗜️ 對話太長，OpenCode 正在自動壓縮"),
+        ("completed", "🗜️ 對話已壓縮"),
+    ]:
+        assert commands.body(native(compacted | {"status": status}), "zh-TW") == text
+    lost = native(compacted | {"status": "failed", "error": {"type": "ContextOverflowError"}})
+    assert commands.body(lost, "en") == (
+        "🗜️ Compaction failed: the conversation is longer than the model allows"
+    )
+    manual = native(compacted | {"status": "running", "reason": "manual"})
+    assert commands.body(manual, "en") == "🗜️ OpenCode is compacting the conversation"
